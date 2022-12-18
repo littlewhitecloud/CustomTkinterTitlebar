@@ -1,8 +1,8 @@
-from tkinter import *
-from tkinter.ttk import Entry
+from tkinter import Button, Tk, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
-from ctypes import windll, c_char_p
-from PIL import Image, ImageTk, ImageChops
+from ctypes import windll
+from windowblur import blur
+from PIL import Image, ImageTk
 from os import getcwd
 
 def theme():
@@ -21,29 +21,30 @@ def isDark():
 class Tk(Tk):
 	def __init__(self):
 		super().__init__()
+		path = getcwd()
 		# resources
-		self._t0_load = Image.open(getcwd() + '\\assets\\close_50.png')
+		self._t0_load = Image.open(path + '\\assets\\close_50.png')
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 
-		self._t0_hov_load = Image.open(getcwd() + '\\assets\\close_100.png')
+		self._t0_hov_load = Image.open(path + '\\assets\\close_100.png')
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
 
-		self._t1_load = Image.open(getcwd() + '\\assets\\minisize_50.png')
+		self._t1_load = Image.open(path + '\\assets\\minisize_50.png')
 		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 
-		self._t1_hov_load = Image.open(getcwd() + '\\assets\\minisize_100.png')
+		self._t1_hov_load = Image.open(path + '\\assets\\minisize_100.png')
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
 
-		self._t2_load = Image.open(getcwd() + '\\assets\\fullwin_50.png')
+		self._t2_load = Image.open(path + '\\assets\\fullwin_50.png')
 		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 
-		self._t2_hov_load = Image.open(getcwd() + '\\assets\\fullwin_100.png')
+		self._t2_hov_load = Image.open(path + '\\assets\\fullwin_100.png')
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
 
-		self._t3_load = Image.open(getcwd() + '\\assets\\togglefull_50.png')
+		self._t3_load = Image.open(path + '\\assets\\togglefull_50.png')
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 
-		self._t3_hov_load = Image.open(getcwd() + '\\assets\\togglefull_100.png')
+		self._t3_hov_load = Image.open(path + '\\assets\\togglefull_100.png')
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 				
 		# flags
@@ -74,7 +75,7 @@ class Tk(Tk):
 			
 		self["background"] = self.colors[self.theme.title()]	
 		# tools
-		self.titlebar = Frame(self, bg = self.bg)
+		self.titlebar = Frame(self, bg = self.bg, height = 16)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
@@ -134,7 +135,12 @@ class Tk(Tk):
 		self.titlebar.bind("<ButtonRelease-1>", self.Stopping)
 		self.titlebar.bind("<B1-Motion>", self.Moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
-	
+		self.after(100, self.addblur)
+
+	def addblur(self):
+		hwnd = windll.user32.GetForegroundWindow()
+		blur(hwnd = hwnd, Dark = True, Acrylic = True, AccentState = 4) # Custom AccentState
+		
 	def focusout(self, event):
 		if self.theme != "light":
 			self.titlebar["bg"] = self.nf
@@ -168,7 +174,7 @@ class Tk(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resizeback
 			w, h = self.wm_maxsize()
-			self.geometry("{}x{}".format(w, h - 40))
+			self.geometry("%dx%d+0+0" % (w, h - 40))
 			#self.state("zoomed")
 	
 	def minsize(self):
