@@ -1,4 +1,4 @@
-from tkinter import Button, Tk, Frame, Label, X, Y, TOP, RIGHT, LEFT
+from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
 from ctypes import windll
 from windowblur import blur
@@ -21,6 +21,7 @@ def isDark():
 class Tk(Tk):
 	def __init__(self):
 		super().__init__()
+		
 		path = getcwd()
 		# resources
 		self._t0_load = Image.open(path + '\\assets\\close_50.png')
@@ -51,6 +52,7 @@ class Tk(Tk):
 		self.w, self.h = 0, 0
 		self.o_flag = False
 		self.o_m = False
+		self.o_f = False
 		self.colors = {
 			"Light": "#ffffff",
 			"Dark": "#2b2b2b",
@@ -67,14 +69,24 @@ class Tk(Tk):
 		self.bg = self.colors["light"]
 		self.nf = self.colors["light_nf"]
 		self.fg = "dark"
+		
 		if isDark():
 			self.theme = "dark"
 			self.bg = self.colors["dark"]
 			self.nf = self.colors["dark_nf"]
 			self.fg = "light"
 			
-		self["background"] = self.colors[self.theme.title()]	
+		self["background"] = self.colors[self.theme.title()]
+		
 		# tools
+		self.popup = Menu(self, tearoff = 0)
+		self.popup.add_command(label = "还原", command = self.resizeback)
+		self.popup.entryconfig("还原", state="disabled")
+		self.popup.add_command(label = "最小化", command = self.minsize)
+		self.popup.add_command(label = "最大化", command = self.maxsize)
+		self.popup.add_separator()
+		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
+		
 		self.titlebar = Frame(self, bg = self.bg, height = 16)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
@@ -82,7 +94,6 @@ class Tk(Tk):
 		self._titlemax = Button(self.titlebar, bg = self.bg)
 		self._titleexit = Button(self.titlebar, bg = self.bg)
 		
-		# configs
 		self._titleexit.config(bd = 0,
 			#bg = colors["exit_fg"],
 			activeforeground = self.colors["exit_fg"],
@@ -92,7 +103,6 @@ class Tk(Tk):
 			relief = 'flat',
 			command = self.quit
 		)
-
 		self._titlemin.config(bd = 0,
 			#bg = colors["exit_fg"],
 			activeforeground = self.colors["button_activefg"],
@@ -111,15 +121,6 @@ class Tk(Tk):
 			relief = 'flat',
 			command = self.maxsize
 		)
-		
-		self._titleexit.bind("<Enter>", self.exit_on_enter)
-		self._titleexit.bind("<Leave>", self.exit_on_leave)
-		self._titlemin.bind("<Enter>", self.min_on_enter)
-		self._titlemin.bind("<Leave>", self.min_on_leave)
-		self._titlemax.bind("<Enter>", self.max_on_enter)
-		self._titlemax.bind("<Leave>", self.max_on_leave)
-		self.bind('<FocusOut>', self.focusout)
-		self.bind('<FocusIn>', self.focusin)
 
 		self._titleicon.pack(fill = X, side = LEFT, padx = 7, pady = 7)
 		self._titletext.pack(fill = X, side = LEFT, padx = 1, pady = 1)
@@ -129,20 +130,58 @@ class Tk(Tk):
 		self._titlemin.pack(fill = Y, side = RIGHT)
 
 		self.titlebar.pack(fill = X, side = TOP, padx = 1, pady = 1)
-		# final
+		
+		# binds & after
 		self.check()
-		self.titlebar.bind("<ButtonPress-1>", self.Dragging)
-		self.titlebar.bind("<ButtonRelease-1>", self.Stopping)
-		self.titlebar.bind("<B1-Motion>", self.Moving)
-		self.titlebar.bind("<Double-Button-1>", self.maxsize)
-		self.after(100, self.addblur)
+		
+		self.bind("<FocusOut>", self.focusout)
+		self.bind("<FocusIn>", self.focusin)
+		self.bind("<F11>", self.maxsize)
 
+		self._titleexit.bind("<Enter>", self.exit_on_enter)
+		self._titleexit.bind("<Leave>", self.exit_on_leave)
+		self._titlemin.bind("<Enter>", self.min_on_enter)
+		self._titlemin.bind("<Leave>", self.min_on_leave)
+		self._titlemax.bind("<Enter>", self.max_on_enter)
+		self._titlemax.bind("<Leave>", self.max_on_leave)
+		
+		self._titleicon.bind("<Button-3>", self.popupmenu)
+		self.titlebar.bind("<ButtonPress-1>", self.dragging)
+		self.titlebar.bind("<ButtonRelease-1>", self.stopping)
+		self.titlebar.bind("<B1-Motion>", self.moving)
+		self.titlebar.bind("<Double-Button-1>", self.maxsize)
+		
+		self.after(100, self.addblur)
+	
 	def addblur(self):
 		hwnd = windll.user32.GetForegroundWindow()
 		blur(hwnd = hwnd, Dark = True, Acrylic = True, AccentState = 4) # Custom AccentState
-		
+	
+	def popupmenu(self, event):
+		self.popup.post(event.x_root, event.y_root)
+	
+	def dragging(self, event):
+		global x, y
+		x = event.x
+		y = event.y
+
+	def stopping(self, event):
+		x = None
+		y = None
+
+	def moving(self, event):
+		global x, y
+		if self.o_m == True:
+			self.resizeback()
+		else:
+			deltax = event.x - x
+			deltay = event.y - y
+			self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
+			self.update()
+			
 	def focusout(self, event):
 		if self.theme != "light":
+			self.o_f = True
 			self.titlebar["bg"] = self.nf
 			self._titleicon["bg"] = self.nf
 			self._titletext["bg"] = self.nf, 
@@ -152,6 +191,7 @@ class Tk(Tk):
 	
 	def focusin(self, event):
 		if self.theme != "light":
+			self.o_f = False
 			self.titlebar["bg"] = self.bg
 			self._titleicon["bg"] = self.bg
 			self._titletext["bg"] = self.bg
@@ -161,7 +201,9 @@ class Tk(Tk):
 
 	def resizeback(self):
 		#self.state("normal")
-		self.wm_geometry("%dx%d" % (int(self.w), int(self.h)))
+		self.popup.entryconfig("还原", state = "disabled")
+		self.popup.entryconfig("最大化", state = "active")
+		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
 		self._titlemax["image"] = self._t2_hov_img
 		self.o_m = False
@@ -170,6 +212,9 @@ class Tk(Tk):
 		if event and self.o_m == True:
 			self.resizeback()
 		else:
+			self.popup.entryconfig("还原", state = "active")
+			self.popup.entryconfig("最大化", state = "disabled")
+			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
 			self.o_m = True
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resizeback
@@ -186,16 +231,22 @@ class Tk(Tk):
 		if self.state() != "iconic" and self.o_flag == False:
 			self.overrideredirect(True)
 			self.o_flag = True
-			
-		self.after(500, self.check)
+			self.addblur()
+		self.after(100, self.check)
 	
 	def exit_on_enter(self, event):
-		self._titleexit["background"] = self.colors["exit_fg"]
-		self._titleexit["image"] = self._t0_img
-
+		if not self.o_f:
+			self._titleexit["background"] = self.colors["exit_fg"]
+			self._titleexit["image"] = self._t0_img
+		else:
+			pass
+			
 	def exit_on_leave(self, event):
-		self._titleexit["background"] = self.bg
-		self._titleexit["image"] = self._t0_hov_img
+		if not self.o_f:
+			self._titleexit["background"] = self.bg
+			self._titleexit["image"] = self._t0_hov_img
+		else:
+			pass
 		
 	def min_on_enter(self, event):
 		self._titlemin["image"] = self._t1_img
@@ -215,22 +266,7 @@ class Tk(Tk):
 		else:
 			self._titlemax["image"] = self._t3_hov_img
 	
-	def Dragging(self, event):
-		global x, y
-		x = event.x
-		y = event.y
-
-	def Stopping(self, event):
-		x = None
-		y = None
-
-	def Moving(self, event):
-		global x, y
-		deltax = event.x - x
-		deltay = event.y - y
-		self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
-		self.update()
-	
+	# Rewrite
 	def title(self, text):
 		self._titletext["text"] = text
 	
@@ -250,7 +286,8 @@ class Tk(Tk):
 a = Tk()
 a.title("TitleBar")
 a.geometry("1030x570")
-#en = Entry(a.titlebar)
+#from tkinter import ttk
+#en = ttk.Entry(a.titlebar)
 #en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
 a.iconbitmap("edit.png")
 a.mainloop()
