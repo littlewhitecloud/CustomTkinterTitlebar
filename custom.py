@@ -87,7 +87,7 @@ class Tk(Tk):
 		self.popup.add_separator()
 		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
 		
-		self.titlebar = Frame(self, bg = self.bg, height = 16)
+		self.titlebar = Frame(self, bg = self.bg, bd = 0)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
@@ -133,7 +133,6 @@ class Tk(Tk):
 		
 		# binds & after
 		self.check()
-		
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
 		self.bind("<F11>", self.maxsize)
