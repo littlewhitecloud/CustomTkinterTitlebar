@@ -18,10 +18,21 @@ def isDark():
     if theme() is not None:
         return theme() == 'Dark'
 
+def set_appwindow(mainWindow):
+	GWL_EXSTYLE = -20
+	WS_EX_APPWINDOW = 0x00040000
+	WS_EX_TOOLWINDOW = 0x00000080
+	hwnd = windll.user32.GetParent(mainWindow.winfo_id())
+	stylew = windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+	stylew = stylew & ~WS_EX_TOOLWINDOW
+	stylew = stylew | WS_EX_APPWINDOW
+	res = windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+	mainWindow.wm_withdraw()
+	mainWindow.after(10, lambda: mainWindow.wm_deiconify())
+
 class Tk(Tk):
 	def __init__(self):
 		super().__init__()
-		
 		path = getcwd()
 		# resources
 		self._t0_load = Image.open(path + '\\assets\\close_50.png')
@@ -62,8 +73,8 @@ class Tk(Tk):
 			"exit_bg": "#e81123",
 			"dark": "#000000",
 			"dark_nf": "#2b2b2b",
-			"light": "#ececee",
-			"light_nf": "#ececee",
+			"light": "#f2efef",
+			"light_nf": "#f2efef",
 		}
 		self.theme = "light"
 		self.bg = self.colors["light"]
@@ -122,17 +133,18 @@ class Tk(Tk):
 			command = self.maxsize
 		)
 
-		self._titleicon.pack(fill = X, side = LEFT, padx = 7, pady = 7)
+		self._titleicon.pack(fill = X, side = LEFT, padx = 6, pady = 6)
 		self._titletext.pack(fill = X, side = LEFT, padx = 1, pady = 1)
 
 		self._titleexit.pack(fill = Y, side = RIGHT)
 		self._titlemax.pack(fill = Y, side = RIGHT)
 		self._titlemin.pack(fill = Y, side = RIGHT)
 
-		self.titlebar.pack(fill = X, side = TOP, padx = 1, pady = 1)
+		self.titlebar.pack(fill = X, side = TOP)
 		
 		# binds & after
 		self.check()
+		set_appwindow(self)
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
 		self.bind("<F11>", self.maxsize)
@@ -153,14 +165,16 @@ class Tk(Tk):
 		self.after(100, self.addblur)
 	
 	def addblur(self):
-		hwnd = windll.user32.GetForegroundWindow()
-		blur(hwnd = hwnd, Dark = True, Acrylic = True, AccentState = 4) # Custom AccentState
+		if self.theme == "dark":
+			hwnd = windll.user32.GetForegroundWindow()
+			blur(hwnd = hwnd, Dark = True, Acrylic = True, AccentState = 4) # Custom AccentState
 	
 	def popupmenu(self, event):
 		self.popup.post(event.x_root, event.y_root)
 	
 	def dragging(self, event):
 		global x, y
+		self.config(cursor = "fleur")
 		x = event.x
 		y = event.y
 
@@ -170,6 +184,7 @@ class Tk(Tk):
 
 	def moving(self, event):
 		global x, y
+		self.config(cursor = "arrow")
 		if self.o_m == True:
 			self.resizeback()
 		else:
@@ -208,6 +223,7 @@ class Tk(Tk):
 		self.o_m = False
 	
 	def maxsize(self, event = None):
+		self.config(cursor = "arrow") # For Double-click got fleur
 		if event and self.o_m == True:
 			self.resizeback()
 		else:
