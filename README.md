@@ -6,6 +6,8 @@
 ##### 预览 (view) : 
 https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
 #### 模糊(Fluent) :
+![image](https://user-images.githubusercontent.com/71159641/208341143-b9d01ff0-c530-414c-be5d-38be9f55949b.png)
+#### 插入组件 (insert component to titlebar) :
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 #### 聚焦 (Focus on) :
 ![image](https://user-images.githubusercontent.com/71159641/208881100-3ab06ae8-f51c-459d-8d2b-8a90a6218078.png)
