@@ -5,6 +5,11 @@
 #### 关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ： https://www.bilibili.com/read/cv20558473
 ##### 预览 (view) : 
 https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
+#### 模糊(Fluent) :
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
-![example2](https://user-images.githubusercontent.com/71159641/208231808-7d06c1c8-7680-4528-94ad-b71ea52fbca9.png)
+#### 聚焦 (Focus on) :
+![image](https://user-images.githubusercontent.com/71159641/208881100-3ab06ae8-f51c-459d-8d2b-8a90a6218078.png)
+#### 未聚焦 (Focus out) :
+![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
+
 
