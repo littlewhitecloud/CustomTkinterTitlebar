@@ -43,8 +43,9 @@ example.mainloop()
 > I can not fix when I import custom.py out of the project path, it will say image not found (image path error)
 
 ### 未来添加 (features):
-> [ ] 亮主题时的最大化最小化和关闭按钮 (Maximize minimize and close buttons when the theme is light)
-> [ ] 调整窗口大小 (Resize the window)
+> [ ] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
+
+> [ ] _调整窗口大小 Resize the window_
 
 ### 支持 (support):
 #### 💻 它现在支持Windows 10 
