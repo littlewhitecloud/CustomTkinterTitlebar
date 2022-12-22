@@ -20,7 +20,7 @@ from tkinter import ttk
 example = Tk()
 example.title("TitleBar")
 example.geometry("1030x570")
-en = ttk.Entry(a.titlebar)
+en = ttk.Entry(example.titlebar)
 en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
 example.mainloop()
 ```
