@@ -4,7 +4,19 @@
 ### 📃 这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)
 #### 关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ： https://www.bilibili.com/read/cv20558473
 
-##### 预览 (view) : 
+### 用法 (usage):
+```
+from customtkintertitlebar import Tk
+from tkinter import ttk
+example = Tk()
+example.title("TitleBar")
+example.geometry("1030x570")
+en = ttk.Entry(a.titlebar)
+en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
+example.mainloop()
+```
+
+### 预览 (view) : 
 https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
 #### 模糊 (Blur):
 ![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
