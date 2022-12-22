@@ -4,6 +4,15 @@
 ### 📃 这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)
 #### 关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ： https://www.bilibili.com/read/cv20558473
 
+### 需求 (require):
+> Windows 10
+> Python >= 3.8.0
+> Pillow > 9.0.0 
+```
+python -m pip install --upgrade pip
+pip install pillow --user
+```
+
 ### 用法 (usage):
 ```
 from customtkintertitlebar import Tk
