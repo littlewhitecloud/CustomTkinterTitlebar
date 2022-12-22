@@ -1,7 +1,6 @@
-##### 📖Include English & Chinese language 📜 包括英文与中文语言
-![image](https://user-images.githubusercontent.com/71159641/209063664-112a5c17-7849-48c7-b068-aca18f118ca4.png)
-![image](https://user-images.githubusercontent.com/71159641/208341143-b9d01ff0-c530-414c-be5d-38be9f55949b.png)
 # 自定义标题栏 CustomTkinterTitlebar
+![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
+##### 📖Include English & Chinese language 📜 包括英文与中文语言
 ### 📃 这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)
 #### 关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ： https://www.bilibili.com/read/cv20558473
 
@@ -18,4 +17,8 @@ https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-
 #### 未聚焦 (Focus out) :
 ![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
 
-💻 它现在支持Windows 10~ (It support Windows 10 now~)
+#### 💻 它现在支持Windows 10 
+> 可能也支持Windows 11, 我用的是Windows 10, 未测试过
+#### It support Windows 10 now. 
+> Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet
+
