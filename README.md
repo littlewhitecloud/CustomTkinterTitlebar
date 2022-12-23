@@ -1,8 +1,9 @@
-# 自定义标题栏 CustomTkinterTitlebar
+# _自定义标题栏 CustomTkinterTitlebar_
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
-##### 📖Include English & Chinese language 📜 包括英文与中文语言
-### 📃 这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)
-#### 关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ： https://www.bilibili.com/read/cv20558473
+##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
+### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)*
+#### _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ：_ https://www.bilibili.com/read/cv20558473
+> 文章其实在下面（有删改）
 
 ### 预览 (view) : 
 https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
@@ -18,9 +19,9 @@ https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-
 ![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
 
 ### 需求 (require):
-> Windows 10
-> Python >= 3.8.0
-> Pillow > 9.0.0 
+> - _Windows 10_
+> - _Python >= 3.8.0_
+> - _Pillow > 9.0.0_
 ```
 python -m pip install --upgrade pip
 pip install pillow --user
@@ -39,7 +40,7 @@ example.mainloop()
 ```
 
 ### 问题 (bug):
-#### 我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）
+#### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
 > I can not fix when I import custom.py out of the project path, it will say image not found (image path error)
 
 ### 未来添加 (features):
@@ -48,9 +49,9 @@ example.mainloop()
 
 ### 支持 (support):
 #### 💻 它现在支持Windows 10 
-> 可能也支持Windows 11, 我用的是Windows 10, 未测试过
+> **可能也支持Windows 11, 我用的是Windows 10, 未测试过**
 #### It support Windows 10 now. 
-> Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet
+> **Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet**
 
 ### 文章：
 #### 整个事情的大概：
@@ -72,21 +73,20 @@ example.mainloop()
 
 开发时遇到的问题：
 > 1.如何最小化
->> 直接最小化会出问题
->> 奇葩的解决办法：
-先取消overrideredirect，在最小化就好了：
+>> - 直接最小化会出问题
+>> - 奇葩的解决办法：
+>>> 先取消overrideredirect，在最小化就好了：
 ```
 	def minsize(self):
 		self.overrideredirect(False)
 		self.o_flag = False # 待会再讲 o_flag什么意义
 		self.state("iconic")
 ```		
-2.最小化后再打开
-会出现原标题栏
-解决方案：
-先检查state 是不是"iconic", 如果是，并且o_flag是假的时候
-执行overrideredirect
-o_flag(overrideredirect_flag): 窗口是否被overrideredirect
+> 2.最小化后再打开
+>> - 会出现原标题栏
+>> - 解决方案：
+>>> - 先检查state 是不是"iconic", 如果是，并且o_flag是假的时候执行overrideredirect
+>>> - o_flag(overrideredirect_flag): 窗口是否被overrideredirect
 ```
 	def check(self):
 		if self.state() != "iconic" and self.o_flag == False:
@@ -95,7 +95,7 @@ o_flag(overrideredirect_flag): 窗口是否被overrideredirect
 			
 		self.after(500, self.check) #每500秒刷新一次 如果你的电脑性能高的话，可以改成 100
 ```
-3.如何移动：
+> 3.如何移动：
 ```
 	def Dragging(self, event):
 		global x, y
@@ -113,11 +113,9 @@ o_flag(overrideredirect_flag): 窗口是否被overrideredirect
 		self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
 		self.update()
 ```
-4.最大化
-直接“暴力”点：
-self.state("zoomed")
-但是，待会讲吧……
-
+> 4.最大化
+>> 直接“暴力”点：
+>>> self.state("zoomed")
 现存的BUG：
 #1 这个版本只能使用黑暗模式，还没做光亮模式
 #2 双击标题栏最大化后，最大化图标会出现问题
