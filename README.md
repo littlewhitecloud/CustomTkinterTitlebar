@@ -1,5 +1,5 @@
-# _自定义标题栏 CustomTkinterTitlebar_
-## ⚠ This project is still in preview, it may has many bugs!
+# 📜 _自定义标题栏 CustomTkinterTitlebar_
+### ⚠ This project is still in preview, it may has many bugs!
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)*
