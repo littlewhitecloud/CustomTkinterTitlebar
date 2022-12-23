@@ -53,6 +53,7 @@ example.mainloop()
 #### It support Windows 10 now. 
 > **Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet**
 
+## The doc doesn't support English now. I will try to translate it.
 ### 文章：
 #### 整个事情的大概：
 > _一个月前，我就看到有许多自定义标题栏的样例，我很羡慕。
