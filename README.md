@@ -116,21 +116,20 @@ example.mainloop()
 > 4.最大化
 >> 直接“暴力”点：
 >>> self.state("zoomed")
-现存的BUG：
-#1 这个版本只能使用黑暗模式，还没做光亮模式
-#2 双击标题栏最大化后，最大化图标会出现问题
-#3 全屏会“全屏”
-#4 当有菜单的时候，菜单会在标题栏上方（推测，目前还没有试过）
 
-修改：
-2022/12/17 15:35:59
-#1
-不想做浅色时最大化最小化和关闭的图标了
-#2 & #3 解决  + 新产生的 #5 无法正确全屏 + 新增窗口focus in（聚焦） 和 focus on（未聚焦） 时的标题栏颜色 + 自动调节主题（darkdetect） + 窗口acrylic模糊（可选，自己修改）+
-优化：节约self.color[key]调用次数和os.getcwd()调用次数  + 右键窗口图标菜单
-titlebar.pack取消了pady = 1, padx = 1(强迫症福音)
-titleicon.pack由padx = 7, pady = 7, 改为padx = 6, pady = 6尽量和Windows原生标题栏一样大
-color["light"] & color["light_nf"] 被改为淡白色#f2efef，而不是淡青色#ececee
+#### 现存的BUG：
+> - #1 这个版本只能使用黑暗模式，还没做光亮模式
+> - #2 双击标题栏最大化后，最大化图标会出现问题
+> - #3 全屏会“全屏”
+> - #4 当有菜单的时候，菜单会在标题栏上方（推测，目前还没有试过）
+
+#### 修改：
+##### 2022/12/17 15:35:59
+> - 不想做浅色时最大化最小化和关闭的图标了
+> - #2 & #3 解决  + 新产生的 #5 无法正确全屏 + 新增窗口focus in（聚焦） 和 focus on（未聚焦） 时的标题栏颜色 + 自动调节主题（darkdetect） + 窗口acrylic模糊（可选，自己修>改）+ 优化：节约self.color[key]调用次数和os.getcwd()调用次数  + 右键窗口图标菜单
+> - titlebar.pack取消了pady = 1, padx = 1(强迫症福音)
+> - titleicon.pack由padx = 7, pady = 7, 改为padx = 6, pady = 6尽量和Windows原生标题栏一样大
+> - color["light"] & color["light_nf"] 被改为淡白色#f2efef，而不是淡青色#ececee
 ```
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
