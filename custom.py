@@ -2,8 +2,13 @@ import ctypes
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
 from ctypes.wintypes import DWORD, BOOL, HRGN, HWND
-from PIL import Image, ImageTk
 from os import getcwd
+try:
+	from PIL import Image, ImageTk
+except:
+	from os import system
+	system(".\package.bat")
+	from PIL import Image, ImageTk
 
 user32 = ctypes.windll.user32
 dwm = ctypes.windll.dwmapi
