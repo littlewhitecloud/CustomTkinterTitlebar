@@ -1,5 +1,6 @@
 # 📜 _自定义标题栏 CustomTkinterTitlebar_
-### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project! 
+### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project!
+###### *更希望给我颗星~* *Hope got some stars~*
 #### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
 ### 🐞 问题 (Bug):
 #### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
