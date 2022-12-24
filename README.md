@@ -13,7 +13,7 @@
 > 文章其实在下面（有删改）
 
 ### 预览 (View) : 
-https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
+https://user-images.githubusercontent.com/71159641/209435938-fb962481-f655-4b6a-97ed-faa295eabcd9.mp4
 #### 模糊 (Blur):
 ![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
 #### 亚克力 (Fluent) :
