@@ -1,6 +1,10 @@
 # 📜 _自定义标题栏 CustomTkinterTitlebar_
 ### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project! 
 #### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
+### 🐞 问题 (Bug):
+#### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
+> I can't fix the image not found error that occurs when importing custom.py from outside (wrong picture path)
+#### 
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Widgets can add into titlebar!)*
