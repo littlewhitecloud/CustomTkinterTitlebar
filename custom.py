@@ -35,7 +35,6 @@ def HEXtoRGBAint(HEX):
     blue = HEX[5:7]
     green = HEX[3:5]
     red = HEX[1:3]
-
     gradientColor = alpha + blue + green + red
     return int(gradientColor, base = 16)
     
@@ -43,13 +42,11 @@ def blur(hwnd, hexColor = False, Acrylic = False, Dark = False, AccentState = 3)
 	accent = ACCENTPOLICY()
 	accent.AccentState = 3
 	gradientColor = 0
-		
 	if Acrylic:
 		accent.AccentState = AccentState
 		if hexColor == False:
 			accent.AccentFlags = 2
 			gradientColor = HEXtoRGBAint('#91203801')
-	
 			accent.GradientColor = gradientColor
 
 	data = WINDOWCOMPOSITIONATTRIBDATA()
@@ -75,7 +72,7 @@ def isDark():
         return theme() == 'Dark'
 
 class Tk(Tk):
-	def __init__(self):
+	def __init__(self,):
 		super().__init__()
 		path = getcwd()
 		path += "\\assets\\"
@@ -201,6 +198,25 @@ class Tk(Tk):
 		self.geometry("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
 		self.after(1000, self.check) # low cpu use
+	
+	def disabledo(self):
+		pass
+	
+	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
+		if not minshow:
+			self._titlemin.pack_forget()
+		if not minsize:
+			self.min_on_enter(None)
+			self._titlemin["command"] = self.disabledo
+			self._titlemin.unbind("<Leave>")
+			self._titlemin.unbind("<Enter>")
+		if not maxshow:
+			self._titlemax.pack_forget()
+		if not maxsize:
+			self.max_on_enter(None)
+			self._titlemax["command"] = self.disabledo
+			self._titlemax.unbind("<Leave>")
+			self._titlemax.unbind("<Enter>")
 		
 	def addblur(self):
 		if self.theme == "dark":
@@ -317,7 +333,7 @@ class Tk(Tk):
 			self._titlemax["image"] = self._t2_hov_img
 		else:
 			self._titlemax["image"] = self._t3_hov_img
-	
+
 	def title(self, text):
 		self._titletext["text"] = text
 	
@@ -336,4 +352,5 @@ class Tk(Tk):
 
 if __name__ == "__main__":
 	example = Tk()
+	example.usemaxmin(True, False, True, False)
 	example.mainloop()
