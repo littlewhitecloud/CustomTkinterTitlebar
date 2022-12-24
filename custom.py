@@ -1,10 +1,9 @@
+import ctypes
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
-from ctypes.wintypes import  DWORD, BOOL, HRGN, HWND
-#from windowblur import blur
+from ctypes.wintypes import DWORD, BOOL, HRGN, HWND
 from PIL import Image, ImageTk
 from os import getcwd
-import ctypes
 
 user32 = ctypes.windll.user32
 dwm = ctypes.windll.dwmapi
@@ -22,22 +21,6 @@ class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
 		("Data", ctypes.POINTER(ctypes.c_int)),
 		("SizeOfData", ctypes.c_size_t)
 	]
-
-class DWM_BLURBEHIND(ctypes.Structure):
-	_fields_ = [
-		('dwFlags', DWORD), 
-		('fEnable', BOOL),  
-		('hRgnBlur', HRGN), 
-		('fTransitionOnMaximized', BOOL) 
-	]
-
-class MARGINS(ctypes.Structure):
-	_fields_ = [("cxLeftWidth", ctypes.c_int),
-				("cxRightWidth", ctypes.c_int),
-				("cyTopHeight", ctypes.c_int),
-				("cyBottomHeight", ctypes.c_int)
-				]
-
 SetWindowCompositionAttribute = user32.SetWindowCompositionAttribute
 SetWindowCompositionAttribute.argtypes = (HWND, WINDOWCOMPOSITIONATTRIBDATA)
 SetWindowCompositionAttribute.restype = ctypes.c_int
@@ -91,33 +74,28 @@ class Tk(Tk):
 		super().__init__()
 		path = getcwd()
 		path += "\\assets\\"
-		# resources
+
 		self._t0_load = Image.open(path + '\\close_50.png')
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
-
 		self._t0_hov_load = Image.open(path + '\\close_100.png')
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
 
 		self._t1_load = Image.open(path + '\\minisize_50.png')
 		self._t1_img = ImageTk.PhotoImage(self._t1_load)
-
 		self._t1_hov_load = Image.open(path + '\\minisize_100.png')
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
 
 		self._t2_load = Image.open(path + '\\fullwin_50.png')
 		self._t2_img = ImageTk.PhotoImage(self._t2_load)
-
 		self._t2_hov_load = Image.open(path + '\\fullwin_100.png')
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
 
 		self._t3_load = Image.open(path + '\\togglefull_50.png')
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
-
 		self._t3_hov_load = Image.open(path + '\\togglefull_100.png')
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 				
-		# flags
-		self.w, self.h = 0, 0
+		self.w, self.h = 265, 320
 		self.o_flag = False
 		self.o_m = False
 		self.o_f = False
@@ -147,8 +125,7 @@ class Tk(Tk):
 		
 		if self.theme == "dark":
 			self["background"] = self.colors["dark_bg"]
-		
-		# tools
+
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "还原", command = self.resizeback)
 		self.popup.entryconfig("还原", state="disabled")
@@ -165,7 +142,6 @@ class Tk(Tk):
 		self._titleexit = Button(self.titlebar, bg = self.bg)
 		
 		self._titleexit.config(bd = 0,
-			#bg = colors["exit_fg"],
 			activeforeground = self.colors["exit_fg"],
 			activebackground = self.colors["exit_bg"],
 			width = 44,
@@ -174,7 +150,6 @@ class Tk(Tk):
 			command = self.quit
 		)
 		self._titlemin.config(bd = 0,
-			#bg = colors["exit_fg"],
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
 			width = 44,
@@ -183,7 +158,6 @@ class Tk(Tk):
 			command = self.minsize
 		)
 		self._titlemax.config(bd = 0,
-			#bg = colors["exit_fg"],
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
 			width = 44,
@@ -202,7 +176,6 @@ class Tk(Tk):
 		self.titlebar.pack(fill = X, side = TOP)
 		
 		# binds & after
-		#set_appwindow(self)
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
 		self.bind("<F11>", self.maxsize)
@@ -219,22 +192,10 @@ class Tk(Tk):
 		self.titlebar.bind("<ButtonRelease-1>", self.stopping)
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
-
-		# Keep checking window
-		self.after(100, self.check)
-	
-	def changetheme(self):
-		if self.theme == "dark":
-			self.theme = "light"
-			self.bg = self.colors["light"]
-			self.nf = self.colors["light_nf"]
-			self.fg = "dark"
-		else:
-			self.theme = "dark"
-			self.bg = self.colors["dark"]
-			self.nf = self.colors["dark_nf"]
-			self.fg = "light"
-	
+		
+		self.geometry("%sx%s" % (self.w, self.h))
+		self.after(1000, self.check) # low cpu use
+		
 	def addblur(self):
 		if self.theme == "dark":
 			hwnd = ctypes.windll.user32.GetForegroundWindow()
@@ -255,10 +216,10 @@ class Tk(Tk):
 
 	def moving(self, event):
 		global x, y
-		self.config(cursor = "arrow")
-		if self.o_m == True:
+		if self.o_m:
 			self.resizeback()
 		else:
+			self.config(cursor = "arrow")
 			deltax = event.x - x
 			deltay = event.y - y
 			self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
@@ -285,7 +246,6 @@ class Tk(Tk):
 			self._titleexit["bg"] = self.bg
 
 	def resizeback(self):
-		#self.state("normal")
 		self.popup.entryconfig("还原", state = "disabled")
 		self.popup.entryconfig("最大化", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
@@ -294,7 +254,7 @@ class Tk(Tk):
 		self.o_m = False
 	
 	def maxsize(self, event = None):
-		self.config(cursor = "arrow") # For Double-click got fleur
+		self.config(cursor = "arrow")
 		if event and self.o_m == True:
 			self.resizeback()
 		else:
@@ -306,7 +266,6 @@ class Tk(Tk):
 			self._titlemax["command"] = self.resizeback
 			w, h = self.wm_maxsize()
 			self.geometry("%dx%d+0+0" % (w, h - 40))
-			#self.state("zoomed")
 	
 	def minsize(self):
 		self.overrideredirect(False)
@@ -353,7 +312,6 @@ class Tk(Tk):
 		else:
 			self._titlemax["image"] = self._t3_hov_img
 	
-	# Rewrite
 	def title(self, text):
 		self._titletext["text"] = text
 	
