@@ -1,13 +1,13 @@
 # 📜 _自定义标题栏 CustomTkinterTitlebar_
-### 😉 感谢每个看我的项目的人！Thank for everyone who check out this project! 
-#### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, it may has many bugs!
+### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project! 
+#### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
-### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)*
-#### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project): _ https://www.bilibili.com/read/cv20558473
+### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Widgets can add into titlebar!)*
+#### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 > 文章其实在下面（有删改）
 
-### 预览 (view) : 
+### 预览 (View) : 
 https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-b509-bbb89b4889ab.mp4
 #### 模糊 (Blur):
 ![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
@@ -20,7 +20,7 @@ https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-
 #### 未聚焦 (Focus out) :
 ![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
 
-### 📦 需求 (require):
+### 📦 需求 (Require):
 > - _Windows 10_
 > - _Python >= 3.8.0_
 > - _Pillow >= 9.0.0_
@@ -29,7 +29,7 @@ python -m pip install --upgrade pip
 pip install pillow --user
 ```
 
-### 📖 用法 (usage):
+### 📖 用法 (Usage):
 ```
 from customtkintertitlebar import Tk
 from tkinter import ttk
@@ -41,15 +41,15 @@ en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
 example.mainloop()
 ```
 
-### 🐞 问题 (bug):
+### 🐞 问题 (Bug):
 #### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
-> I can not fix when I import custom.py out of the project path, it will say image not found (image path error)
+> I can't fix the image not found error that occurs when importing custom.py from outside (wrong picture path)
 
-### ✨ 未来添加 (features):
+### ✨ 未来添加 (Future additions):
 > - [ ] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
 > - [ ] _调整窗口大小 Resize the window_
 
-### 💾 支持 (support):
+### 💾 支持 (Support):
 #### 💻 它现在支持Windows 10 
 > **可能也支持Windows 11, 我用的是Windows 10, 未测试过**
 #### It support Windows 10 now. 
