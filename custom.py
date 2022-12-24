@@ -327,3 +327,7 @@ class Tk(Tk):
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
+
+if __name__ == "__main__":
+	example = Tk()
+	example.mainloop()
