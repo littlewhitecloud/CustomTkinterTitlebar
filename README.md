@@ -3,7 +3,7 @@
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)*
-#### _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ：_ https://www.bilibili.com/read/cv20558473
+#### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ：_ https://www.bilibili.com/read/cv20558473
 > 文章其实在下面（有删改）
 
 ### 预览 (view) : 
@@ -19,7 +19,7 @@ https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-
 #### 未聚焦 (Focus out) :
 ![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
 
-### 需求 (require):
+### 📦 需求 (require):
 > - _Windows 10_
 > - _Python >= 3.8.0_
 > - _Pillow > 9.0.0_
@@ -28,7 +28,7 @@ python -m pip install --upgrade pip
 pip install pillow --user
 ```
 
-### 用法 (usage):
+### 📖 用法 (usage):
 ```
 from customtkintertitlebar import Tk
 from tkinter import ttk
@@ -40,15 +40,15 @@ en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
 example.mainloop()
 ```
 
-### 问题 (bug):
+### 🐞 问题 (bug):
 #### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
 > I can not fix when I import custom.py out of the project path, it will say image not found (image path error)
 
-### 未来添加 (features):
+### ✨ 未来添加 (features):
 > - [ ] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
 > - [ ] _调整窗口大小 Resize the window_
 
-### 支持 (support):
+### 💾 支持 (support):
 #### 💻 它现在支持Windows 10 
 > **可能也支持Windows 11, 我用的是Windows 10, 未测试过**
 #### It support Windows 10 now. 
