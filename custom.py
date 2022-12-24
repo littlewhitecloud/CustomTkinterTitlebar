@@ -194,6 +194,7 @@ class Tk(Tk):
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
 		
 		self.geometry("%sx%s" % (self.w, self.h))
+		self.iconbitmap(path + "tk.ico")
 		self.after(1000, self.check) # low cpu use
 		
 	def addblur(self):
