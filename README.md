@@ -4,7 +4,7 @@
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Component can add into titlebar!)*
-#### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project) ：_ https://www.bilibili.com/read/cv20558473
+#### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project): _ https://www.bilibili.com/read/cv20558473
 > 文章其实在下面（有删改）
 
 ### 预览 (view) : 
@@ -23,7 +23,7 @@ https://user-images.githubusercontent.com/71159641/208288057-d02429cb-6fd3-4524-
 ### 📦 需求 (require):
 > - _Windows 10_
 > - _Python >= 3.8.0_
-> - _Pillow > 9.0.0_
+> - _Pillow >= 9.0.0_
 ```
 python -m pip install --upgrade pip
 pip install pillow --user
@@ -419,3 +419,4 @@ class Tk(Tk):
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
 ```
+### 感谢看完这篇文档
