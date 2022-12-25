@@ -48,7 +48,7 @@ example.mainloop()
 > - [ ] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
 > - [ ] _调整窗口大小 Resize the window_
 
-### 🧊 (Update):
+### 🧊 更新(Update):
 UPDATE.md
 
 ### 💾 支持 (Support):
