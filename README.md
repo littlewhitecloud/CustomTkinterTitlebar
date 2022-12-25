@@ -8,6 +8,11 @@
 > 文章其实在下面（有删改）
 ### 预览 (View) : 
 https://user-images.githubusercontent.com/71159641/209435938-fb962481-f655-4b6a-97ed-faa295eabcd9.mp4
+#### 自定义最大化最小化（Custom minsize & maxsize）：
+![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
+![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
+![image](https://user-images.githubusercontent.com/71159641/209454985-7d725083-dbcb-4856-88e4-200a34111938.png)
+![image](https://user-images.githubusercontent.com/71159641/209455001-f48c076a-cac0-4310-975e-0fb64855f4cd.png)
 #### 模糊 (Blur):
 ![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
 #### 亚克力 (Fluent) :
