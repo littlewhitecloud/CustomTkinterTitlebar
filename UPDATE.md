@@ -14,3 +14,5 @@ example = Tk()
 example.usemaxmin(False, False, False, False) # only show close button
 example.mainloop()
 ```
+>>> - There is a special, weird and unexplainable thing~ (Almost like a egg hunt)！
+>>>> - When you minsize, there will show an animation like maxsize!
