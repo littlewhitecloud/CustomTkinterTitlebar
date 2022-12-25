@@ -49,7 +49,7 @@ example.mainloop()
 > - [ ] _调整窗口大小 Resize the window_
 
 ### 🧊 更新(Update):
-UPDATE.md
+[UPDATE.md](https://github.com/littlewhitecloud/CustomTkinterTitlebar/blob/main/UPDATE.md)
 
 ### 💾 支持 (Support):
 #### 💻 它现在支持Windows 10 
