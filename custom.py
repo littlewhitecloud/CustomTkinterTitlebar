@@ -78,39 +78,37 @@ class Tk(Tk):
 		path += "\\assets\\"
 
 		self._t0_load = Image.open(path + '\\close_50.png')
-		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 		self._t0_hov_load = Image.open(path + '\\close_100.png')
+		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
-
 		self._t1_load = Image.open(path + '\\minisize_50.png')
-		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 		self._t1_hov_load = Image.open(path + '\\minisize_100.png')
+		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
-
 		self._t2_load = Image.open(path + '\\fullwin_50.png')
-		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 		self._t2_hov_load = Image.open(path + '\\fullwin_100.png')
+		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
-
 		self._t3_load = Image.open(path + '\\togglefull_50.png')
-		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_load = Image.open(path + '\\togglefull_100.png')
+		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 				
-		self.w, self.h = 265, 320
+		self.w, self.h = 265, 320 # orginial window size
 		self.o_flag = False
 		self.o_m = False
 		self.o_f = False
 		self.colors = {
 			"Light": "#ffffff",
 			"Dark": "#2b2b2b",
-			"button_activebg": '#262626',
-			"button_activefg": '#262626',
+			"button_activebg": "#e5e5e5",
+			"button_activefg": "#e5e5e5",
+			"lightexit_bg": "#f1707a",
+			"darkexit_bg": "#8b0a14",
 			"exit_fg": "#e81123",
-			"exit_bg": "#e81123",
 			"dark": "#000000",
 			"dark_nf": "#2b2b2b",
-			"light": "#f2efef",
+			"light": "#ffffff",
 			"light_nf": "#f2efef",
 			"dark_bg": "#202020"
 		}
@@ -118,25 +116,22 @@ class Tk(Tk):
 		self.bg = self.colors["light"]
 		self.nf = self.colors["light_nf"]
 		self.fg = "dark"
-		
 		if isDark():
 			self.theme = "dark"
 			self.bg = self.colors["dark"]
 			self.nf = self.colors["dark_nf"]
 			self.fg = "light"
-		
-		if self.theme == "dark":
 			self["background"] = self.colors["dark_bg"]
 
 		self.popup = Menu(self, tearoff = 0)
-		self.popup.add_command(label = "还原", command = self.resizeback)
+		self.popup.add_command(label = "还原", command = self.resize)
 		self.popup.entryconfig("还原", state="disabled")
 		self.popup.add_command(label = "最小化", command = self.minsize)
 		self.popup.add_command(label = "最大化", command = self.maxsize)
 		self.popup.add_separator()
 		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
 		
-		self.titlebar = Frame(self, bg = self.bg, bd = 0)
+		self.titlebar = Frame(self, bg = self.bg)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
@@ -145,7 +140,7 @@ class Tk(Tk):
 		
 		self._titleexit.config(bd = 0,
 			activeforeground = self.colors["exit_fg"],
-			activebackground = self.colors["exit_bg"],
+			activebackground = self.colors["%sexit_bg" % self.theme],
 			width = 44,
 			image = self._t0_hov_img,
 			relief = 'flat',
@@ -197,7 +192,7 @@ class Tk(Tk):
 		
 		self.geometry("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
-		self.after(1000, self.check) # low cpu use
+		self.after(100, self.check)
 	
 	def disabledo(self):
 		pass
@@ -217,7 +212,7 @@ class Tk(Tk):
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
 			self._titlemax.unbind("<Enter>")
-		
+
 	def addblur(self):
 		if self.theme == "dark":
 			hwnd = ctypes.windll.user32.GetForegroundWindow()
@@ -228,7 +223,6 @@ class Tk(Tk):
 	
 	def dragging(self, event):
 		global x, y
-		self.config(cursor = "fleur")
 		x = event.x
 		y = event.y
 
@@ -238,14 +232,12 @@ class Tk(Tk):
 
 	def moving(self, event):
 		global x, y
-		if self.o_m:
-			self.resizeback()
-		else:
-			self.config(cursor = "arrow")
+		if not self.o_m:
 			deltax = event.x - x
 			deltay = event.y - y
 			self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
-			self.update()
+		else:
+			self.resize()
 			
 	def focusout(self, event):
 		if self.theme != "light":
@@ -267,7 +259,7 @@ class Tk(Tk):
 			self._titlemax["bg"] = self.bg
 			self._titleexit["bg"] = self.bg
 
-	def resizeback(self):
+	def resize(self):
 		self.popup.entryconfig("还原", state = "disabled")
 		self.popup.entryconfig("最大化", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
@@ -276,16 +268,15 @@ class Tk(Tk):
 		self.o_m = False
 	
 	def maxsize(self, event = None):
-		self.config(cursor = "arrow")
 		if event and self.o_m == True:
-			self.resizeback()
+			self.resize()
 		else:
 			self.popup.entryconfig("还原", state = "active")
 			self.popup.entryconfig("最大化", state = "disabled")
 			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
 			self.o_m = True
 			self._titlemax["image"] = self._t3_hov_img
-			self._titlemax["command"] = self.resizeback
+			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
 			self.geometry("%dx%d+0+0" % (w, h - 40))
 	
@@ -300,7 +291,7 @@ class Tk(Tk):
 			self.o_flag = True
 			self.addblur()
 			
-		self.after(1200, self.check) # low cpu use
+		self.after(100, self.check) # low cpu use
 	
 	def exit_on_enter(self, event):
 		if not self.o_f:
@@ -335,7 +326,7 @@ class Tk(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 
 	def title(self, text):
-		self._titletext["text"] = text
+		self._titletext["text"] = text[:15] + "..."
 	
 	def iconbitmap(self, photo):
 		self._icon = Image.open(photo)
@@ -352,5 +343,5 @@ class Tk(Tk):
 
 if __name__ == "__main__":
 	example = Tk()
-	example.usemaxmin(True, False, True, False)
+	#example.usemaxmin(True, False, True, False)
 	example.mainloop()
