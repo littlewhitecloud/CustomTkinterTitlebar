@@ -1,4 +1,4 @@
-# 📜 _自定义标题栏 CustomTkinterTitlebar_
+# 📜 _自定义标题栏 CustomTkinterTitlebar_ <img src="https://img.shields.io/badge/Python-3.11.1-blue.svg?color=#0c63ba" alt="Python 3.11.1"/>
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 #### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
 ### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project!
