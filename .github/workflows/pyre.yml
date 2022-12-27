@@ -43,4 +43,3 @@ jobs:
           # To customize these inputs:
           # See https://github.com/facebook/pyre-action#inputs
           repo-directory: './'
-          requirements-path: 'requirements.txt'
