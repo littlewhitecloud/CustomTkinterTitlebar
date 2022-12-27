@@ -195,9 +195,18 @@ class CTT(Tk):
 		self.wm_iconbitmap(path + "tk.ico")
 		self.wm_title("titlebar")
 		self.check()
-		hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
-		ctypes.windll.user32.SetWindowLongA(hwnd, -16, 0x10000000 + 0x2000000 + 0x4000000 + 0x40000)
 
+		GWL_EXSTYLE = -20
+		WS_EX_APPWINDOW = 0x00040000
+		WS_EX_TOOLWINDOW = 0x00000080
+		hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
+		stylew = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+		stylew = stylew & ~WS_EX_TOOLWINDOW
+		stylew = stylew | WS_EX_APPWINDOW
+		res = ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+		self.withdraw()
+		self.deiconify()
+	
 	def disabledo(self):
 		"For disable button get event's commmand"
 		pass
@@ -287,6 +296,7 @@ class CTT(Tk):
 		"Resize window"
 		self.popup.entryconfig("还原", state = "disabled")
 		self.popup.entryconfig("最大化", state = "active")
+		print(self.w, self.h)
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
 		self._titlemax["image"] = self._t2_hov_img
@@ -304,20 +314,27 @@ class CTT(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
-			self.geometry("%dx%d+0+0" % (w, h - 40))
-
+			self.geometry("%dx%d+0+0" % (w - 20, h - 40))
+	
+	def deminsize(self, event):
+		"Deminsize window"
+		self.focus()
+		self.attributes("-alpha", 1)
+		if not self.o_flag:
+			self.o_flag = True  
+	
 	def minsize(self):
 		"Minsize window"
-		self.overrideredirect(False)
+		self.attributes("-alpha", 0)
 		self.o_flag = False
-		self.state("iconic")
-
+		self.bind("<FocusIn>", self.deminsize)
+		
 	def check(self):
 		"Check window's state"
 		if self.state() != "iconic" and not self.o_flag:
 			self.overrideredirect(True)
 			self.o_flag = True
-			self.addblur()
+			#self.addblur()
 
 		self.after(100, self.check) # low cpu use
 
@@ -383,4 +400,6 @@ class CTT(Tk):
 
 if __name__ == "__main__":
 	example = CTT()
+	example.geometry("690x380")
 	example.mainloop()
+
