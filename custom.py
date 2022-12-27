@@ -10,8 +10,6 @@ except:
 	system(".\package.bat")
 	from PIL import Image, ImageTk
 
-user32 = ctypes.windll.user32
-dwm = ctypes.windll.dwmapi
 class ACCENTPOLICY(ctypes.Structure):
 	_fields_ = [
 		("AccentState", ctypes.c_uint),
@@ -26,11 +24,12 @@ class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
 		("Data", ctypes.POINTER(ctypes.c_int)),
 		("SizeOfData", ctypes.c_size_t)
 	]
-SetWindowCompositionAttribute = user32.SetWindowCompositionAttribute
+
+SetWindowCompositionAttribute = ctypes.windll.user32.SetWindowCompositionAttribute
 SetWindowCompositionAttribute.argtypes = (HWND, WINDOWCOMPOSITIONATTRIBDATA)
 SetWindowCompositionAttribute.restype = ctypes.c_int
 
-def HEXtoRGBAint(HEX):
+def hextorgbaint(HEX):
     alpha = HEX[7:]
     blue = HEX[5:7]
     green = HEX[3:5]
@@ -46,7 +45,7 @@ def blur(hwnd, hexColor = False, Acrylic = False, Dark = False, AccentState = 3)
 		accent.AccentState = AccentState
 		if hexColor == False:
 			accent.AccentFlags = 2
-			gradientColor = HEXtoRGBAint('#91203801')
+			gradientColor = hextorgbaint('#91203801')
 			accent.GradientColor = gradientColor
 
 	data = WINDOWCOMPOSITIONATTRIBDATA()
@@ -359,7 +358,3 @@ class Tk(Tk):
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
-
-if __name__ == "__main__":
-	a = Tk()
-	a.mainloop()
