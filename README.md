@@ -5,14 +5,17 @@
 ###### *更希望给我颗星~* *Hope got some stars~*
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Widgets can add into titlebar!)*
 #### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
-> 文章其实在下面（有删改）
+> 文章其实在下面 (有删改)
 ### 预览 (View) : 
 https://user-images.githubusercontent.com/71159641/209435938-fb962481-f655-4b6a-97ed-faa295eabcd9.mp4
-#### 自定义最大化最小化（Custom minsize & maxsize）：
+#### 自定义最大化最小化以及图标和名称 (Custom minsize & maxsize and icon & windowtext)：
 ![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
 ![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
 ![image](https://user-images.githubusercontent.com/71159641/209454985-7d725083-dbcb-4856-88e4-200a34111938.png)
 ![image](https://user-images.githubusercontent.com/71159641/209455001-f48c076a-cac0-4310-975e-0fb64855f4cd.png)
+![image](https://user-images.githubusercontent.com/71159641/209605823-2edae7b8-5bf1-45e5-9980-e26d118a8a53.png)
+![image](https://user-images.githubusercontent.com/71159641/209605828-03f58b2d-98d6-45a0-9e05-95d83b13a91b.png)
+![image](https://user-images.githubusercontent.com/71159641/209605777-f5d9380a-a412-4ab8-9c21-a30bb35d2d4a.png)
 #### 模糊 (Blur):
 ![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
 #### 亚克力 (Fluent) :
