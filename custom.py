@@ -3,11 +3,10 @@ from winreg import HKEY_CURRENT_USER as hkey
 from winreg import QueryValueEx as getSubkeyValue
 from winreg import OpenKey as getKey
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
-from ctypes.wintypes import DWORD, BOOL, HRGN, HWND
 from os import getcwd
 try:
 	from PIL import Image, ImageTk
-except:
+except ImportError:
 	from os import system
 	system(".\package.bat")
 	from PIL import Image, ImageTk
@@ -27,21 +26,23 @@ class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
 		("SizeOfData", ctypes.c_size_t)
 	]
 
-def hextorgbaint(HEX):
-	alpha = HEX[7:]
-	blue = HEX[5:7]
-	green = HEX[3:5]
-	red = HEX[1:3]
-	gradientColor = alpha + blue + green + red
-	return int(gradientColor, base = 16)
+def hextorgbaint(hex_):
+	"Hex to rgb"
+	alpha = hex_[7:]
+	blue = hex_[5:7]
+	green = hex_[3:5]
+	red = hex_[1:3]
+	gradientcolor = alpha + blue + green + red
+	return int(gradientcolor, base = 16)
 
-def blur(hwnd, hexcolor = False, Acrylic = False, Dark = False, AccentState = 3):
+def blur(hwnd, hexcolor = False, acrylic = False, dark = False, accentstate = 3):
+	"Add blur effect"
 	accent = ACCENTPOLICY()
 	accent.AccentState = 3
 	gradientcolor = 0
-	if Acrylic:
-		accent.AccentState = AccentState
-		if hexcolor == False:
+	if acrylic:
+		accent.AccentState = accentstate
+		if not hexcolor:
 			accent.AccentFlags = 2
 			gradientcolor = hextorgbaint('#91203801')
 			accent.Gradientcolor = gradientcolor
@@ -50,25 +51,28 @@ def blur(hwnd, hexcolor = False, Acrylic = False, Dark = False, AccentState = 3)
 	data.SizeOfData = ctypes.sizeof(accent)
 	data.Data = ctypes.cast(ctypes.pointer(accent), ctypes.POINTER(ctypes.c_int))
 	ctypes.windll.user32.SetWindowCompositionAttribute(int(hwnd), data)
-	if Dark:
+	if dark:
 		data.Attribute = 26
 		ctypes.windll.user32.SetWindowCompositionAttribute(int(hwnd), data)
-        
+
 def theme():
-    valueMeaning = {0: "Dark", 1: "Light"}
-    try:
-        key = getKey(hkey, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize")
-        subkey = getSubkeyValue(key, "AppsUseLightTheme")[0]
-    except FileNotFoundError:
-        return None
-    return valueMeaning[subkey]
+	"Get current theme"
+	valueMeaning = {0: "Dark", 1: "Light"}
+	try:
+		key = getKey(hkey, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize")
+		subkey = getSubkeyValue(key, "AppsUseLightTheme")[0]
+	except FileNotFoundError:
+		return None
+	return valueMeaning[subkey]
 
 def isDark():
-    if theme() is not None:
-        return theme() == 'Dark'
+	"Check if theme is dark"
+	if theme() is not None:
+		return theme() == "Dark"
 
-class Tk(Tk):
-	def __init__(self,):
+class CTT(Tk):
+	"Custom Tkinter Titlrbar"
+	def __init__(self):
 		super().__init__()
 		path = getcwd()
 		path += "\\assets\\"
@@ -191,26 +195,25 @@ class Tk(Tk):
 		self.wm_iconbitmap(path + "tk.ico")
 		self.wm_title("titlebar")
 		self.check()
-		GWL_STYLE = -16
-		WS_VISIBLE = 0x10000000
-		WS_THICKFRAME = 0x40000
-		WS_CLIPSIBLINGS = 0x4000000
-		WS_CLIPCHILDREN = 0x2000000
 		hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
-		ctypes.windll.user32.SetWindowLongA(hwnd, GWL_STYLE, WS_VISIBLE + WS_CLIPCHILDREN + WS_CLIPSIBLINGS + WS_THICKFRAME)
+		ctypes.windll.user32.SetWindowLongA(hwnd, -16, 0x10000000 + 0x2000000 + 0x4000000 + 0x40000)
 
 	def disabledo(self):
+		"For disable button get event's commmand"
 		pass
 
 	def useicon(self, flag = True):
+		"Show icon"
 		if not flag:
 			self._titleicon.pack_forget()
 
 	def usetitle(self, flag = True):
+		"Show title text"
 		if not flag:
 			self._titletext.pack_forget()
 
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
+		"Show / Disable min or max button"
 		if not minshow:
 			self._titlemin.pack_forget()
 		if not minsize:
@@ -227,23 +230,29 @@ class Tk(Tk):
 			self._titlemax.unbind("<Enter>")
 
 	def addblur(self):
+		"Add blur effect to window"
 		if self.theme == "dark":
 			hwnd = ctypes.windll.user32.GetForegroundWindow()
-			blur(hwnd = hwnd, Dark = True, Acrylic = True, AccentState = 3)
+			blur(hwnd = hwnd, dark = True, acrylic = True, accentstate = 3)
 
 	def popupmenu(self, event):
+		"Popup menu"
 		self.popup.post(event.x_root, event.y_root)
 
 	def dragging(self, event):
+		"Start drag window"
 		global x, y
 		x = event.x
 		y = event.y
 
 	def stopping(self, event):
+		"Window stop"
+		global x, y
 		x = None
 		y = None
 
 	def moving(self, event):
+		"Window moving"
 		global x, y
 		if not self.o_m:
 			deltax = event.x - x
@@ -253,6 +262,7 @@ class Tk(Tk):
 			self.resize()
 
 	def focusout(self, event):
+		"When focusout"
 		if self.theme != "light":
 			self.o_f = True
 			self.titlebar["bg"] = self.nf
@@ -263,6 +273,7 @@ class Tk(Tk):
 			self._titleexit["bg"] = self.nf
 
 	def focusin(self, event):
+		"When focusin"
 		if self.theme != "light":
 			self.o_f = False
 			self.titlebar["bg"] = self.bg
@@ -273,6 +284,7 @@ class Tk(Tk):
 			self._titleexit["bg"] = self.bg
 
 	def resize(self):
+		"Resize window"
 		self.popup.entryconfig("还原", state = "disabled")
 		self.popup.entryconfig("最大化", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
@@ -281,7 +293,8 @@ class Tk(Tk):
 		self.o_m = False
 
 	def maxsize(self, event = None):
-		if event and self.o_m == True:
+		"Maxsize Window"
+		if event and self.o_m:
 			self.resize()
 		else:
 			self.popup.entryconfig("还原", state = "active")
@@ -294,12 +307,14 @@ class Tk(Tk):
 			self.geometry("%dx%d+0+0" % (w, h - 40))
 
 	def minsize(self):
+		"Minsize window"
 		self.overrideredirect(False)
 		self.o_flag = False
 		self.state("iconic")
 
 	def check(self):
-		if self.state() != "iconic" and self.o_flag == False:
+		"Check window's state"
+		if self.state() != "iconic" and not self.o_flag:
 			self.overrideredirect(True)
 			self.o_flag = True
 			self.addblur()
@@ -307,6 +322,7 @@ class Tk(Tk):
 		self.after(100, self.check) # low cpu use
 
 	def exit_on_enter(self, event):
+		"..."
 		if not self.o_f:
 			self._titleexit["background"] = self.colors["exit_fg"]
 			self._titleexit["image"] = self._t0_img
@@ -314,6 +330,7 @@ class Tk(Tk):
 			pass
 
 	def exit_on_leave(self, event):
+		"..."
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
 			self._titleexit["image"] = self._t0_hov_img
@@ -321,38 +338,49 @@ class Tk(Tk):
 			pass
 
 	def min_on_enter(self, event):
+		"..."
 		self._titlemin["image"] = self._t1_img
 
 	def min_on_leave(self, event):
+		"..."
 		self._titlemin["image"] = self._t1_hov_img
 
 	def max_on_enter(self, event):
+		"..."
 		if not self.o_m:
 			self._titlemax["image"] = self._t2_img
 		else:
 			self._titlemax["image"] = self._t3_img
 
 	def max_on_leave(self, event):
+		"..."
 		if not self.o_m:
 			self._titlemax["image"] = self._t2_hov_img
 		else:
 			self._titlemax["image"] = self._t3_hov_img
 
 	def title(self, text):
+		"Rebuild tkinter's title"
 		if len(text) > 15:
 			self._titletext["text"] = text[:15] + "..."
 		else:
 			self._titletext["text"] = text
 
-	def iconbitmap(self, photo):
-		self._icon = Image.open(photo)
+	def iconbitmap(self, image):
+		"Rebuild tkinter's iconbitmap"
+		self._icon = Image.open(image)
 		self._icon = self._icon.resize((16, 16))
 		self._img = ImageTk.PhotoImage(self._icon)
 		self._titleicon["image"] = self. _img
 
 	def geometry(self, size):
+		"Rebuild tkinter's geometry"
 		if self.w and self.h:
 			pass
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
+
+if __name__ == "__main__":
+	example = CTT()
+	example.mainloop()
