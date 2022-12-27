@@ -95,7 +95,6 @@ class CTT(Tk):
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 
 		self.w, self.h = 265, 320 # orginial window size
-		self.o_flag = False
 		self.o_m = False
 		self.o_f = False
 		self.colors = {
@@ -190,11 +189,9 @@ class CTT(Tk):
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
 
+		self.overrideredirect(True)
 		self.geometry("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
-		self.wm_iconbitmap(path + "tk.ico")
-		self.wm_title("titlebar")
-		self.check()
 
 		GWL_EXSTYLE = -20
 		WS_EX_APPWINDOW = 0x00040000
@@ -204,8 +201,7 @@ class CTT(Tk):
 		stylew = stylew & ~WS_EX_TOOLWINDOW
 		stylew = stylew | WS_EX_APPWINDOW
 		res = ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
-		self.withdraw()
-		self.deiconify()
+		self.update()
 	
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -314,29 +310,17 @@ class CTT(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
-			self.geometry("%dx%d+0+0" % (w - 20, h - 40))
+			self.geometry("%dx%d+0+0" % (w, h - 40))
 	
 	def deminsize(self, event):
 		"Deminsize window"
 		self.focus()
 		self.attributes("-alpha", 1)
-		if not self.o_flag:
-			self.o_flag = True  
 	
 	def minsize(self):
 		"Minsize window"
 		self.attributes("-alpha", 0)
-		self.o_flag = False
 		self.bind("<FocusIn>", self.deminsize)
-		
-	def check(self):
-		"Check window's state"
-		if self.state() != "iconic" and not self.o_flag:
-			self.overrideredirect(True)
-			self.o_flag = True
-			#self.addblur()
-
-		self.after(100, self.check) # low cpu use
 
 	def exit_on_enter(self, event):
 		"..."
@@ -382,6 +366,7 @@ class CTT(Tk):
 			self._titletext["text"] = text[:15] + "..."
 		else:
 			self._titletext["text"] = text
+		self.wm_title(text)
 
 	def iconbitmap(self, image):
 		"Rebuild tkinter's iconbitmap"
@@ -389,6 +374,7 @@ class CTT(Tk):
 		self._icon = self._icon.resize((16, 16))
 		self._img = ImageTk.PhotoImage(self._icon)
 		self._titleicon["image"] = self. _img
+		self.wm_iconbitmap(image)
 
 	def geometry(self, size):
 		"Rebuild tkinter's geometry"
