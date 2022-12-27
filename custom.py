@@ -131,7 +131,7 @@ class Tk(Tk):
 		self.popup.add_separator()
 		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
 		
-		self.titlebar = Frame(self, bg = self.bg)
+		self.titlebar = Frame(self, bg = self.bg, height = 30)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
@@ -141,25 +141,25 @@ class Tk(Tk):
 		self._titleexit.config(bd = 0,
 			activeforeground = self.colors["exit_fg"],
 			activebackground = self.colors["%sexit_bg" % self.theme],
-			width = 44,
+			width = 45,
 			image = self._t0_hov_img,
-			relief = 'flat',
+			relief = "flat",
 			command = self.quit
 		)
 		self._titlemin.config(bd = 0,
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
-			width = 44,
+			width = 45,
 			image = self._t1_hov_img,
-			relief = 'flat',
+			relief = "flat",
 			command = self.minsize
 		)
 		self._titlemax.config(bd = 0,
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
-			width = 44,
+			width = 45,
 			image = self._t2_hov_img,
-			relief = 'flat',
+			relief = "flat",
 			command = self.maxsize
 		)
 
@@ -171,7 +171,7 @@ class Tk(Tk):
 		self._titlemin.pack(fill = Y, side = RIGHT)
 
 		self.titlebar.pack(fill = X, side = TOP)
-		
+		self.titlebar.pack_propagate(0)
 		# binds & after
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
@@ -197,6 +197,14 @@ class Tk(Tk):
 	def disabledo(self):
 		pass
 	
+	def useicon(self, flag = True):
+		if not flag:
+			self._titleicon.pack_forget()
+	
+	def usetitle(self, flag = True):
+		if not flag:
+			self._titletext.pack_forget()
+		
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
 		if not minshow:
 			self._titlemin.pack_forget()
