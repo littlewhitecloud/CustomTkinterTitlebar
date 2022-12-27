@@ -192,7 +192,16 @@ class Tk(Tk):
 		
 		self.geometry("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
-		self.after(100, self.check)
+		self.wm_iconbitmap(path + "tk.ico")
+		self.wm_title("titlebar")
+		self.check()
+		GWL_STYLE = -16
+		WS_VISIBLE = 0x10000000
+		WS_THICKFRAME = 0x40000
+		WS_CLIPSIBLINGS = 0x4000000
+		WS_CLIPCHILDREN = 0x2000000
+		hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
+		ctypes.windll.user32.SetWindowLongA(hwnd, GWL_STYLE, WS_VISIBLE + WS_CLIPCHILDREN + WS_CLIPSIBLINGS + WS_THICKFRAME)
 	
 	def disabledo(self):
 		pass
@@ -334,8 +343,10 @@ class Tk(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 
 	def title(self, text):
-		self._titletext["text"] = text[:15] + "..."
-	
+		if len(text) > 15:
+			self._titletext["text"] = text[:15] + "..."
+		else:
+			self._titletext["text"] = text
 	def iconbitmap(self, photo):
 		self._icon = Image.open(photo)
 		self._icon = self._icon.resize((16, 16)) 
@@ -350,6 +361,5 @@ class Tk(Tk):
 		self.wm_geometry(size)
 
 if __name__ == "__main__":
-	example = Tk()
-	#example.usemaxmin(True, False, True, False)
-	example.mainloop()
+	a = Tk()
+	a.mainloop()
