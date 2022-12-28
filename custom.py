@@ -200,7 +200,8 @@ class CTT(Tk):
 		stylew = stylew & ~WS_EX_TOOLWINDOW
 		stylew = stylew | WS_EX_APPWINDOW
 		ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
-		self.update()
+		self.withdraw()
+		self.after(10, self.deiconfy)
 	
 	def disabledo(self):
 		"For disable button get event's commmand"
