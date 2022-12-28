@@ -1,14 +1,12 @@
 import ctypes
-from winreg import HKEY_CURRENT_USER as hkey
-from winreg import QueryValueEx as getSubkeyValue
-from winreg import OpenKey as getKey
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from os import getcwd
 try:
 	from PIL import Image, ImageTk
 except ImportError:
 	from os import system
-	system(".\package.bat")
+	print("echo PIL(pillow) library is not founded, use pip to install")
+	system("pip install pillow")
 	from PIL import Image, ImageTk
 
 class ACCENTPOLICY(ctypes.Structure):
@@ -18,7 +16,6 @@ class ACCENTPOLICY(ctypes.Structure):
 		("GradientColor", ctypes.c_uint),
 		("AnimationId", ctypes.c_uint)
 	]
-
 class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
 	_fields_ = [
 		("Attribute", ctypes.c_int),
@@ -57,6 +54,7 @@ def blur(hwnd, hexcolor = False, acrylic = False, dark = False, accentstate = 3)
 
 def theme():
 	"Get current theme"
+	from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
 	valueMeaning = {0: "Dark", 1: "Light"}
 	try:
 		key = getKey(hkey, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize")
@@ -95,6 +93,7 @@ class CTT(Tk):
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 
 		self.w, self.h = 265, 320 # orginial window size
+		self.size = None
 		self.o_m = False
 		self.o_f = False
 		self.colors = {
@@ -192,7 +191,7 @@ class CTT(Tk):
 		self.overrideredirect(True)
 		self.geometry("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
-
+		
 		GWL_EXSTYLE = -20
 		WS_EX_APPWINDOW = 0x00040000
 		WS_EX_TOOLWINDOW = 0x00000080
@@ -200,7 +199,7 @@ class CTT(Tk):
 		stylew = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
 		stylew = stylew & ~WS_EX_TOOLWINDOW
 		stylew = stylew | WS_EX_APPWINDOW
-		res = ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+		ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
 		self.update()
 	
 	def disabledo(self):
@@ -252,7 +251,6 @@ class CTT(Tk):
 
 	def stopping(self, event):
 		"Window stop"
-		global x, y
 		x = None
 		y = None
 
@@ -292,7 +290,6 @@ class CTT(Tk):
 		"Resize window"
 		self.popup.entryconfig("还原", state = "disabled")
 		self.popup.entryconfig("最大化", state = "active")
-		print(self.w, self.h)
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
 		self._titlemax["image"] = self._t2_hov_img
@@ -384,8 +381,12 @@ class CTT(Tk):
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
 
+	def setgeometry(self, w, h):
+		"Change the self.w and self.h forcely"
+		self.w, self.h = w, h;
+		self.geometry("%sx%s" % (self.w, self.h))
+		
 if __name__ == "__main__":
 	example = CTT()
 	example.geometry("690x380")
 	example.mainloop()
-
