@@ -4,7 +4,7 @@ try:
 	from winreg import HKEY_CURRENT_USER as hkey
 	from winreg import QueryValueEx as getSubkeyValue
 	from winreg import OpenKey as getKey
-excpet:
+except:
 	_winreg = False
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from os import getcwd
