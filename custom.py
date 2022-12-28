@@ -1,5 +1,5 @@
 import ctypes
-from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
+from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd
 try:
 	from PIL import Image, ImageTk
@@ -73,7 +73,7 @@ class CTT(Tk):
 	def __init__(self):
 		super().__init__()
 		path = getcwd()
-		path += "\\assets\\"
+		path += "\\asset\\"
 
 		self._t0_load = Image.open(path + '\\close_50.png')
 		self._t0_hov_load = Image.open(path + '\\close_100.png')
@@ -129,7 +129,7 @@ class CTT(Tk):
 		self.popup.add_separator()
 		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
 
-		self.titlebar = Frame(self, bg = self.bg, height = 30)
+		self.titlebar = Frame(self, bg = self.bg, height = 40)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
@@ -141,7 +141,7 @@ class CTT(Tk):
 			activebackground = self.colors["%sexit_bg" % self.theme],
 			width = 45,
 			image = self._t0_hov_img,
-			relief = "flat",
+			relief = FLAT,
 			command = self.quit
 		)
 		self._titlemin.config(bd = 0,
@@ -149,7 +149,7 @@ class CTT(Tk):
 			activebackground = self.bg,
 			width = 45,
 			image = self._t1_hov_img,
-			relief = "flat",
+			relief = FLAT,
 			command = self.minsize
 		)
 		self._titlemax.config(bd = 0,
@@ -157,7 +157,7 @@ class CTT(Tk):
 			activebackground = self.bg,
 			width = 45,
 			image = self._t2_hov_img,
-			relief = "flat",
+			relief = FLAT,
 			command = self.maxsize
 		)
 
