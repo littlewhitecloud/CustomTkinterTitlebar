@@ -1,7 +1,11 @@
 import ctypes
-from winreg import HKEY_CURRENT_USER as hkey
-from winreg import QueryValueEx as getSubkeyValue
-from winreg import OpenKey as getKey
+_winreg = True
+try:
+	from winreg import HKEY_CURRENT_USER as hkey
+	from winreg import QueryValueEx as getSubkeyValue
+	from winreg import OpenKey as getKey
+excpet:
+	_winreg = False
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from os import getcwd
 try:
@@ -67,8 +71,11 @@ def theme():
 
 def isDark():
 	"Check if theme is dark"
-	if theme() is not None:
-		return theme() == "Dark"
+	if _winreg:
+		if theme() is not None:
+			return theme() == "Dark"
+	else:
+		return false
 
 class CTT(Tk):
 	"Custom Tkinter Titlrbar"
