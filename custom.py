@@ -3,71 +3,14 @@ from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd
 try:
 	from PIL import Image, ImageTk
+	from darkdetect import isDark
+	from BlurWindow.blurWindow import blur
 except ImportError:
 	from os import system
-	print("echo PIL(pillow) library is not founded, use pip to install")
-	system("pip install pillow")
-	from PIL import Image, ImageTk
-
-class ACCENTPOLICY(ctypes.Structure):
-	_fields_ = [
-		("AccentState", ctypes.c_uint),
-		("AccentFlags", ctypes.c_uint),
-		("GradientColor", ctypes.c_uint),
-		("AnimationId", ctypes.c_uint)
-	]
-class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
-	_fields_ = [
-		("Attribute", ctypes.c_int),
-		("Data", ctypes.POINTER(ctypes.c_int)),
-		("SizeOfData", ctypes.c_size_t)
-	]
-
-def hextorgbaint(hex_):
-	"Hex to rgb"
-	alpha = hex_[7:]
-	blue = hex_[5:7]
-	green = hex_[3:5]
-	red = hex_[1:3]
-	gradientcolor = alpha + blue + green + red
-	return int(gradientcolor, base = 16)
-
-def blur(hwnd, hexcolor = False, acrylic = False, dark = False, accentstate = 3):
-	"Add blur effect"
-	accent = ACCENTPOLICY()
-	accent.AccentState = 3
-	gradientcolor = 0
-	if acrylic:
-		accent.AccentState = accentstate
-		if not hexcolor:
-			accent.AccentFlags = 2
-			gradientcolor = hextorgbaint('#91203801')
-			accent.Gradientcolor = gradientcolor
-	data = WINDOWCOMPOSITIONATTRIBDATA()
-	data.Attribute = 19
-	data.SizeOfData = ctypes.sizeof(accent)
-	data.Data = ctypes.cast(ctypes.pointer(accent), ctypes.POINTER(ctypes.c_int))
-	ctypes.windll.user32.SetWindowCompositionAttribute(int(hwnd), data)
-	if dark:
-		data.Attribute = 26
-		ctypes.windll.user32.SetWindowCompositionAttribute(int(hwnd), data)
-
-def theme():
-	"Get current theme"
-	from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
-	valueMeaning = {0: "Dark", 1: "Light"}
-	try:
-		key = getKey(hkey, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize")
-		subkey = getSubkeyValue(key, "AppsUseLightTheme")[0]
-	except FileNotFoundError:
-		return None
-	return valueMeaning[subkey]
-
-def isDark():
-	"Check if theme is dark"
-	if theme() is not None:
-		return theme() == "Dark"
-
+	system(".\package.bat")
+	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
+	exit(0)
+	
 class CTT(Tk):
 	"Custom Tkinter Titlrbar"
 	def __init__(self):
@@ -201,7 +144,8 @@ class CTT(Tk):
 		stylew = stylew | WS_EX_APPWINDOW
 		ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
 		self.withdraw()
-		self.after(10, self.deiconify)
+		self.deiconify()
+		#self.addblur()
 	
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -234,11 +178,11 @@ class CTT(Tk):
 			self._titlemax.unbind("<Leave>")
 			self._titlemax.unbind("<Enter>")
 
-	def addblur(self):
-		"Add blur effect to window"
+	def addblur(self, acrylic = True, dark = isDark()):
+		"Add blur / acrylic effect to window"
 		if self.theme == "dark":
 			hwnd = ctypes.windll.user32.GetForegroundWindow()
-			blur(hwnd = hwnd, dark = True, acrylic = True, accentstate = 3)
+			blur(hwnd = hwnd, hexColor = '#91203801',Dark = dark, Acrylic = acrylic)
 
 	def popupmenu(self, event):
 		"Popup menu"
