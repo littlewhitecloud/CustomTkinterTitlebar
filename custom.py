@@ -1,12 +1,11 @@
 from ctypes import windll
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
-from os import getcwd
+from os import getcwd, system
 try:
 	from PIL import Image, ImageTk
 	from darkdetect import isDark
 	from BlurWindow.blurWindow import blur
 except ImportError:
-	from os import system
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
@@ -144,10 +143,12 @@ class CTT(Tk):
 		
 		self.sg("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
-		self.title("tk")
-		app_window(self)
+		self.title("CTT")
+		app_window(self) # Will be replaced
+		self.overrideredirect(True)
 		self.focus_force()
-		#self.addblur()
+		self.addblur()
+		#os.system("thickframe.exe") Still in progress
 	
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -331,5 +332,4 @@ class CTT(Tk):
 		
 if __name__ == "__main__":
 	example = CTT()
-	example.geometry(690, 380)
 	example.mainloop()
