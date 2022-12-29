@@ -32,6 +32,8 @@ https://user-images.githubusercontent.com/71159641/209435938-fb962481-f655-4b6a-
 > - _Windows 10_
 > - _Python >= 3.8.0_
 > - _Pillow >= 9.0.0_
+> - _darkdetect >= 0.8.0_
+> - _BlurWindow >= 1.2.1_
 ```
 python -m pip install --upgrade pip
 pip install pillow --user
