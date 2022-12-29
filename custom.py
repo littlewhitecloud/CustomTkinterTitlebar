@@ -1,4 +1,4 @@
-import ctypes
+from ctypes import windll
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd
 try:
@@ -11,32 +11,44 @@ except ImportError:
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
 	
+def app_window(window):
+	"Make target window into appwindow"
+	window.overrideredirect(True)
+	GWL_EXSTYLE = -20
+	WS_EX_APPWINDOW = 0x00040000
+	WS_EX_TOOLWINDOW = 0x00000080
+	hwnd = windll.user32.GetParent(window.winfo_id())
+	stylew = windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+	stylew = stylew & ~WS_EX_TOOLWINDOW
+	stylew = stylew | WS_EX_APPWINDOW
+	windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+	window.withdraw()
+	window.deiconify()
+
 class CTT(Tk):
-	"Custom Tkinter Titlrbar"
+	"Custom Tkinter Titlebar"
 	def __init__(self):
 		super().__init__()
 		path = getcwd()
 		path += "\\asset\\"
-
-		self._t0_load = Image.open(path + 'close_50.png')
-		self._t0_hov_load = Image.open(path + 'close_100.png')
+		self._t0_load = Image.open(path + "close_50.png")
+		self._t0_hov_load = Image.open(path + "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
-		self._t1_load = Image.open(path + 'minisize_50.png')
-		self._t1_hov_load = Image.open(path + 'minisize_100.png')
+		self._t1_load = Image.open(path + "minisize_50.png")
+		self._t1_hov_load = Image.open(path + "minisize_100.png")
 		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
-		self._t2_load = Image.open(path + 'fullwin_50.png')
-		self._t2_hov_load = Image.open(path + 'fullwin_100.png')
+		self._t2_load = Image.open(path + "fullwin_50.png")
+		self._t2_hov_load = Image.open(path + "fullwin_100.png")
 		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
-		self._t3_load = Image.open(path + 'togglefull_50.png')
-		self._t3_hov_load = Image.open(path + 'togglefull_100.png')
+		self._t3_load = Image.open(path + "togglefull_50.png")
+		self._t3_hov_load = Image.open(path + "togglefull_100.png")
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 
-		self.w, self.h = 265, 320 # orginial window size
-		self.size = None
+		self.w, self.h = 265, 320
 		self.o_m = False
 		self.o_f = False
 		self.colors = {
@@ -65,16 +77,16 @@ class CTT(Tk):
 			self["background"] = self.colors["dark_bg"]
 
 		self.popup = Menu(self, tearoff = 0)
-		self.popup.add_command(label = "还原", command = self.resize)
-		self.popup.entryconfig("还原", state="disabled")
-		self.popup.add_command(label = "最小化", command = self.minsize)
-		self.popup.add_command(label = "最大化", command = self.maxsize)
+		self.popup.add_command(label = "Restore", command = self.resize)
+		self.popup.add_command(label = "Minsize", command = self.minsize)
+		self.popup.add_command(label = "Maxsize", command = self.maxsize)
 		self.popup.add_separator()
-		self.popup.add_command(label = "关闭 (Alt+F4)", command = self.destroy)
-
-		self.titlebar = Frame(self, bg = self.bg, height = 40)
+		self.popup.add_command(label = "Close (Alt+F4)", command = self.destroy)
+		self.popup.entryconfig("Restore", state = "disabled")
+		
+		self.titlebar = Frame(self, bg = self.bg, height = 30)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
-		self._titletext = Label(self.titlebar, text = "tk", bg = self.bg, fg = self.colors[self.fg])
+		self._titletext = Label(self.titlebar, bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
 		self._titlemax = Button(self.titlebar, bg = self.bg)
 		self._titleexit = Button(self.titlebar, bg = self.bg)
@@ -103,48 +115,38 @@ class CTT(Tk):
 			relief = FLAT,
 			command = self.maxsize
 		)
-
-		self._titleicon.pack(fill = Y, side = LEFT, padx = 6, pady = 6)
-		self._titletext.pack(fill = Y, side = LEFT, padx = 1, pady = 1)
-
+	
+		self._titleicon.pack(fill = Y, side = LEFT, padx = 5, pady = 5)
+		self._titletext.pack(fill = Y, side = LEFT, pady = 1)
 		self._titleexit.pack(fill = Y, side = RIGHT)
 		self._titlemax.pack(fill = Y, side = RIGHT)
 		self._titlemin.pack(fill = Y, side = RIGHT)
-
 		self.titlebar.pack(fill = X, side = TOP)
 		self.titlebar.pack_propagate(0)
+		
 		# binds & after
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
 		self.bind("<F11>", self.maxsize)
-
+		
 		self._titleexit.bind("<Enter>", self.exit_on_enter)
 		self._titleexit.bind("<Leave>", self.exit_on_leave)
 		self._titlemin.bind("<Enter>", self.min_on_enter)
 		self._titlemin.bind("<Leave>", self.min_on_leave)
 		self._titlemax.bind("<Enter>", self.max_on_enter)
 		self._titlemax.bind("<Leave>", self.max_on_leave)
-
+		
 		self._titleicon.bind("<Button-3>", self.popupmenu)
 		self.titlebar.bind("<ButtonPress-1>", self.dragging)
 		self.titlebar.bind("<ButtonRelease-1>", self.stopping)
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
-
-		self.overrideredirect(True)
-		self.geometry("%sx%s" % (self.w, self.h))
-		self.iconbitmap(path + "tk.ico")
 		
-		GWL_EXSTYLE = -20
-		WS_EX_APPWINDOW = 0x00040000
-		WS_EX_TOOLWINDOW = 0x00000080
-		hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
-		stylew = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-		stylew = stylew & ~WS_EX_TOOLWINDOW
-		stylew = stylew | WS_EX_APPWINDOW
-		ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
-		self.withdraw()
-		self.deiconify()
+		self.sg("%sx%s" % (self.w, self.h))
+		self.iconbitmap(path + "tk.ico")
+		self.title("tk")
+		app_window(self)
+		self.focus_force()
 		#self.addblur()
 	
 	def disabledo(self):
@@ -165,14 +167,14 @@ class CTT(Tk):
 		"Show / Disable min or max button"
 		if not minshow:
 			self._titlemin.pack_forget()
-		if not minsize:
+		elif not minsize:
 			self.min_on_enter(None)
 			self._titlemin["command"] = self.disabledo
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
 		if not maxshow:
 			self._titlemax.pack_forget()
-		if not maxsize:
+		elif not maxsize:
 			self.max_on_enter(None)
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
@@ -180,9 +182,10 @@ class CTT(Tk):
 
 	def addblur(self, acrylic = True, dark = isDark()):
 		"Add blur / acrylic effect to window"
-		if self.theme == "dark":
-			hwnd = ctypes.windll.user32.GetForegroundWindow()
-			blur(hwnd = hwnd, hexColor = '#91203801',Dark = dark, Acrylic = acrylic)
+		if dark:
+			self.focus_force()
+			hwnd = windll.user32.GetForegroundWindow()
+			blur(hwnd = hwnd, hexColor = '#91203801',Dark = True, Acrylic = acrylic)
 
 	def popupmenu(self, event):
 		"Popup menu"
@@ -205,13 +208,13 @@ class CTT(Tk):
 		if not self.o_m:
 			deltax = event.x - x
 			deltay = event.y - y
-			self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
+			self.sg("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
 		else:
 			self.resize()
 
 	def focusout(self, event):
 		"When focusout"
-		if self.theme != "light":
+		if self.theme == "dark":
 			self.o_f = True
 			self.titlebar["bg"] = self.nf
 			self._titleicon["bg"] = self.nf
@@ -222,7 +225,7 @@ class CTT(Tk):
 
 	def focusin(self, event):
 		"When focusin"
-		if self.theme != "light":
+		if self.theme == "dark":
 			self.o_f = False
 			self.titlebar["bg"] = self.bg
 			self._titleicon["bg"] = self.bg
@@ -233,8 +236,8 @@ class CTT(Tk):
 
 	def resize(self):
 		"Resize window"
-		self.popup.entryconfig("还原", state = "disabled")
-		self.popup.entryconfig("最大化", state = "active")
+		self.popup.entryconfig("Restore", state = "disabled")
+		self.popup.entryconfig("Maxsize", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
 		self._titlemax["image"] = self._t2_hov_img
@@ -245,20 +248,20 @@ class CTT(Tk):
 		if event and self.o_m:
 			self.resize()
 		else:
-			self.popup.entryconfig("还原", state = "active")
-			self.popup.entryconfig("最大化", state = "disabled")
+			self.popup.entryconfig("Restore", state = "active")
+			self.popup.entryconfig("Maxsize", state = "disabled")
 			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
 			self.o_m = True
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
-			self.geometry("%dx%d+0+0" % (w, h - 40))
+			self.sg("%dx%d+0+0" % (w, h - 40))
 	
 	def deminsize(self, event):
 		"Deminsize window"
-		self.focus()
 		self.attributes("-alpha", 1)
-	
+		self.bind("<FocusIn>", self.focusin)
+		
 	def minsize(self):
 		"Minsize window"
 		self.attributes("-alpha", 0)
@@ -269,16 +272,12 @@ class CTT(Tk):
 		if not self.o_f:
 			self._titleexit["background"] = self.colors["exit_fg"]
 			self._titleexit["image"] = self._t0_img
-		else:
-			pass
 
 	def exit_on_leave(self, event):
 		"..."
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
 			self._titleexit["image"] = self._t0_hov_img
-		else:
-			pass
 
 	def min_on_enter(self, event):
 		"..."
@@ -305,9 +304,8 @@ class CTT(Tk):
 	def title(self, text):
 		"Rebuild tkinter's title"
 		if len(text) > 15:
-			self._titletext["text"] = text[:15] + "..."
-		else:
-			self._titletext["text"] = text
+			text = text[:15] + "..."
+		self._titletext["text"] = text
 		self.wm_title(text)
 
 	def iconbitmap(self, image):
@@ -318,20 +316,20 @@ class CTT(Tk):
 		self._titleicon["image"] = self. _img
 		self.wm_iconbitmap(image)
 
-	def geometry(self, size):
+	def geometry(self, w, h):
+		"Change the self.w and self.h forcely"
+		self.w, self.h = w, h;
+		self.sg("%sx%s" % (self.w, self.h))
+
+	def sg(self, size):
 		"Rebuild tkinter's geometry"
 		if self.w and self.h:
 			pass
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
-
-	def setgeometry(self, w, h):
-		"Change the self.w and self.h forcely"
-		self.w, self.h = w, h;
-		self.geometry("%sx%s" % (self.w, self.h))
 		
 if __name__ == "__main__":
 	example = CTT()
-	example.geometry("690x380")
+	example.geometry(690, 380)
 	example.mainloop()
