@@ -9,6 +9,9 @@ except ImportError:
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
+
+def load_about():
+	system("hh " + "about.html")
 	
 def app_window(window):
 	"Make target window into appwindow"
