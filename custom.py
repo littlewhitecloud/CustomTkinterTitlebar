@@ -144,12 +144,12 @@ class CTT(Tk):
 		self.sg("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
 		self.title("CTT")
-		app_window(self) # Will be replaced
+		#app_window(self) # Will be replaced
 		self.overrideredirect(True)
 		self.focus_force()
 		self.addblur()
-		#os.system("thickframe.exe") Still in progress
-	
+		system("start sw.exe")
+		
 	def disabledo(self):
 		"For disable button get event's commmand"
 		pass
@@ -333,3 +333,7 @@ class CTT(Tk):
 if __name__ == "__main__":
 	example = CTT()
 	example.mainloop()
+	#ex = Tk()
+	#ex.title("CTT")
+	#ex.iconbitmap(getcwd() + "\\asset\\tk.ico")
+	#ex.mainloop()
