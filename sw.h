@@ -1,3 +1,5 @@
+#pragma once
+#pragma once
 #ifndef SW_H
 #define SW_H
 #include <windows.h>
@@ -8,7 +10,7 @@ HWND gethwnd();
 
 HWND gethwnd() {
 	// Get hwnd by FindWindow
-	HWND hwnd = FindWindow(NULL, "CTT");
+	HWND hwnd = FindWindow(NULL, L"CTT");
 	return hwnd;
 }
 
