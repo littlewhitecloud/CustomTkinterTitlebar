@@ -1,4 +1,4 @@
-from ctypes import windll
+from ctypes import windll, cdll
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd, system
 try:
@@ -9,6 +9,14 @@ except ImportError:
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
+try:
+	sw = cdll.LoadLibrary(".\sw.so") # load module sw
+except ImportError:
+	print("Error load sw module, please check you platform or ctypes version")
+	exit(0)
+except FileNotFoundError:
+	print("Your 'sw.so' file is missing, please reinstall this package")
+	exit(0)
 
 def load_about():
 	system("hh " + "about.html")
@@ -16,16 +24,10 @@ def load_about():
 def app_window(window):
 	"Make target window into appwindow"
 	window.overrideredirect(True)
-	GWL_EXSTYLE = -20
-	WS_EX_APPWINDOW = 0x00040000
-	WS_EX_TOOLWINDOW = 0x00000080
-	hwnd = windll.user32.GetParent(window.winfo_id())
-	stylew = windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-	stylew = stylew & ~WS_EX_TOOLWINDOW
-	stylew = stylew | WS_EX_APPWINDOW
-	windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, stylew)
+	sw.setwindow()
 	window.withdraw()
 	window.deiconify()
+	window.focus_force()
 
 class CTT(Tk):
 	"Custom Tkinter Titlebar"
@@ -147,11 +149,8 @@ class CTT(Tk):
 		self.sg("%sx%s" % (self.w, self.h))
 		self.iconbitmap(path + "tk.ico")
 		self.title("CTT")
-		#app_window(self) # Will be replaced
-		self.overrideredirect(True)
-		self.focus_force()
-		self.addblur()
-		system("start sw.exe")
+		app_window(self)
+		#self.addblur()
 		
 	def disabledo(self):
 		"For disable button get event's commmand"
