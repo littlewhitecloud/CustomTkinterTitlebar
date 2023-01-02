@@ -1,53 +1,30 @@
-from ctypes import windll
-from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
-from os import getcwd, system
-try:
-	from PIL import Image, ImageTk
-	from darkdetect import isDark
-	from BlurWindow.blurWindow import blur
-except ImportError:
-	system(".\package.bat")
-	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
-	exit(0)
+from tkinter import Frame
+from os import getcwd
 
-def load_about():
-	"Use system origial browser"
-	system("about.html")
-	
-def app_window(window):
-	"Make target window into appwindow"
-	window.overrideredirect(True)
-	system("start sw.exe")
-
-class CTT(Tk):
-	"Custom Tkinter Titlebar"
-	def __init__(self):
-		super().__init__()
-		path = getcwd() + "\\asset\\"
-		if isDark():
-			path += "dark\\"
-		else:
-			path += "light\\"
-		self._t0_load = Image.open(path + "close_50.png")
-		self._t0_hov_load = Image.open(path + "close_100.png")
+class TitleBar(Frame):
+	def __init__(self,):
+		super.__init__()
+		self.p = getcwd() + "\\asset\\"
+		self._t0_load = Image.open(self.p + "close_50.png")
+		self._t0_hov_load = Image.open(self.p + "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
-		self._t1_load = Image.open(path + "minisize_50.png")
-		self._t1_hov_load = Image.open(path + "minisize_100.png")
+		self._t1_load = Image.open(self.p + "minisize_50.png")
+		self._t1_hov_load = Image.open(self.p + "minisize_100.png")
 		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
-		self._t2_load = Image.open(path + "fullwin_50.png")
-		self._t2_hov_load = Image.open(path + "fullwin_100.png")
+		self._t2_load = Image.open(self.p + "fullwin_50.png")
+		self._t2_hov_load = Image.open(self.p + "fullwin_100.png")
 		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
-		self._t3_load = Image.open(path + "togglefull_50.png")
-		self._t3_hov_load = Image.open(path + "togglefull_100.png")
+		self._t3_load = Image.open(self.p + "togglefull_50.png")
+		self._t3_hov_load = Image.open(self.p + "togglefull_100.png")
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
-
-		self.w, self.h = 265, 320
-		self.o_m = False
-		self.o_f = False
+		self.theme = "light"
+		self.bg = self.colors["light"]
+		self.nf = self.colors["light_nf"]
+		self.fg = "dark"	
 		self.colors = {
 			"Light": "#ffffff",
 			"Dark": "#2b2b2b",
@@ -62,32 +39,26 @@ class CTT(Tk):
 			"light_nf": "#f2efef",
 			"dark_bg": "#202020"
 		}
-		self.theme = "light"
-		self.bg = self.colors["light"]
-		self.nf = self.colors["light_nf"]
-		self.fg = "dark"
 		if isDark():
 			self.theme = "dark"
 			self.bg = self.colors["dark"]
 			self.nf = self.colors["dark_nf"]
 			self.fg = "light"
 			self["background"] = self.colors["dark_bg"]
-
 		self.popup = Menu(self, tearoff = 0)
-		self.popup.add_command(label = "Restore", command = self.resize)
-		self.popup.add_command(label = "Minsize", command = self.minsize)
-		self.popup.add_command(label = "Maxsize", command = self.maxsize)
-		self.popup.add_separator()
-		self.popup.add_command(label = "Close (Alt+F4)", command = self.destroy)
-		self.popup.entryconfig("Restore", state = "disabled")
-		
 		self.titlebar = Frame(self, bg = self.bg, height = 30)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, bg = self.bg, fg = self.colors[self.fg])
 		self._titlemin = Button(self.titlebar, bg = self.bg)
 		self._titlemax = Button(self.titlebar, bg = self.bg)
 		self._titleexit = Button(self.titlebar, bg = self.bg)
-
+		
+		self.popup.add_command(label = "Restore", command = self.resize)
+		self.popup.add_command(label = "Minsize", command = self.minsize)
+		self.popup.add_command(label = "Maxsize", command = self.maxsize)
+		self.popup.add_separator()
+		self.popup.add_command(label = "Close (Alt+F4)", command = self.destroy)
+		self.popup.entryconfig("Restore", state = "disabled")
 		self._titleexit.config(bd = 0,
 			activeforeground = self.colors["exit_fg"],
 			activebackground = self.colors["%sexit_bg" % self.theme],
@@ -112,7 +83,6 @@ class CTT(Tk):
 			relief = FLAT,
 			command = self.maxsize
 		)
-	
 		self._titleicon.pack(fill = Y, side = LEFT, padx = 5, pady = 5)
 		self._titletext.pack(fill = Y, side = LEFT, pady = 1)
 		self._titleexit.pack(fill = Y, side = RIGHT)
@@ -120,11 +90,6 @@ class CTT(Tk):
 		self._titlemin.pack(fill = Y, side = RIGHT)
 		self.titlebar.pack(fill = X, side = TOP)
 		self.titlebar.pack_propagate(0)
-		
-		# binds & after
-		self.bind("<FocusOut>", self.focusout)
-		self.bind("<FocusIn>", self.focusin)
-		self.bind("<F11>", self.maxsize)
 		
 		self._titleexit.bind("<Enter>", self.exit_on_enter)
 		self._titleexit.bind("<Leave>", self.exit_on_leave)
@@ -138,12 +103,6 @@ class CTT(Tk):
 		self.titlebar.bind("<ButtonRelease-1>", self.stopping)
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
-		
-		self.sg("%sx%s" % (self.w, self.h))
-		self.iconbitmap(".\\asset\\tk.ico")
-		self.title("CTT")
-		app_window(self)
-		#self.addblur()
 		
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -324,7 +283,3 @@ class CTT(Tk):
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)
-		
-if __name__ == "__main__":
-	example = CTT()
-	example.mainloop()

@@ -6,7 +6,7 @@ except:
 	from os import system
 	system("pip install sv_ttk")
 	from sv_ttk import set_theme
-	
+
 value = 0
 def newtab():
 	global value
