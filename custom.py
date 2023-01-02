@@ -9,14 +9,6 @@ except ImportError:
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
-try:
-	sw = cdll.LoadLibrary(".\sw.so") # load module sw
-except ImportError:
-	print("Error load sw module, please check you platform or ctypes version")
-	exit(0)
-except FileNotFoundError:
-	print("Your 'sw.so' file is missing, please reinstall this package")
-	exit(0)
 
 def load_about():
 	system("hh " + "about.html")
@@ -24,10 +16,7 @@ def load_about():
 def app_window(window):
 	"Make target window into appwindow"
 	window.overrideredirect(True)
-	sw.setwindow()
-	window.withdraw()
-	window.deiconify()
-	window.focus_force()
+	system("start sw.exe")
 
 class CTT(Tk):
 	"Custom Tkinter Titlebar"
