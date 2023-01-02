@@ -23,11 +23,35 @@ class CTT(Tk):
 	"Custom Tkinter Titlebar"
 	def __init__(self):
 		super().__init__()
+		self.colors = {
+			"Light": "#ffffff",
+			"Dark": "#2b2b2b",
+			"button_activebg": "#e5e5e5",
+			"button_activefg": "#e5e5e5",
+			"lightexit_bg": "#f1707a",
+			"darkexit_bg": "#8b0a14",
+			"exit_fg": "#e81123",
+			"dark": "#000000",
+			"dark_nf": "#2b2b2b",
+			"light": "#ffffff",
+			"light_nf": "#f2efef",
+			"dark_bg": "#202020"
+		}
 		path = getcwd() + "\\asset\\"
 		if isDark():
 			path += "dark\\"
+			self.theme = "dark"
+			self.bg = self.colors["dark"]
+			self.nf = self.colors["dark_nf"]
+			self.fg = "light"
+			self["background"] = self.colors["dark_bg"]
 		else:
 			path += "light\\"
+			self.theme = "light"
+			self.bg = self.colors["light"]
+			self.nf = self.colors["light_nf"]
+			self.fg = "dark"
+
 		self._t0_load = Image.open(path + "close_50.png")
 		self._t0_hov_load = Image.open(path + "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
@@ -48,31 +72,6 @@ class CTT(Tk):
 		self.w, self.h = 265, 320
 		self.o_m = False
 		self.o_f = False
-		self.colors = {
-			"Light": "#ffffff",
-			"Dark": "#2b2b2b",
-			"button_activebg": "#e5e5e5",
-			"button_activefg": "#e5e5e5",
-			"lightexit_bg": "#f1707a",
-			"darkexit_bg": "#8b0a14",
-			"exit_fg": "#e81123",
-			"dark": "#000000",
-			"dark_nf": "#2b2b2b",
-			"light": "#ffffff",
-			"light_nf": "#f2efef",
-			"dark_bg": "#202020"
-		}
-		self.theme = "light"
-		self.bg = self.colors["light"]
-		self.nf = self.colors["light_nf"]
-		self.fg = "dark"
-		if isDark():
-			self.theme = "dark"
-			self.bg = self.colors["dark"]
-			self.nf = self.colors["dark_nf"]
-			self.fg = "light"
-			self["background"] = self.colors["dark_bg"]
-
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "Restore", command = self.resize)
 		self.popup.add_command(label = "Minsize", command = self.minsize)
@@ -210,25 +209,25 @@ class CTT(Tk):
 
 	def focusout(self, event):
 		"When focusout"
-		if self.theme == "dark":
-			self.o_f = True
-			self.titlebar["bg"] = self.nf
-			self._titleicon["bg"] = self.nf
-			self._titletext["bg"] = self.nf
-			self._titlemin["bg"] = self.nf
-			self._titlemax["bg"] = self.nf
-			self._titleexit["bg"] = self.nf
+		self.o_f = True
+		#self.usemaxmin(False, False)
+		self.titlebar["bg"] = self.nf
+		self._titleicon["bg"] = self.nf
+		self._titletext["bg"] = self.nf
+		self._titlemin["bg"] = self.nf
+		self._titlemax["bg"] = self.nf
+		self._titleexit["bg"] = self.nf
 
 	def focusin(self, event):
 		"When focusin"
-		if self.theme == "dark":
-			self.o_f = False
-			self.titlebar["bg"] = self.bg
-			self._titleicon["bg"] = self.bg
-			self._titletext["bg"] = self.bg
-			self._titlemin["bg"] = self.bg
-			self._titlemax["bg"] = self.bg
-			self._titleexit["bg"] = self.bg
+		self.o_f = False
+		#self.usemaxmin(True, True)
+		self.titlebar["bg"] = self.bg
+		self._titleicon["bg"] = self.bg
+		self._titletext["bg"] = self.bg
+		self._titlemin["bg"] = self.bg
+		self._titlemax["bg"] = self.bg
+		self._titleexit["bg"] = self.bg
 
 	def resize(self):
 		"Resize window"
@@ -263,34 +262,34 @@ class CTT(Tk):
 		self.attributes("-alpha", 0)
 		self.bind("<FocusIn>", self.deminsize)
 
-	def exit_on_enter(self, event):
+	def exit_on_enter(self, event = None):
 		"..."
 		if not self.o_f:
 			self._titleexit["background"] = self.colors["exit_fg"]
 			self._titleexit["image"] = self._t0_img
 
-	def exit_on_leave(self, event):
+	def exit_on_leave(self, event = None):
 		"..."
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
 			self._titleexit["image"] = self._t0_hov_img
 
-	def min_on_enter(self, event):
+	def min_on_enter(self, event = None):
 		"..."
 		self._titlemin["image"] = self._t1_img
 
-	def min_on_leave(self, event):
+	def min_on_leave(self, event = None):
 		"..."
 		self._titlemin["image"] = self._t1_hov_img
 
-	def max_on_enter(self, event):
+	def max_on_enter(self, event = None):
 		"..."
 		if not self.o_m:
 			self._titlemax["image"] = self._t2_img
 		else:
 			self._titlemax["image"] = self._t3_img
 
-	def max_on_leave(self, event):
+	def max_on_leave(self, event = None):
 		"..."
 		if not self.o_m:
 			self._titlemax["image"] = self._t2_hov_img
