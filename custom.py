@@ -10,6 +10,8 @@ except ImportError:
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
+	
+mw = windll.LoadLibrary(".\mw.dll")
 
 def app_window(window):
 	"Make target window into appwindow"
@@ -193,8 +195,8 @@ class CTT(Tk):
 		"Window moving"
 		global x, y
 		if not self.o_m:
-			new_x, new_y = (event.x - x) + self.winfo_x(), (event.y - y) + self.winfo_y()
-			self.sg("+%d+%d" % (new_x, new_y))
+			new_x, new_y = (event.x - x), (event.y - y)
+			mw.moving(self.winfo_x(), self.winfo_y(), new_x, new_y)
 		else:
 			self.resize()
 

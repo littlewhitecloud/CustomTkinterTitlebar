@@ -1,0 +1,6 @@
+; mw.def
+; this is comment
+LIBRARY mw.dll
+EXPORTS
+	hwndlinker @1
+	moving @2
