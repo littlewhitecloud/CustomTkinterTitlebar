@@ -18,8 +18,7 @@
 #include "windows.h"
 HWND gethwnd() {
 	// Get hwnd by FindWindow
-	HWND hwnd = FindWindow(NULL, "CTT");
-	return hwnd;
+	return FindWindow(NULL, "Titlebar Demo");
 }
 void setwindow() {
 	// Find the hwnd of the window

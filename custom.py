@@ -1,3 +1,4 @@
+from time import sleep
 from ctypes import windll
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd, system
@@ -10,15 +11,11 @@ except ImportError:
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
 
-def load_about():
-	"Use system origial browser"
-	system("about.html")
-	
 def app_window(window):
 	"Make target window into appwindow"
 	window.overrideredirect(True)
 	system("start sw.exe")
-
+	
 class CTT(Tk):
 	"Custom Tkinter Titlebar"
 	def __init__(self):
@@ -133,8 +130,8 @@ class CTT(Tk):
 		self._titlemax.bind("<Leave>", self.max_on_leave)
 		
 		self._titleicon.bind("<Button-3>", self.popupmenu)
+		self._titleicon.bind("<Double-Button-1>", self.close)
 		self.titlebar.bind("<ButtonPress-1>", self.dragging)
-		self.titlebar.bind("<ButtonRelease-1>", self.stopping)
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
 		
@@ -192,18 +189,12 @@ class CTT(Tk):
 		x = event.x
 		y = event.y
 
-	def stopping(self, event):
-		"Window stop"
-		x = None
-		y = None
-
 	def moving(self, event):
 		"Window moving"
 		global x, y
 		if not self.o_m:
-			deltax = event.x - x
-			deltay = event.y - y
-			self.sg("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
+			new_x, new_y = (event.x - x) + self.winfo_x(), (event.y - y) + self.winfo_y()
+			self.sg("+%d+%d" % (new_x, new_y))
 		else:
 			self.resize()
 
@@ -311,6 +302,9 @@ class CTT(Tk):
 		self._titleicon["image"] = self. _img
 		self.wm_iconbitmap(image)
 
+	def close(self, event = None):
+		self.destroy()
+	
 	def geometry(self, w, h):
 		"Change the self.w and self.h forcely"
 		self.w, self.h = w, h;
