@@ -7,7 +7,7 @@
 #### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 > 文章其实在下面 (有删改)
 ### 预览 (View) : 
-https://user-images.githubusercontent.com/71159641/209435938-fb962481-f655-4b6a-97ed-faa295eabcd9.mp4
+https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-a3c0-5437a94ae917.mp4
 #### 自定义最大化最小化 (Custom minsize & maxsize)：
 ![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
 ![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
