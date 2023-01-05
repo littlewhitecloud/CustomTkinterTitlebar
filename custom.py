@@ -10,13 +10,15 @@ except ImportError:
 	system(".\package.bat")
 	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
 	exit(0)
+try:
+	mw = windll.LoadLibrary(".\mw64.dll") # 64 bit
+except OSError:
+	mw = windll.LoadLibrary(".\mw32.dll") # 32 bit
 	
-mw = windll.LoadLibrary(".\mw.dll")
-
 def app_window(window):
 	"Make target window into appwindow"
 	window.overrideredirect(True)
-	system("start sw.exe")
+	mw.setwindow()
 	
 class CTT(Tk):
 	"Custom Tkinter Titlebar"
@@ -140,8 +142,10 @@ class CTT(Tk):
 		self.sg("%sx%s" % (self.w, self.h))
 		self.iconbitmap(".\\asset\\tk.ico")
 		self.title("CTT")
+		
+		self.hwnd = mw.gethwnd()
 		app_window(self)
-		#self.addblur()
+		self.addblur()
 		
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -309,7 +313,7 @@ class CTT(Tk):
 	
 	def geometry(self, w, h):
 		"Change the self.w and self.h forcely"
-		self.w, self.h = w, h;
+		self.w, self.h = w, h
 		self.sg("%sx%s" % (self.w, self.h))
 
 	def sg(self, size):

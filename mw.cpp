@@ -1,23 +1,39 @@
 /*
-	This is a c++ file to improve move window function
-	Now finished -- v1.0.0
+	This is a file improve move window function and add some long value to change the window.
+	Use function : "SetWindowLong" to change window's attribute.
+	Include : windows.h
+	Compile with : mw.def
+	__declspec(dllexport) HWND gethwnd() {
+		<Get target window's hwnd and return it>
+		no args
+		hwnd : HWND
+	}
+	__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) {
+		<move window's funcition>
+		x, y, eventx, eventy : int
+		"x : windowx | y : windowy | eventx : mousex | eventy : mousey"
+	}
+	__declspec(dllexport) void setwindowlong() {
+		<To change the window's attribute>
+		no args
+	}
 */
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
-__declspec(dllexport) HWND hwndlinker() { // char* titlename
-	// Just got window's hwnd, will add char* 
-	return FindWindow(NULL, "CTT"); // return FindWindow(NULL, titlename);
+__declspec(dllexport) HWND gethwnd() {
+	// Just got window's hwnd
+	return FindWindow(NULL, "CTT");
 }
 __declspec(dllexport) void moving(int x, int y, int eventx, int eventy) {
 	// x : windowx | y : windowy | eventx : mousex | eventy : mousey
-	HWND hwnd = hwndlinker(); // Got hwnd
+	HWND hwnd = gethwnd();
 	eventx += x;
 	eventy += y;
 	SetWindowPos(hwnd, NULL, eventx, eventy, 0, 0, SWP_NOREDRAW | SWP_NOSIZE | SWP_SHOWWINDOW); // Change Window's Pos
 }
-/*
-int main() {
-	// SetWindowPos(gethwnd(), NULL, 0, 0, 0, 0, SWP_NOSIZE); // Init window pos
-	return 0;
+__declspec(dllexport) void setwindow() {
+	// Find the hwnd of the window : call only once
+	HWND hwnd = gethwnd();
+	SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW); // What I improved in 1.0.5.6
+	SetWindowLong(hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME); // What I improvoed in 1.0.5.5
 }
-*/

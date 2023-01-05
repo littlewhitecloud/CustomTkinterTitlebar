@@ -2,5 +2,6 @@
 ; this is comment
 LIBRARY mw.dll
 EXPORTS
-	hwndlinker @1
+	gethwnd @1
 	moving @2
+	setwindow @3
