@@ -66,9 +66,9 @@ example.mainloop()
 #### None
 
 ### 💾 支持 (Support):
-#### 💻 它现在支持Windows 10 
+#### 💻 它现在支持Windows 10 32 / 64位
 > **可能也支持Windows 11, 我用的是Windows 10, 未测试过**
-#### It support Windows 10 now. 
+#### It support Windows 10 32 / 64 bit now.
 > **Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet**
 
 ## The doc doesn't support English now. I will try to translate it.
