@@ -38,7 +38,6 @@ newtab = Button(ex.titlebar, image = newtab_png, command = newtab, relief = FLAT
 nb = Notebook(ex.titlebar)
 nb.pack(side = LEFT, fill = X)
 nb.bind("<ButtonPress-1>", ex.dragging)
-nb.bind("<ButtonRelease-1>", ex.stopping)
 nb.bind("<B1-Motion>", ex.moving)
 newtab.pack(side = LEFT, fill = Y, padx = 3, pady = 3)
 
