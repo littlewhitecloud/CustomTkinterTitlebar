@@ -4,9 +4,9 @@
 	Include : windows.h
 	Compile with : mw.def
 	__declspec(dllexport) HWND gethwnd() {
-		<Get target window's hwnd and return it>
+		<Get target window's hwnd and set it>
 		no args
-		hwnd : HWND
+		hwnd = findwindow("...")
 	}
 	__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) {
 		<move window's funcition>
@@ -20,20 +20,17 @@
 */
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
-__declspec(dllexport) HWND gethwnd() {
-	// Just got window's hwnd
-	return FindWindow(NULL, "CTT");
+
+HWND hwnd = NULL;
+__declspec(dllexport)void gethwnd() { // Just got window's hwnd
+	hwnd = FindWindow(NULL, "CTT");
 }
-__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) {
-	// x : windowx | y : windowy | eventx : mousex | eventy : mousey
-	HWND hwnd = gethwnd();
+__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) { // x : windowx | y : windowy | eventx : mousex | eventy : mousey
 	eventx += x;
 	eventy += y;
 	SetWindowPos(hwnd, NULL, eventx, eventy, 0, 0, SWP_NOREDRAW | SWP_NOSIZE | SWP_SHOWWINDOW); // Change Window's Pos
 }
-__declspec(dllexport) void setwindow() {
-	// Find the hwnd of the window : call only once
-	HWND hwnd = gethwnd();
+__declspec(dllexport) void setwindow() { // Find the hwnd of the window : call only once
 	SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW); // What I improved in 1.0.5.6
 	SetWindowLong(hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME); // What I improvoed in 1.0.5.5
 }

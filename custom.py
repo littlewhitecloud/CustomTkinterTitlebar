@@ -18,7 +18,11 @@ except OSError:
 def app_window(window):
 	"Make target window into appwindow"
 	window.overrideredirect(True)
+	mw.gethwnd()
 	mw.setwindow()
+	window.withdraw()
+	window.deiconify()
+	window.focus_force()
 	
 class CTT(Tk):
 	"Custom Tkinter Titlebar"
@@ -145,7 +149,7 @@ class CTT(Tk):
 		
 		self.hwnd = mw.gethwnd()
 		app_window(self)
-		self.addblur()
+		#self.addblur()
 		
 	def disabledo(self):
 		"For disable button get event's commmand"
@@ -326,4 +330,9 @@ class CTT(Tk):
 		
 if __name__ == "__main__":
 	example = CTT()
+	example.title("tk")
+	def test():
+		example.title("adfhadsjlkfhjlkadshfadshfkladsf")
+	example.usemaxmin(False, False, False, False)
+	example.after(114, test)
 	example.mainloop()
