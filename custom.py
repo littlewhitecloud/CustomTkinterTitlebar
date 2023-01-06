@@ -330,9 +330,4 @@ class CTT(Tk):
 		
 if __name__ == "__main__":
 	example = CTT()
-	example.title("tk")
-	def test():
-		example.title("adfhadsjlkfhjlkadshfadshfkladsf")
-	example.usemaxmin(False, False, False, False)
-	example.after(114, test)
 	example.mainloop()

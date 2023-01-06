@@ -20,15 +20,13 @@
 */
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
-
 HWND hwnd = NULL;
 __declspec(dllexport)void gethwnd() { // Just got window's hwnd
 	hwnd = FindWindow(NULL, "CTT");
 }
-__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) { // x : windowx | y : windowy | eventx : mousex | eventy : mousey
-	eventx += x;
-	eventy += y;
-	SetWindowPos(hwnd, NULL, eventx, eventy, 0, 0, SWP_NOREDRAW | SWP_NOSIZE | SWP_SHOWWINDOW); // Change Window's Pos
+__declspec(dllexport) inline void moving(int x, int y, int eventx, int eventy) {  // Use inline, because this function is a most use function
+	// x : windowx | y : windowy | eventx : mousex | eventy : mousey
+	SetWindowPos(hwnd, NULL, eventx + x, eventy + y, 0, 0, SWP_NOREDRAW | SWP_NOSIZE | SWP_SHOWWINDOW); // Change Window's Pos
 }
 __declspec(dllexport) void setwindow() { // Find the hwnd of the window : call only once
 	SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW); // What I improved in 1.0.5.6
