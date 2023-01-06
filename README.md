@@ -8,24 +8,24 @@
 > 文章其实在下面 (有删改)
 ### 预览 (View) : 
 https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-a3c0-5437a94ae917.mp4
+#### 插入组件 (insert component to titlebar) :
+![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
+#### 模糊 (Blur):
+![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
+#### 亚克力 (Fluent) :
+![image](https://user-images.githubusercontent.com/71159641/208341143-b9d01ff0-c530-414c-be5d-38be9f55949b.png)
+#### 自定义图标和名称 (icon & windowtext):
+![image](https://user-images.githubusercontent.com/71159641/209605935-e82470ce-e0d2-4244-9299-dbcf666c7e6b.png)
+![image](https://user-images.githubusercontent.com/71159641/209605940-c9c58cd9-6ff3-4455-9f7f-229611a67cda.png)
+![image](https://user-images.githubusercontent.com/71159641/209605941-d38732dd-1917-42e0-985a-eba98e21494b.png)
 #### 自定义最大化最小化 (Custom minsize & maxsize)：
 ![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
 ![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
 ![image](https://user-images.githubusercontent.com/71159641/209454985-7d725083-dbcb-4856-88e4-200a34111938.png)
 ![image](https://user-images.githubusercontent.com/71159641/209455001-f48c076a-cac0-4310-975e-0fb64855f4cd.png)
-#### 自定义图标和名称 (icon & windowtext):
-![image](https://user-images.githubusercontent.com/71159641/209605935-e82470ce-e0d2-4244-9299-dbcf666c7e6b.png)
-![image](https://user-images.githubusercontent.com/71159641/209605940-c9c58cd9-6ff3-4455-9f7f-229611a67cda.png)
-![image](https://user-images.githubusercontent.com/71159641/209605941-d38732dd-1917-42e0-985a-eba98e21494b.png)
 #### 亮主题 (Light Theme):
 ![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
 ![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
-#### 模糊 (Blur):
-![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
-#### 亚克力 (Fluent) :
-![image](https://user-images.githubusercontent.com/71159641/208341143-b9d01ff0-c530-414c-be5d-38be9f55949b.png)
-#### 插入组件 (insert component to titlebar) :
-![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 #### 聚焦 (Focus on) :
 ![image](https://user-images.githubusercontent.com/71159641/208881100-3ab06ae8-f51c-459d-8d2b-8a90a6218078.png)
 #### 未聚焦 (Focus out) :
