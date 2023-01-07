@@ -34,12 +34,15 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 ### 📦 需求 (Require):
 > - _Windows 10_
 > - _Python >= 3.8.0_
+> - _Tcl/Tk >= 8.6.0_
 > - _Pillow >= 9.0.0_
 > - _darkdetect >= 0.8.0_
 > - _BlurWindow >= 1.2.1_
 ```
 python -m pip install --upgrade pip
 pip install pillow --user
+pip install darkdetect --user
+pip install BlurWindow --user
 ```
 
 ### 📖 用法 (Usage):
