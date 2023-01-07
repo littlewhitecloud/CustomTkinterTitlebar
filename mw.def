@@ -1,5 +1,4 @@
 ; mw.def
-; this is comment
 LIBRARY mw.dll
 EXPORTS
 	gethwnd @1
