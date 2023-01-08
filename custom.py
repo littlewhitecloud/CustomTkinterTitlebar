@@ -8,8 +8,11 @@ try:
 	from BlurWindow.blurWindow import blur
 except ImportError:
 	system(".\package.bat")
-	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
-	exit(0)
+	from PIL import Image, ImageTk
+	from darkdetect import isDark
+	from BlurWindow.blurWindow import blur
+	#input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
+	#exit(0)
 try:
 	mw = windll.LoadLibrary(".\mw64.dll") # 64 bit
 except OSError:
