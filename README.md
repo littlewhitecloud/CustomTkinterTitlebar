@@ -31,7 +31,7 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 #### 未聚焦 (Focus out) :
 ![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
 
-### 📦 需求 (Require):
+### 📦 需求 (Require):B
 > - _Windows 10_
 > - _Python >= 3.8.0_
 > - _Tcl/Tk >= 8.6.0_
@@ -46,7 +46,7 @@ pip install BlurWindow --user
 ```
 
 ### 📖 用法 (Usage):
-```
+```python
 from customtkintertitlebar import Tk
 from tkinter import ttk
 example = Tk()
@@ -98,7 +98,7 @@ example.mainloop()
 >> - 直接最小化会出问题
 >> - 奇葩的解决办法：
 >>> 先取消overrideredirect，在最小化就好了：
-```
+```python
 	def minsize(self):
 		self.overrideredirect(False)
 		self.o_flag = False # 待会再讲 o_flag什么意义
@@ -109,7 +109,7 @@ example.mainloop()
 >> - 解决方案：
 >>> - 先检查state 是不是"iconic", 如果是，并且o_flag是假的时候执行overrideredirect
 >>> - o_flag(overrideredirect_flag): 窗口是否被overrideredirect
-```
+```python
 	def check(self):
 		if self.state() != "iconic" and self.o_flag == False:
 			self.overrideredirect(True)
@@ -118,7 +118,7 @@ example.mainloop()
 		self.after(500, self.check) #每500秒刷新一次 如果你的电脑性能高的话，可以改成 100
 ```
 > 3.如何移动：
-```
+```python
 	def Dragging(self, event):
 		global x, y
 		x = event.x
@@ -152,7 +152,7 @@ example.mainloop()
 > - titlebar.pack取消了pady = 1, padx = 1(强迫症福音)
 > - titleicon.pack由padx = 7, pady = 7, 改为padx = 6, pady = 6尽量和Windows原生标题栏一样大
 > - color["light"] & color["light_nf"] 被改为淡白色#f2efef，而不是淡青色#ececee
-```
+```python
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT
 from winreg import HKEY_CURRENT_USER as hkey, QueryValueEx as getSubkeyValue, OpenKey as getKey
 from ctypes import windll
