@@ -8,11 +8,8 @@ try:
 	from BlurWindow.blurWindow import blur
 except ImportError:
 	system(".\package.bat")
-	from PIL import Image, ImageTk
-	from darkdetect import isDark
-	from BlurWindow.blurWindow import blur
-	#input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
-	#exit(0)
+	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
+	exit(0)
 try:
 	mw = windll.LoadLibrary(".\mw64.dll") # 64 bit
 except OSError:
@@ -213,6 +210,9 @@ class CTT(Tk):
 
 	def focusout(self, event):
 		"When focusout"
+		self.exit_on_enter()
+		self.min_on_enter()
+		self.max_on_enter()
 		self.o_f = True
 		#self.usemaxmin(False, False)
 		self.titlebar["bg"] = self.nf
@@ -225,6 +225,9 @@ class CTT(Tk):
 	def focusin(self, event):
 		"When focusin"
 		self.o_f = False
+		self.exit_on_leave()
+		self.min_on_leave()
+		self.max_on_leave()
 		#self.usemaxmin(True, True)
 		self.titlebar["bg"] = self.bg
 		self._titleicon["bg"] = self.bg
@@ -284,21 +287,24 @@ class CTT(Tk):
 
 	def min_on_leave(self, event = None):
 		"..."
-		self._titlemin["image"] = self._t1_hov_img
+		if not self.o_f:
+			self._titlemin["image"] = self._t1_hov_img
 
 	def max_on_enter(self, event = None):
 		"..."
-		if not self.o_m:
-			self._titlemax["image"] = self._t2_img
-		else:
-			self._titlemax["image"] = self._t3_img
+		if not self.o_f:
+			if not self.o_m:
+				self._titlemax["image"] = self._t2_img
+			else:
+				self._titlemax["image"] = self._t3_img
 
 	def max_on_leave(self, event = None):
 		"..."
-		if not self.o_m:
-			self._titlemax["image"] = self._t2_hov_img
-		else:
-			self._titlemax["image"] = self._t3_hov_img
+		if not self.o_f:
+			if not self.o_m:
+				self._titlemax["image"] = self._t2_hov_img
+			else:
+				self._titlemax["image"] = self._t3_hov_img
 
 	def title(self, text):
 		"Rebuild tkinter's title"
@@ -333,4 +339,5 @@ class CTT(Tk):
 		
 if __name__ == "__main__":
 	example = CTT()
+	#example.addblur()
 	example.mainloop()
