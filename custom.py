@@ -7,7 +7,10 @@ try:
 	from BlurWindow.blurWindow import blur
 except:
 	from os import system
-	s
+	system(".\build,bat")
+	from PIL import Image, ImageTk
+	from darkdetect import isDark
+	from BlurWindow.blurWindow import blur
 try:
 	mw = windll.LoadLibrary(".\mw64.dll")
 except OSError: # Use 32 bit
