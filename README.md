@@ -27,11 +27,11 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 ![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
 ![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
 #### 聚焦 (Focus on) :
-![image](https://user-images.githubusercontent.com/71159641/208881100-3ab06ae8-f51c-459d-8d2b-8a90a6218078.png)
+![image](https://user-images.githubusercontent.com/71159641/212060937-ab70e393-f65a-4fc5-ae77-e301fea74cd2.png)
 #### 未聚焦 (Focus out) :
-![image](https://user-images.githubusercontent.com/71159641/208881104-8606a9fc-1a1e-432b-980d-16e7c7581acc.png)
+![image](https://user-images.githubusercontent.com/71159641/212060945-5633832d-ee07-462d-82bc-40d4afe41b25.png)
 
-### 📦 需求 (Require):B
+### 📦 需求 (Require):
 > - _Windows 10_
 > - _Python >= 3.8.0_
 > - _Tcl/Tk >= 8.6.0_
