@@ -1,22 +1,20 @@
-from time import sleep
-from ctypes import windll
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
-from os import getcwd, system
+from os import getcwd
+from ctypes import windll
 try:
 	from PIL import Image, ImageTk
 	from darkdetect import isDark
 	from BlurWindow.blurWindow import blur
-except ImportError:
-	system(".\package.bat")
-	input("Finished use latest pip to install uninstalled 3rd party library.\nProgram require restart to load library.\nPress any key to exit...")
-	exit(0)
+except:
+	from os import system
+	s
 try:
-	mw = windll.LoadLibrary(".\mw64.dll") # 64 bit
-except OSError:
-	mw = windll.LoadLibrary(".\mw32.dll") # 32 bit
-	
-def app_window(window):
-	"Make target window into appwindow"
+	mw = windll.LoadLibrary(".\mw64.dll")
+except OSError: # Use 32 bit
+	mw = windll.LoadLibrary(".\mw32.dll")
+
+def applywindow (window):
+	""" Apply effect on the target window """
 	window.overrideredirect(True)
 	mw.gethwnd()
 	mw.setwindow()
@@ -25,8 +23,10 @@ def app_window(window):
 	window.focus_force()
 	
 class CTT(Tk):
-	"Custom Tkinter Titlebar"
+	""" A class for custom titlebar window """
+	
 	def __init__(self):
+		""" Class initialiser """
 		super().__init__()
 		self.colors = {
 			"Light": "#ffffff",
@@ -73,7 +73,6 @@ class CTT(Tk):
 		self._t3_hov_load = Image.open(path + "togglefull_100.png")
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
-
 		self.w, self.h = 265, 320
 		self.o_m = False
 		self.o_f = False
@@ -132,10 +131,6 @@ class CTT(Tk):
 		
 		self._titleexit.bind("<Enter>", self.exit_on_enter)
 		self._titleexit.bind("<Leave>", self.exit_on_leave)
-		self._titlemin.bind("<Enter>", self.min_on_enter)
-		self._titlemin.bind("<Leave>", self.min_on_leave)
-		self._titlemax.bind("<Enter>", self.max_on_enter)
-		self._titlemax.bind("<Leave>", self.max_on_leave)
 		
 		self._titleicon.bind("<Button-3>", self.popupmenu)
 		self._titleicon.bind("<Double-Button-1>", self.close)
@@ -147,26 +142,24 @@ class CTT(Tk):
 		self.iconbitmap(".\\asset\\tk.ico")
 		self.title("CTT")
 		
-		self.hwnd = mw.gethwnd()
-		app_window(self)
-		#self.addblur()
+		applywindow(self)
 		
 	def disabledo(self):
-		"For disable button get event's commmand"
+		""" For disalbe button get even't command """
 		pass
-
+	
 	def useicon(self, flag = True):
-		"Show icon"
+		""" Show icon """
 		if not flag:
 			self._titleicon.pack_forget()
-
-	def usetitle(self, flag = True):
-		"Show title text"
+	
+	def use_title(self, flag = True):
+		""" Show / forget titlebar"""
 		if not flag:
 			self._titletext.pack_forget()
-
+			
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
-		"Show / Disable min or max button"
+		""" Show / Disable min / max button """
 		if not minshow:
 			self._titlemin.pack_forget()
 		elif not minsize:
@@ -181,26 +174,26 @@ class CTT(Tk):
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
 			self._titlemax.unbind("<Enter>")
-
+	
 	def addblur(self, acrylic = True, dark = isDark()):
-		"Add blur / acrylic effect to window"
+		""" Add blur / acrylic effect to window """
 		if dark:
 			self.focus_force()
 			hwnd = windll.user32.GetForegroundWindow()
-			blur(hwnd = hwnd, hexColor = '#91203801',Dark = True, Acrylic = acrylic)
-
+			blur(hwnd = hwnd, hexColor = '#91203801',Dark = dark, Acrylic = acrylic)
+	
 	def popupmenu(self, event):
-		"Popup menu"
+		""" Popup menu """
 		self.popup.post(event.x_root, event.y_root)
-
+		
 	def dragging(self, event):
-		"Start drag window"
+		""" Start drag window """
 		global x, y
 		x = event.x
 		y = event.y
 
 	def moving(self, event):
-		"Window moving"
+		""" Window moving """
 		global x, y
 		if not self.o_m:
 			new_x, new_y = (event.x - x), (event.y - y)
@@ -209,12 +202,11 @@ class CTT(Tk):
 			self.resize()
 
 	def focusout(self, event):
-		"When focusout"
-		self.exit_on_enter()
-		self.min_on_enter()
-		self.max_on_enter()
+		""" When focusout """
+		self.exit_grey()
+		self.min_grey()
+		self.max_grey()
 		self.o_f = True
-		#self.usemaxmin(False, False)
 		self.titlebar["bg"] = self.nf
 		self._titleicon["bg"] = self.nf
 		self._titletext["bg"] = self.nf
@@ -223,12 +215,11 @@ class CTT(Tk):
 		self._titleexit["bg"] = self.nf
 
 	def focusin(self, event):
-		"When focusin"
+		""" When focusin """
 		self.o_f = False
-		self.exit_on_leave()
-		self.min_on_leave()
-		self.max_on_leave()
-		#self.usemaxmin(True, True)
+		self.exit_back()
+		self.min_back()
+		self.max_back()
 		self.titlebar["bg"] = self.bg
 		self._titleicon["bg"] = self.bg
 		self._titletext["bg"] = self.bg
@@ -237,7 +228,7 @@ class CTT(Tk):
 		self._titleexit["bg"] = self.bg
 
 	def resize(self):
-		"Resize window"
+		""" Resize window """ 
 		self.popup.entryconfig("Restore", state = "disabled")
 		self.popup.entryconfig("Maxsize", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
@@ -246,7 +237,7 @@ class CTT(Tk):
 		self.o_m = False
 
 	def maxsize(self, event = None):
-		"Maxsize Window"
+		""" Maxsize Window """
 		if event and self.o_m:
 			self.resize()
 		else:
@@ -260,61 +251,64 @@ class CTT(Tk):
 			self.sg("%dx%d+0+0" % (w, h - 40))
 	
 	def deminsize(self, event):
-		"Deminsize window"
+		""" Deminsize window """
 		self.attributes("-alpha", 1)
 		self.bind("<FocusIn>", self.focusin)
 		
 	def minsize(self):
-		"Minsize window"
+		""" Minsize window """
 		self.attributes("-alpha", 0)
 		self.bind("<FocusIn>", self.deminsize)
-
+	
 	def exit_on_enter(self, event = None):
-		"..."
+		""" ... """
 		if not self.o_f:
 			self._titleexit["background"] = self.colors["exit_fg"]
-			self._titleexit["image"] = self._t0_img
 
 	def exit_on_leave(self, event = None):
-		"..."
+		""" Function doc """
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
-			self._titleexit["image"] = self._t0_hov_img
 
-	def min_on_enter(self, event = None):
-		"..."
+	def exit_grey(self, event = None):
+		""" ... """
+		self._titleexit["image"] = self._t0_img
+
+	def exit_back(self, event = None):
+		""" ... """
+		self._titleexit["image"] = self._t0_hov_img
+			
+	def min_grey(self, event = None):
+		""" ... """
 		self._titlemin["image"] = self._t1_img
 
-	def min_on_leave(self, event = None):
-		"..."
-		if not self.o_f:
-			self._titlemin["image"] = self._t1_hov_img
+	def min_back(self, event = None):
+		""" ... """
+		self._titlemin["image"] = self._t1_hov_img
 
-	def max_on_enter(self, event = None):
-		"..."
-		if not self.o_f:
-			if not self.o_m:
-				self._titlemax["image"] = self._t2_img
-			else:
-				self._titlemax["image"] = self._t3_img
+	def max_grey(self, event = None):
+		""" ... """
+		if not self.o_m:
+			self._titlemax["image"] = self._t2_img
+		else:
+			self._titlemax["image"] = self._t3_img
 
-	def max_on_leave(self, event = None):
-		"..."
-		if not self.o_f:
-			if not self.o_m:
-				self._titlemax["image"] = self._t2_hov_img
-			else:
-				self._titlemax["image"] = self._t3_hov_img
+	def max_back(self, event = None):
+		""" ... """
+		if not self.o_m:
+			self._titlemax["image"] = self._t2_hov_img
+		else:
+			self._titlemax["image"] = self._t3_hov_img
 
 	def title(self, text):
-		"Rebuild tkinter's title"
+		""" Rebuild tkinter's title """
 		if len(text) > 15:
 			text = text[:15] + "..."
 		self._titletext["text"] = text
 		self.wm_title(text)
 
 	def iconbitmap(self, image):
-		"Rebuild tkinter's iconbitmap"
+		""" Rebuild tkinter's iconbitmap """
 		self._icon = Image.open(image)
 		self._icon = self._icon.resize((16, 16))
 		self._img = ImageTk.PhotoImage(self._icon)
@@ -322,22 +316,23 @@ class CTT(Tk):
 		self.wm_iconbitmap(image)
 
 	def close(self, event = None):
+		""" Close Window """
 		self.destroy()
 	
 	def geometry(self, w, h):
-		"Change the self.w and self.h forcely"
+		""" Change the self.w and self.h forcely """
 		self.w, self.h = w, h
 		self.sg("%sx%s" % (self.w, self.h))
 
 	def sg(self, size):
-		"Rebuild tkinter's geometry"
+		""" Rebuild tkinter's geometry """
 		if self.w and self.h:
 			pass
 		else:
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
-		self.wm_geometry(size)
-		
+		self.wm_geometry(size)		
+	
 if __name__ == "__main__":
-	example = CTT()
+	example = CTT() # Test
 	#example.addblur()
 	example.mainloop()
