@@ -7,7 +7,7 @@ try:
 	from BlurWindow.blurWindow import blur
 except:
 	from os import system
-	system(".\build,bat")
+	system(".\build.bat")
 	from PIL import Image, ImageTk
 	from darkdetect import isDark
 	from BlurWindow.blurWindow import blur
