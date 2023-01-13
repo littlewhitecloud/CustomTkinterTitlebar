@@ -156,7 +156,7 @@ class CTT(Tk):
 		if not flag:
 			self._titleicon.pack_forget()
 	
-	def use_title(self, flag = True):
+	def usetitle(self, flag = True):
 		""" Show / forget titlebar"""
 		if not flag:
 			self._titletext.pack_forget()
