@@ -23,12 +23,10 @@ def applywindow (window):
 	mw.setwindow()
 	window.withdraw()
 	window.deiconify()
-	window.focus_force()
 	
 class CTT(Tk):
 	""" A class for custom titlebar window """
-	
-	def __init__(self):
+	def __init__(self, theme = "followsystem"):
 		""" Class initialiser """
 		super().__init__()
 		self.colors = {
@@ -46,20 +44,16 @@ class CTT(Tk):
 			"dark_bg": "#202020"
 		}
 		path = getcwd() + "\\asset\\"
-		if isDark():
-			path += "dark\\"
-			self.theme = "dark"
-			self.bg = self.colors["dark"]
-			self.nf = self.colors["dark_nf"]
-			self.fg = "light"
-			self["background"] = self.colors["dark_bg"]
+		if theme == "followsystem":
+			if isDark():
+				path += "dark\\"
+				self.settheme("dark")
+			else:
+				path += "light\\"
+				self.settheme("light")
 		else:
-			path += "light\\"
-			self.theme = "light"
-			self.bg = self.colors["light"]
-			self.nf = self.colors["light_nf"]
-			self.fg = "dark"
-
+			path += "%s\\" % theme 
+			self.settheme(theme)
 		self._t0_load = Image.open(path + "close_50.png")
 		self._t0_hov_load = Image.open(path + "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
@@ -146,6 +140,7 @@ class CTT(Tk):
 		self.title("CTT")
 		
 		applywindow(self)
+		self.focus_force()
 		
 	def disabledo(self):
 		""" For disalbe button get even't command """
@@ -335,6 +330,18 @@ class CTT(Tk):
 			self.w, self.h = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)		
 	
+	def settheme(self, theme):
+		if theme == "dark":
+			self.theme = "dark"
+			self.bg = self.colors["dark"]
+			self.nf = self.colors["dark_nf"]
+			self.fg = "light"
+			self["background"] = self.colors["dark_bg"]
+		else:
+			self.theme = "light"
+			self.bg = self.colors["light"]
+			self.nf = self.colors["light_nf"]
+			self.fg = "dark"
 if __name__ == "__main__":
 	example = CTT() # Test
 	#example.addblur()
