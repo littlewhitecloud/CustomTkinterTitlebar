@@ -6,7 +6,9 @@
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面！(This is a project can help you to have a custom titlebar! Widgets can add into titlebar!)*
 #### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目 (More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 > 文章其实在下面 (有删改)
-### 📚 维基 (wiki):
+### 📚 _*维基*_ _*(wiki)*_:
+#### 如果你想知道如何使用你能调用的函数的话，请访问CustomTkinterTitlebar的维基的Script部分: 
+(If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:)
 https://github.com/littlewhitecloud/CustomTkinterTitlebar/wiki
 ### 🎰 样例 (demo):
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
