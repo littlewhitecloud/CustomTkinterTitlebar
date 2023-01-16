@@ -16,7 +16,7 @@ try:
 except OSError: # Use 32 bit
 	mw = windll.LoadLibrary(".\mw32.dll")
 
-def applywindow (window):
+def applywindow(window):
 	""" Apply effect on the target window """
 	window.overrideredirect(True)
 	mw.gethwnd()
@@ -54,6 +54,7 @@ class CTT(Tk):
 		else:
 			path += "%s\\" % theme 
 			self.settheme(theme)
+		
 		self._t0_load = Image.open(path + "close_50.png")
 		self._t0_hov_load = Image.open(path + "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
@@ -142,6 +143,17 @@ class CTT(Tk):
 		applywindow(self)
 		self.focus_force()
 	
+	# Titlebar
+	def titlebarconfig(self, color = {"color": None, "color_nf": None}, height = 30):
+		""" Config for titlebar """
+		if color["color"] and color["color_nf"]: # Require two colors
+			self.bg = color["color"]
+			self.nf = color["color_nf"]
+			self["background"] = color["color"]
+			
+		if height > 30 and height <= 50: # Limit for titlebar height
+			self.titlebar["height"] = height
+	
 	# Titlename
 	def title(self, text):
 		""" Rebuild tkinter's title """
@@ -157,11 +169,11 @@ class CTT(Tk):
 		self._titletext["foreground"] = "white"
 	
 	def usetitle(self, flag = True):
-		""" Show / forget titlebar"""
+		""" Show / forget titlename """
 		if not flag:
 			self._titletext.pack_forget()	
 	
-	def titleconfig(self, pack = "left", font = None):
+	def titlenameconfig(self, pack = "left", font = None):
 		""" Config the titlename """
 		self.usetitle(False)
 		if pack == "left":
@@ -175,9 +187,8 @@ class CTT(Tk):
 			self._titletext.config(font = font)
 	
 	# Titleicon
-	
 	def useicon(self, flag = True):
-		""" Show icon """
+		""" Show / forget icon """
 		if not flag:
 			self._titleicon.pack_forget()
 	
@@ -204,13 +215,14 @@ class CTT(Tk):
 	# Titlebutton
 	def exit_on_enter(self, event = None):
 		""" ... """
-		if not self.o_f:
-			self._titleexit["background"] = self.colors["exit_fg"]
+		self._titleexit["background"] = self.colors["exit_fg"]
 
 	def exit_on_leave(self, event = None):
 		""" Function doc """
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
+		else:
+			self._titleexit["background"] = self.nf
 
 	def exit_grey(self, event = None):
 		""" ... """
@@ -223,7 +235,7 @@ class CTT(Tk):
 	def min_grey(self, event = None):
 		""" ... """
 		self._titlemin["image"] = self._t1_img
-
+	
 	def min_back(self, event = None):
 		""" ... """
 		self._titlemin["image"] = self._t1_hov_img
@@ -264,7 +276,6 @@ class CTT(Tk):
 			self._titlemax.unbind("<Enter>")
 
 	# Window
-
 	def moving(self, event):
 		""" Window moving """
 		global x, y
@@ -359,6 +370,7 @@ class CTT(Tk):
 		self.wm_geometry(size)		
 
 	def settheme(self, theme):
+		""" Set the window's theme """
 		if theme == "dark":
 			self.theme = "dark"
 			self.bg = self.colors["dark"]
@@ -380,5 +392,6 @@ class CTT(Tk):
 
 if __name__ == "__main__":
 	example = CTT() # Test
-	example.addblur()
+	example.titlebarconfig(color = {"color": "#114514", "color_nf": "#114519"})
+	example.titlenameconfig(font = ("Consolas", 11, "italic"), pack = "BOTTOM")
 	example.mainloop()
