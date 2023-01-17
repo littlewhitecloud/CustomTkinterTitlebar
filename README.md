@@ -9,7 +9,7 @@
 ### 📚 _*维基*_ _*(wiki)*_:
 #### 如果你想知道如何使用你能调用的函数的话，请访问CustomTkinterTitlebar的维基的Script部分: 
 (If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:)
-https://github.com/littlewhitecloud/CustomTkinterTitlebar/wiki
+https://github.com/littlewhitecloud/CustomTkinterTitlebar/wiki/Script
 ### 🎰 样例 (demo):
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
 ### 🖼 预览 (View) : 
