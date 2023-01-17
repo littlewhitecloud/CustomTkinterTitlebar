@@ -5,11 +5,12 @@ from PIL import Image, ImageTk
 from darkdetect import isDark
 from BlurWindow.blurWindow import blur
 from pathlib import Path
+env = Path(__file__).parent
 
 try:
-	mw = windll.LoadLibrary(str(Path(__file__).parent / "mw64.dll"))
+	mw = windll.LoadLibrary(str(env / "mw64.dll"))
 except OSError: # Use 32 bit
-	mw = windll.LoadLibrary(str(Path(__file__).parent / "mw32.dll"))
+	mw = windll.LoadLibrary(str(env / "mw32.dll"))
 
 def applywindow(window):
 	""" Apply effect on the target window """
@@ -38,7 +39,7 @@ class CTT(Tk):
 			"light_nf": "#f2efef",
 			"dark_bg": "#202020"
 		}
-		path = Path(__file__).parent / "asset"
+		path = env / "asset"
 		if theme == "followsystem":
 			if isDark():
 				path /= "dark"
@@ -132,7 +133,7 @@ class CTT(Tk):
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
 		
 		self.sg("%sx%s" % (self.w, self.h))
-		self.iconbitmap(".\\asset\\tk.ico")
+		self.iconbitmap(env / "asset" / "tk.ico")
 		self.title("CTT")
 		
 		applywindow(self)
