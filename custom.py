@@ -1,20 +1,15 @@
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from os import getcwd
 from ctypes import windll
+from PIL import Image, ImageTk
+from darkdetect import isDark
+from BlurWindow.blurWindow import blur
+from pathlib import Path
+
 try:
-	from PIL import Image, ImageTk
-	from darkdetect import isDark
-	from BlurWindow.blurWindow import blur
-except:
-	from os import system
-	system(".\build.bat")
-	from PIL import Image, ImageTk
-	from darkdetect import isDark
-	from BlurWindow.blurWindow import blur
-try:
-	mw = windll.LoadLibrary(".\mw64.dll")
+	mw = windll.LoadLibrary(str(Path(__file__).parent / "mw64.dll"))
 except OSError: # Use 32 bit
-	mw = windll.LoadLibrary(".\mw32.dll")
+	mw = windll.LoadLibrary(str(Path(__file__).parent / "mw32.dll"))
 
 def applywindow(window):
 	""" Apply effect on the target window """
@@ -43,32 +38,32 @@ class CTT(Tk):
 			"light_nf": "#f2efef",
 			"dark_bg": "#202020"
 		}
-		path = getcwd() + "\\asset\\"
+		path = Path(__file__).parent / "asset"
 		if theme == "followsystem":
 			if isDark():
-				path += "dark\\"
+				path /= "dark"
 				self.settheme("dark")
 			else:
-				path += "light\\"
+				path /= "light"
 				self.settheme("light")
 		else:
-			path += "%s\\" % theme 
+			path /= theme 
 			self.settheme(theme)
 		
-		self._t0_load = Image.open(path + "close_50.png")
-		self._t0_hov_load = Image.open(path + "close_100.png")
+		self._t0_load = Image.open(path / "close_50.png")
+		self._t0_hov_load = Image.open(path / "close_100.png")
 		self._t0_img = ImageTk.PhotoImage(self._t0_load)
 		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
-		self._t1_load = Image.open(path + "minisize_50.png")
-		self._t1_hov_load = Image.open(path + "minisize_100.png")
+		self._t1_load = Image.open(path / "minisize_50.png")
+		self._t1_hov_load = Image.open(path / "minisize_100.png")
 		self._t1_img = ImageTk.PhotoImage(self._t1_load)
 		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
-		self._t2_load = Image.open(path + "fullwin_50.png")
-		self._t2_hov_load = Image.open(path + "fullwin_100.png")
+		self._t2_load = Image.open(path / "fullwin_50.png")
+		self._t2_hov_load = Image.open(path / "fullwin_100.png")
 		self._t2_img = ImageTk.PhotoImage(self._t2_load)
 		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
-		self._t3_load = Image.open(path + "togglefull_50.png")
-		self._t3_hov_load = Image.open(path + "togglefull_100.png")
+		self._t3_load = Image.open(path / "togglefull_50.png")
+		self._t3_hov_load = Image.open(path / "togglefull_100.png")
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 		self.w, self.h = 265, 320
@@ -347,6 +342,7 @@ class CTT(Tk):
 		self.title_back()
 		self.titlebar["bg"] = self.bg
 		self._titleicon["bg"] = self.bg
+		self._titletext["fg"] = self.colors[self.fg]
 		self._titletext["bg"] = self.bg
 		self._titlemin["bg"] = self.bg
 		self._titlemax["bg"] = self.bg
@@ -392,6 +388,6 @@ class CTT(Tk):
 
 if __name__ == "__main__":
 	example = CTT() # Test
-	example.titlebarconfig(color = {"color": "#114514", "color_nf": "#114519"})
-	example.titlenameconfig(font = ("Consolas", 11, "italic"), pack = "BOTTOM")
+	#example.titlebarconfig(color = {"color": "#114514", "color_nf": "#114519"})
+	#example.titlenameconfig(font = ("Consolas", 11, "italic"), pack = "BOTTOM")
 	example.mainloop()
