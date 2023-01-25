@@ -1,5 +1,4 @@
 # 📜 _自定义标题栏 CustomTkinterTitlebar_ <img src="https://img.shields.io/badge/Python-3.11.1-blue.svg?color=#0c63ba" alt="Python 3.11.1"/>
-##  🎉🎉🎉 🧨新年快乐🧨 🎉🎉🎉
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 #### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
 ### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project!
@@ -86,75 +85,3 @@ example.mainloop()
 > **可能也支持Windows 11, 我用的是Windows 10, 未测试过**
 #### It support Windows 10 32 / 64 bit now.
 > **Maybe it also support Windows 11, I am using Windows 10, I didn't test this project on Windows 11 yet**
-
-## The doc doesn't support English now. I will try to translate it.
-### 文章：
-#### 整个事情的大概：
-> _一个月前，我就看到有许多自定义标题栏的样例，我很羡慕。
-> 于是我就在想，tkinter能不能做到呢，于是，在我一个月以前就开始挖坑了……
-> 直到这一个月，我才开始去填这个坑，因为终于到了周末嘛，我把作业在周五晚上都刷完了，并且也没什么事情，闲来无事，找到了遗弃下来的这个坑，于是就开始填了……_
-#### 想法：
-> 先 **overrideredirect** 窗口，_使窗口失去标题栏&边框以及后面很麻烦的任务栏上的图标_。
-> 然后创建一个 _Frame 设置图标，文本，最大化，最小化，关闭按钮~_
-> 最后在随便完善一下，就好了。
-### 理论好像存在，实践有很多问题。
-#### 细节：
-> - 把鼠标放在三个按钮之上的时候或显示50%透明的按钮
-> - 双击标题栏会 最大化 / 最小化
-> - 右键图标会有功能菜单
-> - 增加 *Acrylic Blur*
-> - 可拖动标题栏移动窗口
-> - 可以放置任何组件 **（Menu 不可以）** 在标题栏内
-
-开发时遇到的问题：
-> 1.如何最小化
->> - 直接最小化会出问题
->> - 奇葩的解决办法：
->>> 先取消overrideredirect，在最小化就好了：
-```python
-	def minsize(self):
-		self.overrideredirect(False)
-		self.o_flag = False # 待会再讲 o_flag什么意义
-		self.state("iconic")
-```		
-> 2.最小化后再打开
->> - 会出现原标题栏
->> - 解决方案：
->>> - 先检查state 是不是"iconic", 如果是，并且o_flag是假的时候执行overrideredirect
->>> - o_flag(overrideredirect_flag): 窗口是否被overrideredirect
-```python
-	def check(self):
-		if self.state() != "iconic" and self.o_flag == False:
-			self.overrideredirect(True)
-			self.o_flag = True
-			
-		self.after(500, self.check) #每500秒刷新一次 如果你的电脑性能高的话，可以改成 100
-```
-> 3.如何移动：
-```python
-	def Dragging(self, event):
-		global x, y
-		x = event.x
-		y = event.y
-
-	def Stopping(self, event):
-		x = None
-		y = None
-
-	def Moving(self, event):
-		global x, y
-		deltax = event.x - x
-		deltay = event.y - y
-		self.geometry("+%s+%s" % (self.winfo_x() + deltax, self.winfo_y() + deltay))
-		self.update()
-```
-> 4.最大化
->> 直接“暴力”点：
->>> self.state("zoomed")
-
-#### 现存的BUG：
-> - #1 这个版本只能使用黑暗模式，还没做光亮模式
-> - #2 双击标题栏最大化后，最大化图标会出现问题
-> - #3 全屏会“全屏”
-> - #4 当有菜单的时候，菜单会在标题栏上方
-### 感谢看完这篇文档
