@@ -1,24 +1,16 @@
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
-from os import getcwd
-from ctypes import windll
+from BlurWindow.blurWindow import blur
+from ctypes import windll, c_char_p
 from PIL import Image, ImageTk
 from darkdetect import isDark
-from BlurWindow.blurWindow import blur
 from pathlib import Path
+from os import getcwd
+
 env = Path(__file__).parent
-
 try:
-	mw = windll.LoadLibrary(str(env / "mw64.dll"))
+	plugin = windll.LoadLibrary(str(env / "plugin64.dll"))
 except OSError: # Use 32 bit
-	mw = windll.LoadLibrary(str(env / "mw32.dll"))
-
-def applywindow(window):
-	""" Apply effect on the target window """
-	window.overrideredirect(True)
-	mw.gethwnd()
-	mw.setwindow()
-	window.withdraw()
-	window.deiconify()
+	plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
 	
 class CTT(Tk):
 	""" A class for custom titlebar window """
@@ -135,8 +127,13 @@ class CTT(Tk):
 		self.sg("%sx%s" % (self.w, self.h))
 		self.iconbitmap(env / "asset" / "tk.ico")
 		self.title("CTT")
-		
-		applywindow(self)
+		self.overrideredirect(True)
+
+		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
+		plugin.setwindow(self.hwnd)
+			
+		self.withdraw()
+		self.deiconify()
 		self.focus_force()
 	
 	# Titlebar
@@ -276,8 +273,7 @@ class CTT(Tk):
 		""" Window moving """
 		global x, y
 		if not self.o_m:
-			new_x, new_y = (event.x - x), (event.y - y)
-			mw.moving(self.winfo_x(), self.winfo_y(), new_x, new_y)
+			plugin.move(self.hwnd, self.winfo_x(), self.winfo_y(), event.x - x, event.y - y)
 		else:
 			self.resize()
 

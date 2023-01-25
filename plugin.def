@@ -1,0 +1,5 @@
+; plugin.def plugin.cpp -> plugin.dll
+LIBRARY plugin.dll
+EXPORTS
+	move @1
+	setwindow @2
