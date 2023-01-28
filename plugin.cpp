@@ -3,11 +3,6 @@
 	Use function : "SetWindowLong" to change window's attribute.
 	Include : windows.h
 	Compile with : mw.def
-	__declspec(dllexport) HWND gethwnd() {
-		<Get target window's hwnd and set it>
-		no args
-		hwnd = findwindow("...")
-	}
 	__declspec(dllexport) void moving(int x, int y, int eventx, int eventy) {
 		<move window's funcition>
 		x, y, eventx, eventy : int
