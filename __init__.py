@@ -288,6 +288,10 @@ class CTT(Tk):
 		if event and self.o_m:
 			self.resize()
 		else:
+			geometry = self.wm_geometry().split("+")[0].split("x")
+			self.w, self.h = geometry[0], geometry[1]
+			print(self.w, self.h)
+			
 			self.popup.entryconfig("Restore", state = "active")
 			self.popup.entryconfig("Maxsize", state = "disabled")
 			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
