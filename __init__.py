@@ -4,32 +4,27 @@ from ctypes import windll, c_char_p
 from PIL import Image, ImageTk
 from darkdetect import isDark
 from pathlib import Path
-from os import getcwd
+from os import getcwd, system
 
 env = Path(__file__).parent
 try:
 	plugin = windll.LoadLibrary(str(env / "plugin64.dll"))
 except OSError: # Use 32 bit
 	plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
-	
+except FileNotFoundError:
+	system("pip install CustomTkinterTitlebar --force-reinstall")
+
 class CTT(Tk):
 	""" A class for custom titlebar window """
 	def __init__(self, theme = "followsystem"):
 		""" Class initialiser """
 		super().__init__()
 		self.colors = {
-			"Light": "#ffffff",
-			"Dark": "#2b2b2b",
-			"button_activebg": "#e5e5e5",
-			"button_activefg": "#e5e5e5",
-			"lightexit_bg": "#f1707a",
-			"darkexit_bg": "#8b0a14",
-			"exit_fg": "#e81123",
-			"dark": "#000000",
-			"dark_nf": "#2b2b2b",
-			"light": "#ffffff",
-			"light_nf": "#f2efef",
-			"dark_bg": "#202020"
+			"Light": "#ffffff", "Dark": "#2b2b2b",
+			"light": "#ffffff", "light_nf": "#f2efef",
+			"button_activebg": "#e5e5e5", "button_activefg": "#e5e5e5",
+			"dark": "#000000", "dark_nf": "#2b2b2b", "dark_bg": "#202020",
+			"lightexit_bg": "#f1707a", "darkexit_bg": "#8b0a14", "exit_fg": "#e81123",
 		}
 		path = env / "asset"
 		if theme == "followsystem":
@@ -59,9 +54,9 @@ class CTT(Tk):
 		self._t3_hov_load = Image.open(path / "togglefull_100.png")
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
+		
 		self.w, self.h = 265, 320
-		self.o_m = False
-		self.o_f = False
+		self.o_m = self.o_f = False
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "Restore", command = self.resize)
 		self.popup.add_command(label = "Minsize", command = self.minsize)
@@ -80,7 +75,7 @@ class CTT(Tk):
 		self._titleexit.config(bd = 0,
 			activeforeground = self.colors["exit_fg"],
 			activebackground = self.colors["%sexit_bg" % self.theme],
-			width = 45,
+			width = 44,
 			image = self._t0_hov_img,
 			relief = FLAT,
 			command = self.quit
@@ -88,7 +83,7 @@ class CTT(Tk):
 		self._titlemin.config(bd = 0,
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
-			width = 45,
+			width = 44,
 			image = self._t1_hov_img,
 			relief = FLAT,
 			command = self.minsize
@@ -96,19 +91,11 @@ class CTT(Tk):
 		self._titlemax.config(bd = 0,
 			activeforeground = self.colors["button_activefg"],
 			activebackground = self.bg,
-			width = 45,
+			width = 44,
 			image = self._t2_hov_img,
 			relief = FLAT,
 			command = self.maxsize
 		)
-	
-		self._titleicon.pack(fill = Y, side = LEFT, padx = 5, pady = 5)
-		self._titletext.pack(fill = Y, side = LEFT, pady = 5)
-		self._titleexit.pack(fill = Y, side = RIGHT)
-		self._titlemax.pack(fill = Y, side = RIGHT)
-		self._titlemin.pack(fill = Y, side = RIGHT)
-		self.titlebar.pack(fill = X, side = TOP)
-		self.titlebar.pack_propagate(0)
 		
 		# binds & after
 		self.bind("<FocusOut>", self.focusout)
@@ -124,18 +111,15 @@ class CTT(Tk):
 		self.titlebar.bind("<B1-Motion>", self.moving)
 		self.titlebar.bind("<Double-Button-1>", self.maxsize)
 		
-		self.sg("%sx%s" % (self.w, self.h))
-		self.iconbitmap(env / "asset" / "tk.ico")
-		self.title("CTT")
-		self.overrideredirect(True)
-
-		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
-		plugin.setwindow(self.hwnd)
-			
-		self.withdraw()
-		self.deiconify()
-		self.focus_force()
-	
+		self._titleicon.pack(fill = Y, side = LEFT, padx = 5, pady = 5)
+		self._titletext.pack(fill = Y, side = LEFT, pady = 5)
+		self._titleexit.pack(fill = Y, side = RIGHT)
+		self._titlemax.pack(fill = Y, side = RIGHT)
+		self._titlemin.pack(fill = Y, side = RIGHT)
+		self.titlebar.pack(fill = X, side = TOP)
+		self.titlebar.pack_propagate(0)
+		self.setup()
+		
 	# Titlebar
 	def titlebarconfig(self, color = {"color": None, "color_nf": None}, height = 30):
 		""" Config for titlebar """
@@ -269,6 +253,18 @@ class CTT(Tk):
 			self._titlemax.unbind("<Enter>")
 
 	# Window
+	def setup(self):
+		""" Window Setup """
+		self.sg("%sx%s" % (self.w, self.h))
+		self.iconbitmap(env / "asset" / "tk.ico")
+		self.title("CTT")
+		self.overrideredirect(True)
+		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
+		plugin.setwindow(self.hwnd)
+		self.withdraw()
+		self.deiconify()
+		self.focus_force()
+		
 	def moving(self, event):
 		""" Window moving """
 		global x, y
@@ -383,12 +379,11 @@ class CTT(Tk):
 	def addblur(self, acrylic = True, dark = isDark()):
 		""" Add blur / acrylic effect to window """
 		if dark:
-			self.focus_force()
-			hwnd = windll.user32.GetForegroundWindow()
-			blur(hwnd = hwnd, hexColor = '#91203801',Dark = dark, Acrylic = acrylic)
+			blur(hwnd = self.hwnd, hexColor = '#19191800', Dark = dark, Acrylic = acrylic)
 
 if __name__ == "__main__":
-	example = CTT() # Test
+	example = CTT()
+	#example.addblur(False)
 	#example.titlebarconfig(color = {"color": "#114514", "color_nf": "#114519"})
 	#example.titlenameconfig(font = ("Consolas", 11, "italic"), pack = "BOTTOM")
 	example.mainloop()

@@ -2,7 +2,7 @@
 
 echo off
 echo You can use this file to build the project
-echo Require VS 2022 (C/C++ Install) & Python >= 3.11.1 (Or lower(Not recommended))
+echo Require VS 2022 (C/C++ Install) & Python 3.11.1 (Or lower(Not recommended))
 echo Tip
 echo If you set the cl.exe in system path, you can use this file to build dll in normal console
 echo If not, you can do this:
@@ -13,9 +13,9 @@ pause
 
 echo Start install the inneed package
 python -m pip install --upgrade pip
-pip install pillow >= 9.4.0
-pip install darkdetect >= 0.8.0
-pip install blurwindow >= 1.2.1
+pip install pillow
+pip install darkdetect
+pip install blurwindow
 
 echo Start building the plugin.dll ...
 echo You can open the Developer PowerShell for VS 2022 and use "cd" to this path do ".\build.bat"
