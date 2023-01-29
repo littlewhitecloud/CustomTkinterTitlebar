@@ -23,9 +23,9 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 #### 插入组件 (insert component to titlebar) :
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 #### 模糊 (Blur):
-![image](https://user-images.githubusercontent.com/71159641/209063710-fa11556b-ca04-41db-a6d4-29b6ed3ce329.png)
+![image](https://user-images.githubusercontent.com/71159641/215318923-521c5efd-856b-42eb-aab8-02bc5ad4727e.png)
 #### 亚克力 (Fluent) :
-![image](https://user-images.githubusercontent.com/71159641/208341143-b9d01ff0-c530-414c-be5d-38be9f55949b.png)
+![image](https://user-images.githubusercontent.com/71159641/215318920-a5bce119-c343-40fd-b068-9ecbe444a60f.png)
 #### 自定义图标和名称 (icon & windowtext):
 ![image](https://user-images.githubusercontent.com/71159641/209605935-e82470ce-e0d2-4244-9299-dbcf666c7e6b.png)
 ![image](https://user-images.githubusercontent.com/71159641/209605940-c9c58cd9-6ff3-4455-9f7f-229611a67cda.png)
@@ -39,9 +39,9 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 ![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
 ![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
 #### 聚焦 (Focus on) :
-![image](https://user-images.githubusercontent.com/71159641/212060937-ab70e393-f65a-4fc5-ae77-e301fea74cd2.png)
+![image](https://user-images.githubusercontent.com/71159641/215319000-31c6081d-3ab5-4ca8-9433-a8033a152aae.png)
 #### 未聚焦 (Focus out) :
-![image](https://user-images.githubusercontent.com/71159641/212060945-5633832d-ee07-462d-82bc-40d4afe41b25.png)
+![image](https://user-images.githubusercontent.com/71159641/215319002-1b6d2af9-2895-4fe2-800e-637761f08ff5.png)
 
 ### 📦 需求 (Require):
 > - _Windows 10_
