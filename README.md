@@ -39,9 +39,9 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 ![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
 ![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
 #### 聚焦 (Focus on) :
-![image](https://user-images.githubusercontent.com/71159641/215319000-31c6081d-3ab5-4ca8-9433-a8033a152aae.png)
-#### 未聚焦 (Focus out) :
 ![image](https://user-images.githubusercontent.com/71159641/215319002-1b6d2af9-2895-4fe2-800e-637761f08ff5.png)
+#### 未聚焦 (Focus out) :
+![image](https://user-images.githubusercontent.com/71159641/215319000-31c6081d-3ab5-4ca8-9433-a8033a152aae.png)
 
 ### 📦 需求 (Require):
 > - _Windows 10_
