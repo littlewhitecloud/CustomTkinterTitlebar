@@ -16,13 +16,12 @@ except FileNotFoundError:
 
 class CTT(Tk):
 	""" A class for custom titlebar window """
-	def __init__(self, theme = "followsystem"):
+	def __init__(self, theme : str = "followsystem"):
 		""" Class initialiser """
 		super().__init__()
 		self.colors = {
-			"Light": "#ffffff", "Dark": "#2b2b2b",
 			"light": "#ffffff", "light_nf": "#f2efef",
-			"button_activebg": "#e5e5e5", "button_activefg": "#e5e5e5",
+			"button_activefg": "#e5e5e5",
 			"dark": "#000000", "dark_nf": "#2b2b2b", "dark_bg": "#202020",
 			"lightexit_bg": "#f1707a", "darkexit_bg": "#8b0a14", "exit_fg": "#e81123",
 		}
@@ -35,7 +34,7 @@ class CTT(Tk):
 				path /= "light"
 				self.settheme("light")
 		else:
-			path /= theme 
+			path /= theme
 			self.settheme(theme)
 		
 		self._t0_load = Image.open(path / "close_50.png")
@@ -55,7 +54,7 @@ class CTT(Tk):
 		self._t3_img = ImageTk.PhotoImage(self._t3_load)
 		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
 		
-		self.w, self.h = 265, 320
+		self.width, self.height = 265, 320
 		self.o_m = self.o_f = False
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "Restore", command = self.resize)
@@ -64,7 +63,7 @@ class CTT(Tk):
 		self.popup.add_separator()
 		self.popup.add_command(label = "Close (Alt+F4)", command = self.destroy)
 		self.popup.entryconfig("Restore", state = "disabled")
-		
+
 		self.titlebar = Frame(self, bg = self.bg, height = 30)
 		self._titleicon = Label(self.titlebar, bg = self.bg)
 		self._titletext = Label(self.titlebar, bg = self.bg, fg = self.colors[self.fg])
@@ -73,7 +72,6 @@ class CTT(Tk):
 		self._titleexit = Button(self.titlebar, bg = self.bg)
 
 		self._titleexit.config(bd = 0,
-			activeforeground = self.colors["exit_fg"],
 			activebackground = self.colors["%sexit_bg" % self.theme],
 			width = 44,
 			image = self._t0_hov_img,
@@ -81,16 +79,14 @@ class CTT(Tk):
 			command = self.quit
 		)
 		self._titlemin.config(bd = 0,
-			activeforeground = self.colors["button_activefg"],
-			activebackground = self.bg,
+			activebackground = self.colors["button_activefg"],
 			width = 44,
 			image = self._t1_hov_img,
 			relief = FLAT,
 			command = self.minsize
 		)
 		self._titlemax.config(bd = 0,
-			activeforeground = self.colors["button_activefg"],
-			activebackground = self.bg,
+			activebackground = self.colors["button_activefg"],
 			width = 44,
 			image = self._t2_hov_img,
 			relief = FLAT,
@@ -104,7 +100,16 @@ class CTT(Tk):
 		
 		self._titleexit.bind("<Enter>", self.exit_on_enter)
 		self._titleexit.bind("<Leave>", self.exit_on_leave)
-		
+	
+		if not isDark(): # Now just enable on light mode sry
+			# Next step: Support dark mode activefg
+			self._titlemax.bind("<Enter>", self.max_grey)
+			self._titlemax.bind("<Leave>", self.max_back)
+			self._titlemin.bind("<Enter>", self.min_on_enter)
+			self._titlemin.bind("<Leave>", self.min_on_leave)
+			self._titlemax.bind("<Enter>", self.max_on_enter)
+			self._titlemax.bind("<Leave>", self.max_on_leave)
+	
 		self._titleicon.bind("<Button-3>", self.popupmenu)
 		self._titleicon.bind("<Double-Button-1>", self.close)
 		self.titlebar.bind("<ButtonPress-1>", self.dragging)
@@ -148,7 +153,7 @@ class CTT(Tk):
 	def usetitle(self, flag = True):
 		""" Show / forget titlename """
 		if not flag:
-			self._titletext.pack_forget()	
+			self._titletext.pack_forget()
 	
 	def titlenameconfig(self, pack = "left", font = None):
 		""" Config the titlename """
@@ -208,6 +213,14 @@ class CTT(Tk):
 	def exit_back(self, event = None):
 		""" ... """
 		self._titleexit["image"] = self._t0_hov_img
+	
+	def min_on_enter(self, event = None):
+		""" ... """
+		self._titlemin["background"] = self.colors["button_activefg"]
+	
+	def min_on_leave(self, event = None):
+		""" ... """
+		self._titlemin["background"] = self.bg
 		
 	def min_grey(self, event = None):
 		""" ... """
@@ -216,7 +229,15 @@ class CTT(Tk):
 	def min_back(self, event = None):
 		""" ... """
 		self._titlemin["image"] = self._t1_hov_img
-
+	
+	def max_on_enter(self, event = None):
+		""" ... """
+		self._titlemax["background"] = self.colors["button_activefg"]
+	
+	def max_on_leave(self, event = None):
+		""" ... """
+		self._titlemax["background"] = self.bg
+	
 	def max_grey(self, event = None):
 		""" ... """
 		if not self.o_m:
@@ -240,14 +261,14 @@ class CTT(Tk):
 		if not minshow:
 			self._titlemin.pack_forget()
 		elif not minsize:
-			self.min_on_enter(None)
+			self.min_grey(None)
 			self._titlemin["command"] = self.disabledo
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
 		if not maxshow:
 			self._titlemax.pack_forget()
 		elif not maxsize:
-			self.max_on_enter(None)
+			self.max_grey(None)
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
 			self._titlemax.unbind("<Enter>")
@@ -255,7 +276,7 @@ class CTT(Tk):
 	# Window
 	def setup(self):
 		""" Window Setup """
-		self.sg("%sx%s" % (self.w, self.h))
+		self.geometry("%sx%s" % (self.width, self.height))
 		self.iconbitmap(env / "asset" / "tk.ico")
 		self.title("CTT")
 		self.overrideredirect(True)
@@ -285,9 +306,7 @@ class CTT(Tk):
 			self.resize()
 		else:
 			geometry = self.wm_geometry().split("+")[0].split("x")
-			self.w, self.h = geometry[0], geometry[1]
-			print(self.w, self.h)
-			
+			self.width, self.height = geometry[0], geometry[1]
 			self.popup.entryconfig("Restore", state = "active")
 			self.popup.entryconfig("Maxsize", state = "disabled")
 			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
@@ -295,13 +314,13 @@ class CTT(Tk):
 			self._titlemax["image"] = self._t3_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
-			self.sg("%dx%d+0+0" % (w, h - 40))
+			self.geometry("%dx%d+0+0" % (w, h - 40))
 
 	def resize(self):
 		""" Resize window """ 
 		self.popup.entryconfig("Restore", state = "disabled")
 		self.popup.entryconfig("Maxsize", state = "active")
-		self.wm_geometry("%dx%d+%d+%d" % (int(self.w), int(self.h), int(self.w_x), int(self.w_y)))
+		self.wm_geometry("%dx%d+%d+%d" % (int(self.width), int(self.height), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
 		self._titlemax["image"] = self._t2_hov_img
 		self.o_m = False
@@ -344,22 +363,27 @@ class CTT(Tk):
 		self._titlemin["bg"] = self.bg
 		self._titlemax["bg"] = self.bg
 		self._titleexit["bg"] = self.bg
-
+	
+	def useblur(self, acrylic = True, dark = isDark()):
+		""" Add blur / acrylic effect to window """
+		if dark or self.theme != "dark":
+			blur(hwnd = self.hwnd, hexColor = '#19191800', Dark = dark, Acrylic = acrylic)
+	
 	def close(self, event = None):
 		""" Close Window """
 		self.destroy()
 
-	def geometry(self, w, h):
+	def sg(self, w, h):
 		""" Change the self.w and self.h forcely """
-		self.w, self.h = w, h
-		self.sg("%sx%s" % (self.w, self.h))
+		self.width, self.height = w, h
+		self.geometry("%sx%s" % (self.width, self.height))
 
-	def sg(self, size):
+	def geometry(self, size):
 		""" Rebuild tkinter's geometry """
-		if self.w and self.h:
+		if self.width and self.height:
 			pass
 		else:
-			self.w, self.h = size.split('x')[0], size.split('x')[1]
+			self.width, self.height = size.split('x')[0], size.split('x')[1]
 		self.wm_geometry(size)		
 
 	def settheme(self, theme):
@@ -374,16 +398,8 @@ class CTT(Tk):
 			self.theme = "light"
 			self.bg = self.colors["light"]
 			self.nf = self.colors["light_nf"]
-			self.fg = "dark"
-
-	def addblur(self, acrylic = True, dark = isDark()):
-		""" Add blur / acrylic effect to window """
-		if dark:
-			blur(hwnd = self.hwnd, hexColor = '#19191800', Dark = dark, Acrylic = acrylic)
+			self.fg = "dark"	
 
 if __name__ == "__main__":
 	example = CTT()
-	#example.addblur(False)
-	#example.titlebarconfig(color = {"color": "#114514", "color_nf": "#114519"})
-	#example.titlenameconfig(font = ("Consolas", 11, "italic"), pack = "BOTTOM")
 	example.mainloop()

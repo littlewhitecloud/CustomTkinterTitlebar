@@ -1,4 +1,4 @@
-; plugin.def plugin.cpp -> plugin.dll
+; plugin.def plugin.cpp->plugin.dll
 LIBRARY plugin.dll
 EXPORTS
 	move @1

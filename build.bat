@@ -20,5 +20,5 @@ pip install blurwindow
 echo Start building the plugin.dll ...
 echo You can open the Developer PowerShell for VS 2022 and use "cd" to this path do ".\build.bat"
 echo And the "cl.exe" will build the dll automatic...
-cl /LD /DEF: plugin.def plugin.cpp /std:c++20
+cl /O2 /Ot /nologo /errorReport:none /w /favor:INTEL64 /fp:fast /GA /EHsc /analyze- /D "_WINDOWS" /std:c++latest /LD /DEF: plugin.def plugin.cpp
 pause
