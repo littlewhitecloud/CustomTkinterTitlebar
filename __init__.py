@@ -21,7 +21,7 @@ class CTT(Tk):
 		super().__init__()
 		self.colors = {
 			"light": "#ffffff", "light_nf": "#f2efef",
-			"button_activefg": "#e5e5e5",
+			"button_dark_activefg": "#1a1a1a", "button_light_activefg": "#e5e5e5",
 			"dark": "#000000", "dark_nf": "#2b2b2b", "dark_bg": "#202020",
 			"lightexit_bg": "#f1707a", "darkexit_bg": "#8b0a14", "exit_fg": "#e81123",
 		}
@@ -37,22 +37,22 @@ class CTT(Tk):
 			path /= theme
 			self.settheme(theme)
 		
-		self._t0_load = Image.open(path / "close_50.png")
-		self._t0_hov_load = Image.open(path / "close_100.png")
-		self._t0_img = ImageTk.PhotoImage(self._t0_load)
-		self._t0_hov_img = ImageTk.PhotoImage(self._t0_hov_load)
-		self._t1_load = Image.open(path / "minisize_50.png")
-		self._t1_hov_load = Image.open(path / "minisize_100.png")
-		self._t1_img = ImageTk.PhotoImage(self._t1_load)
-		self._t1_hov_img = ImageTk.PhotoImage(self._t1_hov_load)
-		self._t2_load = Image.open(path / "fullwin_50.png")
-		self._t2_hov_load = Image.open(path / "fullwin_100.png")
-		self._t2_img = ImageTk.PhotoImage(self._t2_load)
-		self._t2_hov_img = ImageTk.PhotoImage(self._t2_hov_load)
-		self._t3_load = Image.open(path / "togglefull_50.png")
-		self._t3_hov_load = Image.open(path / "togglefull_100.png")
-		self._t3_img = ImageTk.PhotoImage(self._t3_load)
-		self._t3_hov_img = ImageTk.PhotoImage(self._t3_hov_load)
+		self.close_load = Image.open(path / "close_50.png")
+		self.close_hov_load = Image.open(path / "close_100.png")
+		self.close_img = ImageTk.PhotoImage(self.close_load)
+		self.close_hov_img = ImageTk.PhotoImage(self.close_hov_load)
+		self.min_load= Image.open(path / "minisize_50.png")
+		self.min_hov_load = Image.open(path / "minisize_100.png")
+		self.min_img = ImageTk.PhotoImage(self.min_load)
+		self.min_hov_img = ImageTk.PhotoImage(self.min_hov_load)
+		self.full_load = Image.open(path / "fullwin_50.png")
+		self.full_hov_load = Image.open(path / "fullwin_100.png")
+		self.full_img = ImageTk.PhotoImage(self.full_load)
+		self.full_hov_img = ImageTk.PhotoImage(self.full_hov_load)
+		self.max_load = Image.open(path / "togglefull_50.png")
+		self.max_hov_load = Image.open(path / "togglefull_100.png")
+		self.max_img = ImageTk.PhotoImage(self.max_load)
+		self.max_hov_img = ImageTk.PhotoImage(self.max_hov_load)
 		
 		self.width, self.height = 265, 320
 		self.o_m = self.o_f = False
@@ -74,21 +74,21 @@ class CTT(Tk):
 		self._titleexit.config(bd = 0,
 			activebackground = self.colors["%sexit_bg" % self.theme],
 			width = 44,
-			image = self._t0_hov_img,
+			image = self.close_hov_img,
 			relief = FLAT,
 			command = self.quit
 		)
 		self._titlemin.config(bd = 0,
-			activebackground = self.colors["button_activefg"],
+			activebackground = self.colors["button_%s_activefg" % self.theme],
 			width = 44,
-			image = self._t1_hov_img,
+			image = self.min_hov_img,
 			relief = FLAT,
 			command = self.minsize
 		)
 		self._titlemax.config(bd = 0,
-			activebackground = self.colors["button_activefg"],
+			activebackground = self.colors["button_%s_activefg" % self.theme],
 			width = 44,
-			image = self._t2_hov_img,
+			image = self.full_hov_img,
 			relief = FLAT,
 			command = self.maxsize
 		)
@@ -101,14 +101,12 @@ class CTT(Tk):
 		self._titleexit.bind("<Enter>", self.exit_on_enter)
 		self._titleexit.bind("<Leave>", self.exit_on_leave)
 	
-		if not isDark(): # Now just enable on light mode sry
-			# Next step: Support dark mode activefg
-			self._titlemax.bind("<Enter>", self.max_grey)
-			self._titlemax.bind("<Leave>", self.max_back)
-			self._titlemin.bind("<Enter>", self.min_on_enter)
-			self._titlemin.bind("<Leave>", self.min_on_leave)
-			self._titlemax.bind("<Enter>", self.max_on_enter)
-			self._titlemax.bind("<Leave>", self.max_on_leave)
+		self._titlemax.bind("<Enter>", self.max_grey)
+		self._titlemax.bind("<Leave>", self.max_back)
+		self._titlemin.bind("<Enter>", self.min_on_enter)
+		self._titlemin.bind("<Leave>", self.min_on_leave)
+		self._titlemax.bind("<Enter>", self.max_on_enter)
+		self._titlemax.bind("<Leave>", self.max_on_leave)
 	
 		self._titleicon.bind("<Button-3>", self.popupmenu)
 		self._titleicon.bind("<Double-Button-1>", self.close)
@@ -208,15 +206,15 @@ class CTT(Tk):
 
 	def exit_grey(self, event = None):
 		""" ... """
-		self._titleexit["image"] = self._t0_img
+		self._titleexit["image"] = self.close_img
 
 	def exit_back(self, event = None):
 		""" ... """
-		self._titleexit["image"] = self._t0_hov_img
+		self._titleexit["image"] = self.close_hov_img
 	
 	def min_on_enter(self, event = None):
 		""" ... """
-		self._titlemin["background"] = self.colors["button_activefg"]
+		self._titlemin["background"] = self.colors["button_%s_activefg" % self.theme]
 	
 	def min_on_leave(self, event = None):
 		""" ... """
@@ -224,15 +222,15 @@ class CTT(Tk):
 		
 	def min_grey(self, event = None):
 		""" ... """
-		self._titlemin["image"] = self._t1_img
+		self._titlemin["image"] = self.min_img
 	
 	def min_back(self, event = None):
 		""" ... """
-		self._titlemin["image"] = self._t1_hov_img
+		self._titlemin["image"] = self.min_hov_img
 	
 	def max_on_enter(self, event = None):
 		""" ... """
-		self._titlemax["background"] = self.colors["button_activefg"]
+		self._titlemax["background"] = self.colors["button_%s_activefg" % self.theme]
 	
 	def max_on_leave(self, event = None):
 		""" ... """
@@ -241,16 +239,16 @@ class CTT(Tk):
 	def max_grey(self, event = None):
 		""" ... """
 		if not self.o_m:
-			self._titlemax["image"] = self._t2_img
+			self._titlemax["image"] = self.full_img
 		else:
-			self._titlemax["image"] = self._t3_img
+			self._titlemax["image"] = self.max_img
 
 	def max_back(self, event = None):
 		""" ... """
 		if not self.o_m:
-			self._titlemax["image"] = self._t2_hov_img
+			self._titlemax["image"] = self.full_hov_img
 		else:
-			self._titlemax["image"] = self._t3_hov_img
+			self._titlemax["image"] = self.max_hov_img
 
 	def disabledo(self):
 		""" For disalbe button get even't command """
@@ -311,7 +309,7 @@ class CTT(Tk):
 			self.popup.entryconfig("Maxsize", state = "disabled")
 			self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
 			self.o_m = True
-			self._titlemax["image"] = self._t3_hov_img
+			self._titlemax["image"] = self.max_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
 			self.geometry("%dx%d+0+0" % (w, h - 40))
@@ -322,7 +320,7 @@ class CTT(Tk):
 		self.popup.entryconfig("Maxsize", state = "active")
 		self.wm_geometry("%dx%d+%d+%d" % (int(self.width), int(self.height), int(self.w_x), int(self.w_y)))
 		self._titlemax["command"] = self.maxsize
-		self._titlemax["image"] = self._t2_hov_img
+		self._titlemax["image"] = self.full_hov_img
 		self.o_m = False
 
 	def minsize(self):
