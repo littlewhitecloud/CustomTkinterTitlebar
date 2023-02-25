@@ -1,4 +1,7 @@
 # 📜 _自定义标题栏 CustomTkinterTitlebar_ <img src="https://img.shields.io/badge/Python-3.11.1-blue.svg?color=#0c63ba" alt="Python 3.11.1"/>
+#### 插入组件 (insert component to titlebar) :
+![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
+
 ##### 📖Include **English** & **Chinese** language 📜 包括英文与中文语言
 #### ⚠ 本程序还在预览中，可能会有许多bug! This project is still in preview, there may be many bugs!
 ### 😉 感谢每个看我的项目的人！Thank for everyone who looked at my project!
@@ -12,6 +15,7 @@
 pip install CustomTkinterTitlebar>=1.0.7.3
 ```
 你也可以直接从github上下载原码或查看发布 (You can also download the code from github or check the realase)
+
 ### 📚 _*维基*_ _*(wiki)*_:
 #### 如果你想知道如何使用你能调用的函数的话，请访问CustomTkinterTitlebar的维基的Script部分: 
 (If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:)
@@ -69,16 +73,9 @@ en.pack(fill = Y, expand = True, ipadx = 30, pady = 5)
 example.mainloop()
 ```
 
-### 🐞 问题 (Bug):
-#### _我无法修复从外面导入custom.py时，发生的图片找不到的错误 (图片路径错误）_
-> I can't fix the image not found error that occurs when importing custom.py from outside (wrong picture path)
-
 ### ✨ 未来添加 (Future additions):
-> - [ ] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
-> - [ ] _调整窗口大小 Resize the window_
-
-### 🧊 更新(Update):
-#### None
+> - [x] _亮主题时的最大化最小化和关闭按钮 Maximize minimize and close buttons when the theme is light_
+> - [x] _调整窗口大小 Resize the window_
 
 ### 💾 支持 (Support):
 #### 💻 它现在支持Windows 10 32 / 64位
