@@ -4,6 +4,12 @@
 #### ❔ _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目:  _ https://www.bilibili.com/read/cv20558473
 #### *希望给我颗星~*
 
+<p align="center">
+  🌏
+  <a href="README_en.md">English</a>
+</p>
+
+
 ### 🎰 样例:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
 
