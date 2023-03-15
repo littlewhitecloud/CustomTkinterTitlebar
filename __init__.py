@@ -9,20 +9,26 @@ from os import getcwd, system
 env = Path(__file__).parent
 try:
 	plugin = windll.LoadLibrary(str(env / "plugin64.dll"))
-except OSError: # Use 32 bit
-	plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
+except OSError:
+	try:
+		plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
+	except OSError:
+		print("This lib doesn't fit your operation system...")
+		system("pause")
+	except FileNotFoundError:
+		system("pip install CustomTkinterTitlebar --force-reinstall")
 except FileNotFoundError:
 	system("pip install CustomTkinterTitlebar --force-reinstall")
 
 class CTT(Tk):
-	""" A class for custom titlebar window """
+	""" A class for custom titlebar """
 	def __init__(self, theme : str = "followsystem"):
 		""" Class initialiser """
 		super().__init__()
 		self.colors = {
 			"light": "#ffffff", "light_nf": "#f2efef",
-			"button_dark_activefg": "#1a1a1a", "button_light_activefg": "#e5e5e5",
 			"dark": "#000000", "dark_nf": "#2b2b2b", "dark_bg": "#202020",
+			"button_dark_activefg": "#1a1a1a", "button_light_activefg": "#e5e5e5",
 			"lightexit_bg": "#f1707a", "darkexit_bg": "#8b0a14", "exit_fg": "#e81123",
 		}
 		path = env / "asset"
@@ -93,7 +99,6 @@ class CTT(Tk):
 			command = self.maxsize
 		)
 		
-		# binds & after
 		self.bind("<FocusOut>", self.focusout)
 		self.bind("<FocusIn>", self.focusin)
 		self.bind("<F11>", self.maxsize)
@@ -126,7 +131,7 @@ class CTT(Tk):
 	# Titlebar
 	def titlebarconfig(self, color = {"color": None, "color_nf": None}, height = 30):
 		""" Config for titlebar """
-		if color["color"] and color["color_nf"]: # Require two colors
+		if color["color"] and color["color_nf"]: # Require two colors : focuson & fucosout
 			self.bg = color["color"]
 			self.nf = color["color_nf"]
 			self["background"] = color["color"]
@@ -156,14 +161,15 @@ class CTT(Tk):
 	def titlenameconfig(self, pack = "left", font = None):
 		""" Config the titlename """
 		self.usetitle(False)
-		if pack == "left":
+		if pack == "left": # Titletext left
 			self._titletext.pack(side = LEFT)
-		elif pack == "right":
+		elif pack == "right": # Titletext right
 			self._titletext.pack(side = RIGHT)
-		else:
+		else: # Titletext center
 			self._titletext.config(justify = "center")
 			self._titletext.pack(expand = True)
-		if font:
+			
+		if font: # Set font
 			self._titletext.config(font = font)
 	
 	# Titleicon
@@ -175,21 +181,22 @@ class CTT(Tk):
 	def popupmenu(self, event):
 		""" Popup menu """
 		self.popup.post(event.x_root, event.y_root)
-
-	def iconphoto(self, image):
-		""" Rebuild tkinter's iconphoto """
+	
+	def loadimage(self, image):
+		""" Load image """
 		self._icon = Image.open(image)
 		self._icon = self._icon.resize((16, 16))
 		self._img = ImageTk.PhotoImage(self._icon)
 		self._titleicon["image"] = self. _img
+		
+	def iconphoto(self, image):
+		""" Rebuild tkinter's iconphoto """
+		self.loadimage(image)
 		self.wm_iconphoto(self._img)
 
 	def iconbitmap(self, image):
 		""" Rebuild tkinter's iconbitmap """
-		self._icon = Image.open(image)
-		self._icon = self._icon.resize((16, 16))
-		self._img = ImageTk.PhotoImage(self._icon)
-		self._titleicon["image"] = self. _img
+		self.loadimage(image)
 		self.wm_iconbitmap(image)
 
 	# Titlebutton
@@ -198,7 +205,7 @@ class CTT(Tk):
 		self._titleexit["background"] = self.colors["exit_fg"]
 
 	def exit_on_leave(self, event = None):
-		""" Function doc """
+		""" ... """
 		if not self.o_f:
 			self._titleexit["background"] = self.bg
 		else:
@@ -251,21 +258,21 @@ class CTT(Tk):
 			self._titlemax["image"] = self.max_hov_img
 
 	def disabledo(self):
-		""" For disalbe button get even't command """
+		""" Do nothing """
 		pass
 
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
 		""" Show / Disable min / max button """
-		if not minshow:
+		if not minshow: # pack forget min button
 			self._titlemin.pack_forget()
-		elif not minsize:
+		elif not minsize: # disable min button
 			self.min_grey(None)
 			self._titlemin["command"] = self.disabledo
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
-		if not maxshow:
+		if not maxshow: # pack forget max button
 			self._titlemax.pack_forget()
-		elif not maxsize:
+		elif not maxsize: # disable max button
 			self.max_grey(None)
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
@@ -288,7 +295,7 @@ class CTT(Tk):
 		""" Window moving """
 		global x, y
 		if not self.o_m:
-			plugin.move(self.hwnd, self.winfo_x(), self.winfo_y(), event.x - x, event.y - y)
+			plugin.move(self.hwnd, self.winfo_x(), self.winfo_y(), event.x - x, event.y - y) # Use C++ for perforem 
 		else:
 			self.resize()
 
@@ -364,7 +371,7 @@ class CTT(Tk):
 	
 	def useblur(self, acrylic = True, dark = isDark()):
 		""" Add blur / acrylic effect to window """
-		if dark or self.theme != "dark":
+		if dark and self.theme != "light":
 			blur(hwnd = self.hwnd, hexColor = '#19191800', Dark = dark, Acrylic = acrylic)
 	
 	def close(self, event = None):
