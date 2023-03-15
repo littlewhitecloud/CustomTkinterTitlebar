@@ -14,7 +14,7 @@
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
 
 ### 📚 _*wiki*_:
-####If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:
+#### If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar/wiki/Script
 
 ### 📥 download:
@@ -63,7 +63,7 @@ pip install darkdetect --user
 pip install BlurWindow --user 
 ```
 
-### 📖 用法 (Usage):
+### 📖 Usage:
 ```python
 from customtkintertitlebar import Tk
 from tkinter import ttk
