@@ -1,14 +1,14 @@
+<p align="center">
+  🌏
+  <a href="README_CH.md">简体中文</a>
+</p>
+
 # 📜 _CustomTkinterTitlebar_
 
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 ### 📃 *This is a project can help you to have a custom titlebar! Widgets can add into titlebar!*
 #### ❔ More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 #### *Hope got some stars~*
-
-<p align="center">
-  🌏
-  <a href="README_CH.md">简体中文</a>
-</p>
 
 ### 🎰 demo:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
