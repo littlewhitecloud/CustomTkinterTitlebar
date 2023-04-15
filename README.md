@@ -25,7 +25,7 @@ pip install CustomTkinterTitlebar>=1.0.7.3
 You can also download the code from github or check the realase
 
 ### View : 
-https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-a3c0-5437a94ae917.mp4
+https://user-images.githubusercontent.com/71159641/232181268-cf20d227-d0bd-4840-9b31-fa3af150e4c8.mp4
 #### insert component to titlebar:
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
 #### Blur:
@@ -56,7 +56,7 @@ https://user-images.githubusercontent.com/71159641/210712384-ebe3755a-020b-45fe-
 > - _Pillow >= 9.0.0_
 > - _darkdetect >= 0.8.0_
 > - _BlurWindow >= 1.2.1_ If you don't use blur, you can ignore it
-```
+```batch
 python -m pip install --upgrade pip
 pip install pillow --user
 pip install darkdetect --user
