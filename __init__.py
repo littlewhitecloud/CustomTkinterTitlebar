@@ -3,20 +3,14 @@ from BlurWindow.blurWindow import blur
 from ctypes import windll, c_char_p
 from PIL import Image, ImageTk
 from darkdetect import isDark
-from pathlib import Path
 from os import getcwd, system
+from pathlib import Path
 
 env = Path(__file__).parent
 try:
 	plugin = windll.LoadLibrary(str(env / "plugin64.dll"))
 except OSError:
-	try:
-		plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
-	except OSError:
-		print("This lib doesn't fit your operation system...")
-		system("pause")
-	except FileNotFoundError:
-		system("pip install CustomTkinterTitlebar --force-reinstall")
+	plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
 except FileNotFoundError:
 	system("pip install CustomTkinterTitlebar --force-reinstall")
 
@@ -131,33 +125,35 @@ class CTT(Tk):
 	# Titlebar
 	def titlebarconfig(self, color = {"color": None, "color_nf": None}, height = 30):
 		""" Config for titlebar """
-		if color["color"] and color["color_nf"]: # Require two colors : focuson & fucosout
+		if color["color"] and color["color_nf"]: # Require two colors : focuson & focusout
 			self.bg = color["color"]
 			self.nf = color["color_nf"]
 			self["background"] = color["color"]
-			
+
+		# TODO: add a unlimit flag
 		if height > 30 and height <= 50: # Limit for titlebar height
 			self.titlebar["height"] = height
-	
+
 	# Titlename
 	def title(self, text):
 		""" Rebuild tkinter's title """
-		self._titletext["text"] = text # Will find a good way to show ... if text is too long
+		# TODO: find a good way to show ... if text is too long
+		self._titletext["text"] = text
 		self.wm_title(text)
-	
+
 	def title_grey(self):
 		""" ... """
 		self._titletext["foreground"] = "grey"
-	
+
 	def title_back(self):
 		""" ... """
 		self._titletext["foreground"] = "white"
-	
+
 	def usetitle(self, flag = True):
 		""" Show / forget titlename """
 		if not flag:
 			self._titletext.pack_forget()
-	
+
 	def titlenameconfig(self, pack = "left", font = None):
 		""" Config the titlename """
 		self.usetitle(False)
@@ -171,24 +167,24 @@ class CTT(Tk):
 			
 		if font: # Set font
 			self._titletext.config(font = font)
-	
+
 	# Titleicon
 	def useicon(self, flag = True):
 		""" Show / forget icon """
 		if not flag:
 			self._titleicon.pack_forget()
-	
+
 	def popupmenu(self, event):
 		""" Popup menu """
 		self.popup.post(event.x_root, event.y_root)
-	
+
 	def loadimage(self, image):
 		""" Load image """
 		self._icon = Image.open(image)
 		self._icon = self._icon.resize((16, 16))
 		self._img = ImageTk.PhotoImage(self._icon)
 		self._titleicon["image"] = self. _img
-		
+
 	def iconphoto(self, image):
 		""" Rebuild tkinter's iconphoto """
 		self.loadimage(image)
@@ -218,31 +214,31 @@ class CTT(Tk):
 	def exit_back(self, event = None):
 		""" ... """
 		self._titleexit["image"] = self.close_hov_img
-	
+
 	def min_on_enter(self, event = None):
 		""" ... """
 		self._titlemin["background"] = self.colors["button_%s_activefg" % self.theme]
-	
+
 	def min_on_leave(self, event = None):
 		""" ... """
 		self._titlemin["background"] = self.bg
-		
+
 	def min_grey(self, event = None):
 		""" ... """
 		self._titlemin["image"] = self.min_img
-	
+
 	def min_back(self, event = None):
 		""" ... """
 		self._titlemin["image"] = self.min_hov_img
-	
+
 	def max_on_enter(self, event = None):
 		""" ... """
 		self._titlemax["background"] = self.colors["button_%s_activefg" % self.theme]
-	
+
 	def max_on_leave(self, event = None):
 		""" ... """
 		self._titlemax["background"] = self.bg
-	
+
 	def max_grey(self, event = None):
 		""" ... """
 		if not self.o_m:
@@ -270,6 +266,7 @@ class CTT(Tk):
 			self._titlemin["command"] = self.disabledo
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
+
 		if not maxshow: # pack forget max button
 			self._titlemax.pack_forget()
 		elif not maxsize: # disable max button
@@ -290,12 +287,12 @@ class CTT(Tk):
 		self.withdraw()
 		self.deiconify()
 		self.focus_force()
-		
+
 	def moving(self, event):
 		""" Window moving """
 		global x, y
 		if not self.o_m:
-			plugin.move(self.hwnd, self.winfo_x(), self.winfo_y(), event.x - x, event.y - y) # Use C++ for perforem 
+			plugin.move(self.hwnd, self.winfo_x(), self.winfo_y(), event.x - x, event.y - y) # Use C for speed
 		else:
 			self.resize()
 
@@ -339,7 +336,8 @@ class CTT(Tk):
 		""" Deminsize window """
 		self.attributes("-alpha", 1)
 		self.bind("<FocusIn>", self.focusin)
-
+	
+	# TODO: use one function to set color
 	def focusout(self, event):
 		""" When focusout """
 		self.exit_grey()
@@ -368,12 +366,12 @@ class CTT(Tk):
 		self._titlemin["bg"] = self.bg
 		self._titlemax["bg"] = self.bg
 		self._titleexit["bg"] = self.bg
-	
+
 	def useblur(self, acrylic = True, dark = isDark()):
 		""" Add blur / acrylic effect to window """
 		if dark and self.theme != "light":
 			blur(hwnd = self.hwnd, hexColor = '#19191800', Dark = dark, Acrylic = acrylic)
-	
+
 	def close(self, event = None):
 		""" Close Window """
 		self.destroy()
@@ -406,5 +404,6 @@ class CTT(Tk):
 			self.fg = "dark"	
 
 if __name__ == "__main__":
+	# Test
 	example = CTT()
 	example.mainloop()
