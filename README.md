@@ -10,21 +10,21 @@
 #### ❔ More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 #### *Hope got some stars~*
 
-### 🎰 demo:
+### 🎰 Demo:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
 
-### 📚 _*wiki*_:
+### 📚 _*Wiki*_:
 #### If you'd like to know how to use the functions you can call, visit the Script section of the CustomTkinterTitlebar wiki:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar/wiki/Script
 
-### 📥 download:
+### 📥 Download:
 You can use pip to install
 ```batch
 pip install CustomTkinterTitlebar>=1.0.7.3
 ```
 You can also download the code from github or check the realase
 
-### View : 
+### View: 
 https://user-images.githubusercontent.com/71159641/232181268-cf20d227-d0bd-4840-9b31-fa3af150e4c8.mp4
 #### insert component to titlebar:
 ![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
