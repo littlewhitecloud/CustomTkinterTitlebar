@@ -419,6 +419,6 @@ class CTT(Tk):
 			self.fg = "dark"
 			self.update()
 
-
-a = CTT()
-a.mainloop()
+if __name__ == "__main__":
+	test = CTT()
+	test.mainloop()
