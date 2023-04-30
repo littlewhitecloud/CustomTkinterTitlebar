@@ -44,10 +44,10 @@ https://user-images.githubusercontent.com/71159641/232181268-cf20d227-d0bd-4840-
 #### Light Theme:
 ![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
 ![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
-#### Focus on:
-![image](https://user-images.githubusercontent.com/71159641/215319002-1b6d2af9-2895-4fe2-800e-637761f08ff5.png)
+#### Focus in:
+![image](https://user-images.githubusercontent.com/71159641/235348887-bfa21035-54b0-4021-8c93-4cb7d41ba11a.png)
 #### Focus out:
-![image](https://user-images.githubusercontent.com/71159641/215319000-31c6081d-3ab5-4ca8-9433-a8033a152aae.png)
+![image](https://user-images.githubusercontent.com/71159641/235348888-8fe2de5a-d5be-42ec-ba43-f983dd93c837.png)
 
 ### 📦 Require:
 > - _Windows 10_
@@ -61,6 +61,10 @@ python -m pip install --upgrade pip
 pip install pillow --user
 pip install darkdetect --user
 pip install BlurWindow --user 
+```
+```batch
+; Or just run
+pip install CustomTkinterTitlebar --user
 ```
 
 ### 📖 Usage:
