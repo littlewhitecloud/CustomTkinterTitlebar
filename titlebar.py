@@ -1,6 +1,6 @@
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
 from BlurWindow.blurWindow import blur
-from ctypes import windll, c_char_p
+from ctypes import windll, c_char_p, c_int, byref, sizeof
 from PIL import Image, ImageTk
 from darkdetect import isDark
 from os import getcwd, system
@@ -16,9 +16,10 @@ except FileNotFoundError:
 
 class CTT(Tk):
 	""" A class for custom titlebar """
-	def __init__(self, theme : str = "followsystem"):
+	def __init__(self, theme : str = "followsystem", unlimit: bool = False):
 		""" Class initialiser """
 		super().__init__()
+
 		self.colors = {
 			"light": "#ffffff", "light_nf": "#f2efef",
 			"dark": "#000000", "dark_nf": "#2b2b2b", "dark_bg": "#202020",
@@ -36,7 +37,6 @@ class CTT(Tk):
 		else:
 			path /= theme
 			self.settheme(theme)
-		
 		self.close_load = Image.open(path / "close_50.png")
 		self.close_hov_load = Image.open(path / "close_100.png")
 		self.close_img = ImageTk.PhotoImage(self.close_load)
@@ -56,6 +56,7 @@ class CTT(Tk):
 		
 		self.width, self.height = 265, 320
 		self.o_m = self.o_f = False
+		
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "Restore", command = self.resize)
 		self.popup.add_command(label = "Minsize", command = self.minsize)
@@ -129,10 +130,12 @@ class CTT(Tk):
 			self.bg = color["color"]
 			self.nf = color["color_nf"]
 			self["background"] = color["color"]
-
-		# TODO: add a unlimit flag
-		if height > 30 and height <= 50: # Limit for titlebar height
+		
+		if unlimit:
 			self.titlebar["height"] = height
+		else:
+			if height > 30 and height <= 50: # Limit for titlebar height
+				self.titlebar["height"] = height
 
 	# Titlename
 	def title(self, text):
@@ -157,15 +160,15 @@ class CTT(Tk):
 	def titlenameconfig(self, pack = "left", font = None):
 		""" Config the titlename """
 		self.usetitle(False)
-		if pack == "left": # Titletext left
+		if pack == "left":
 			self._titletext.pack(side = LEFT)
-		elif pack == "right": # Titletext right
+		elif pack == "right":
 			self._titletext.pack(side = RIGHT)
-		else: # Titletext center
+		else:
 			self._titletext.config(justify = "center")
 			self._titletext.pack(expand = True)
 			
-		if font: # Set font
+		if font:
 			self._titletext.config(font = font)
 
 	# Titleicon
@@ -254,12 +257,12 @@ class CTT(Tk):
 			self._titlemax["image"] = self.max_hov_img
 
 	def disabledo(self):
-		""" Do nothing """
+		""" ... """
 		pass
 
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
 		""" Show / Disable min / max button """
-		if not minshow: # pack forget min button
+		if not minshow: # packforget min button
 			self._titlemin.pack_forget()
 		elif not minsize: # disable min button
 			self.min_grey(None)
@@ -267,7 +270,7 @@ class CTT(Tk):
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
 
-		if not maxshow: # pack forget max button
+		if not maxshow: # packforget max button
 			self._titlemax.pack_forget()
 		elif not maxsize: # disable max button
 			self.max_grey(None)
@@ -278,14 +281,18 @@ class CTT(Tk):
 	# Window
 	def setup(self):
 		""" Window Setup """
+		
+		self.title("CTT")
 		self.geometry("%sx%s" % (self.width, self.height))
 		self.iconbitmap(env / "asset" / "tk.ico")
-		self.title("CTT")
-		self.overrideredirect(True)
+		
 		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 		plugin.setwindow(self.hwnd)
+		
 		self.withdraw()
 		self.deiconify()
+		self.update()
+		
 		self.focus_force()
 
 	def moving(self, event):
@@ -337,37 +344,40 @@ class CTT(Tk):
 		""" Deminsize window """
 		self.attributes("-alpha", 1)
 		self.bind("<FocusIn>", self.focusin)
-
-	# TODO: use one function to set color
+	
+	def setcolor(self, status, color):
+		if status == "out":
+			self.exit_grey()
+			self.min_grey()
+			self.max_grey()
+			self.title_grey()
+			self.o_f = True
+			
+		else:
+			self.exit_back()
+			self.min_back()
+			self.max_back()
+			self.title_back()
+			self.o_f = False
+		
+			if self.theme == "followsystem" or self.theme == "light":
+				self._titletext["fg"] = self.colors[self.fg]
+			
+		self.titlebar["bg"] = color
+		self._titletext["bg"] = color
+		self._titleicon["bg"] = color
+		self._titlemin["bg"] = color
+		self._titlemax["bg"] = color
+		self._titleexit["bg"] = color
+	
 	def focusout(self, event):
 		""" When focusout """
-		self.exit_grey()
-		self.min_grey()
-		self.max_grey()
-		self.title_grey()
-		self.o_f = True
-		self.titlebar["bg"] = self.nf
-		self._titleicon["bg"] = self.nf
-		self._titletext["bg"] = self.nf
-		self._titlemin["bg"] = self.nf
-		self._titlemax["bg"] = self.nf
-		self._titleexit["bg"] = self.nf
+		self.setcolor("out", self.nf)
 
 	def focusin(self, event):
 		""" When focusin """
-		self.exit_back()
-		self.min_back()
-		self.max_back()
-		self.title_back()
-		self.o_f = False
-		self.titlebar["bg"] = self.bg
-		self._titleicon["bg"] = self.bg
-		self._titletext["fg"] = self.colors[self.fg]
-		self._titletext["bg"] = self.bg
-		self._titlemin["bg"] = self.bg
-		self._titlemax["bg"] = self.bg
-		self._titleexit["bg"] = self.bg
-
+		self.setcolor("in", self.bg)
+		
 	def useblur(self, acrylic = True, dark = isDark()):
 		""" Add blur / acrylic effect to window """
 		if dark and self.theme != "light":
@@ -398,8 +408,17 @@ class CTT(Tk):
 			self.nf = self.colors["dark_nf"]
 			self.fg = "light"
 			self["background"] = self.colors["dark_bg"]
+			
+			self.update()
+			windll.dwmapi.DwmSetWindowAttribute(windll.user32.GetParent(self.winfo_id()), 20, byref(c_int(2)), sizeof(c_int(2)))
+			self.update()
 		else:
 			self.theme = "light"
 			self.bg = self.colors["light"]
 			self.nf = self.colors["light_nf"]
 			self.fg = "dark"
+			self.update()
+
+
+a = CTT()
+a.mainloop()
