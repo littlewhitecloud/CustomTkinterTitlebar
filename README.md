@@ -80,7 +80,9 @@ example.mainloop()
 ```
 
 ### 💾 Support:
-#### It support Windows 10/11 32 / 64 bit now.
-Windows 11:
-![image](https://user-images.githubusercontent.com/86362423/235354008-dfc2ee9b-4eda-46da-9daa-c67339a7842b.png)
+#### It support Windows 10/11 32/64bits now.
+Windows 11(With mica effect)
+![image](https://user-images.githubusercontent.com/86362423/235428122-334d05c2-8927-4b44-bc03-ab0ac0f1687f.png)
+![image](https://user-images.githubusercontent.com/86362423/235428994-68c34c9d-1b30-4c9f-8a64-a6a760600726.png)
+
 Thanks @HuyHung1408 for testing it on windows 11!
