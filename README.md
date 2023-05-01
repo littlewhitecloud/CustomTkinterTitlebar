@@ -10,6 +10,29 @@
 #### ❔ More about this project, I wrote an article on Bilibili, which talks about this project in more detail: _ https://www.bilibili.com/read/cv20558473
 #### *Hope got some stars~*
 
+### View: 
+https://user-images.githubusercontent.com/71159641/232181268-cf20d227-d0bd-4840-9b31-fa3af150e4c8.mp4
+#### insert component to titlebar:
+![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
+#### Custom minsize & maxsize:
+![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
+![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
+![image](https://user-images.githubusercontent.com/71159641/209454985-7d725083-dbcb-4856-88e4-200a34111938.png)
+![image](https://user-images.githubusercontent.com/71159641/209455001-f48c076a-cac0-4310-975e-0fb64855f4cd.png)
+#### Light Theme:
+![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
+![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
+#### Focus in & out:
+![image](https://user-images.githubusercontent.com/71159641/235348887-bfa21035-54b0-4021-8c93-4cb7d41ba11a.png)
+![image](https://user-images.githubusercontent.com/71159641/235348888-8fe2de5a-d5be-42ec-ba43-f983dd93c837.png)
+#### Mica:
+![image](https://user-images.githubusercontent.com/86362423/235428122-334d05c2-8927-4b44-bc03-ab0ac0f1687f.png)
+![image](https://user-images.githubusercontent.com/86362423/235428994-68c34c9d-1b30-4c9f-8a64-a6a760600726.png)
+#### Blur:
+![image](https://user-images.githubusercontent.com/71159641/215318923-521c5efd-856b-42eb-aab8-02bc5ad4727e.png)
+#### Fluent :
+![image](https://user-images.githubusercontent.com/71159641/215318920-a5bce119-c343-40fd-b068-9ecbe444a60f.png)
+
 ### 🎰 Demo:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
 
@@ -22,33 +45,8 @@ You can use pip to install
 ```batch
 pip install CustomTkinterTitlebar>=1.0.7.3
 ```
+
 You can also download the code from github or check the realase
-
-### View: 
-https://user-images.githubusercontent.com/71159641/232181268-cf20d227-d0bd-4840-9b31-fa3af150e4c8.mp4
-#### insert component to titlebar:
-![image](https://user-images.githubusercontent.com/71159641/208231899-c25fa950-57f7-4a90-8095-cceadbf6d371.png)
-#### Blur:
-![image](https://user-images.githubusercontent.com/71159641/215318923-521c5efd-856b-42eb-aab8-02bc5ad4727e.png)
-#### Fluent :
-![image](https://user-images.githubusercontent.com/71159641/215318920-a5bce119-c343-40fd-b068-9ecbe444a60f.png)
-### icon & windowtext:
-![image](https://user-images.githubusercontent.com/71159641/209605935-e82470ce-e0d2-4244-9299-dbcf666c7e6b.png)
-![image](https://user-images.githubusercontent.com/71159641/209605940-c9c58cd9-6ff3-4455-9f7f-229611a67cda.png)
-![image](https://user-images.githubusercontent.com/71159641/209605941-d38732dd-1917-42e0-985a-eba98e21494b.png)
-#### Custom minsize & maxsize:
-![image](https://user-images.githubusercontent.com/71159641/209454983-ba0baa31-9c07-45be-8dff-47da76bf1dbf.png)
-![image](https://user-images.githubusercontent.com/71159641/209454984-e3698f89-9d0d-4be1-8af3-1ca78c1068dc.png)
-![image](https://user-images.githubusercontent.com/71159641/209454985-7d725083-dbcb-4856-88e4-200a34111938.png)
-![image](https://user-images.githubusercontent.com/71159641/209455001-f48c076a-cac0-4310-975e-0fb64855f4cd.png)
-#### Light Theme:
-![image](https://user-images.githubusercontent.com/71159641/210283863-53f46392-fe74-4d4f-8939-4b42f6e96c0b.png)
-![image](https://user-images.githubusercontent.com/71159641/210284157-a01117b5-2aae-44cf-89ce-be3ed027607f.png)
-#### Focus in:
-![image](https://user-images.githubusercontent.com/71159641/235348887-bfa21035-54b0-4021-8c93-4cb7d41ba11a.png)
-#### Focus out:
-![image](https://user-images.githubusercontent.com/71159641/235348888-8fe2de5a-d5be-42ec-ba43-f983dd93c837.png)
-
 ### 📦 Require:
 > - _Windows 10_
 > - _Python >= 3.8.0_
@@ -81,8 +79,4 @@ example.mainloop()
 
 ### 💾 Support:
 #### It support Windows 10/11 32/64bits now.
-Windows 11(With mica effect)
-![image](https://user-images.githubusercontent.com/86362423/235428122-334d05c2-8927-4b44-bc03-ab0ac0f1687f.png)
-![image](https://user-images.githubusercontent.com/86362423/235428994-68c34c9d-1b30-4c9f-8a64-a6a760600726.png)
-
 Thanks @HuyHung1408 for testing it on windows 11!
