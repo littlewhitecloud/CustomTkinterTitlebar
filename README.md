@@ -82,5 +82,5 @@ example.mainloop()
 ### 💾 Support:
 #### It support Windows 10/11 32 / 64 bit now.
 Windows 11:
-<img alt="image" width="781" src="https://user-images.githubusercontent.com/86362423/235354008-dfc2ee9b-4eda-46da-9daa-c67339a7842b.png">
+![image](https://user-images.githubusercontent.com/86362423/235354008-dfc2ee9b-4eda-46da-9daa-c67339a7842b.png)
 Thanks @HuyHung1408 for testing it on windows 11!
