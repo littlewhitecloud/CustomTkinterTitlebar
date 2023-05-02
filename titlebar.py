@@ -288,9 +288,7 @@ class CTT(Tk):
 		
 		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 		plugin.setwindow(self.hwnd)
-		
-		self.withdraw()
-		self.deiconify()
+
 		self.update()
 		
 		self.focus_force()
