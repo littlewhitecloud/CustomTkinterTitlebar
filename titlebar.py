@@ -1,15 +1,19 @@
 from tkinter import Tk, Button, Menu, Frame, Label, X, Y, TOP, RIGHT, LEFT, FLAT
-from BlurWindow.blurWindow import blur
 from ctypes import windll, c_char_p, c_int, byref, sizeof
 from PIL import Image, ImageTk
 from darkdetect import isDark
 from os import getcwd, system
 from pathlib import Path
 
+try:
+	from BlurWindow.blurWindow import blur
+except: # ignore it
+	pass
+
 env = Path(__file__).parent
 try:
 	plugin = windll.LoadLibrary(str(env / "plugin64.dll"))
-except OSError:
+except OSError: # 32 bit
 	plugin = windll.LoadLibrary(str(env / "plugin32.dll"))
 except FileNotFoundError:
 	system("pip install CustomTkinterTitlebar --force-reinstall")
@@ -37,20 +41,22 @@ class CTT(Tk):
 		else:
 			path /= theme
 			self.settheme(theme)
+
 		self.close_load = Image.open(path / "close_50.png")
 		self.close_hov_load = Image.open(path / "close_100.png")
-		self.close_img = ImageTk.PhotoImage(self.close_load)
-		self.close_hov_img = ImageTk.PhotoImage(self.close_hov_load)
 		self.min_load= Image.open(path / "minisize_50.png")
 		self.min_hov_load = Image.open(path / "minisize_100.png")
-		self.min_img = ImageTk.PhotoImage(self.min_load)
-		self.min_hov_img = ImageTk.PhotoImage(self.min_hov_load)
 		self.full_load = Image.open(path / "fullwin_50.png")
 		self.full_hov_load = Image.open(path / "fullwin_100.png")
-		self.full_img = ImageTk.PhotoImage(self.full_load)
-		self.full_hov_img = ImageTk.PhotoImage(self.full_hov_load)
 		self.max_load = Image.open(path / "togglefull_50.png")
 		self.max_hov_load = Image.open(path / "togglefull_100.png")
+		
+		self.close_img = ImageTk.PhotoImage(self.close_load)
+		self.close_hov_img = ImageTk.PhotoImage(self.close_hov_load)
+		self.min_img = ImageTk.PhotoImage(self.min_load)
+		self.min_hov_img = ImageTk.PhotoImage(self.min_hov_load)
+		self.full_img = ImageTk.PhotoImage(self.full_load)
+		self.full_hov_img = ImageTk.PhotoImage(self.full_hov_load)
 		self.max_img = ImageTk.PhotoImage(self.max_load)
 		self.max_hov_img = ImageTk.PhotoImage(self.max_hov_load)
 		
@@ -121,6 +127,7 @@ class CTT(Tk):
 		self._titlemin.pack(fill = Y, side = RIGHT)
 		self.titlebar.pack(fill = X, side = TOP)
 		self.titlebar.pack_propagate(0)
+		
 		self.setup()
 		
 	# Titlebar
@@ -134,13 +141,13 @@ class CTT(Tk):
 		if unlimit:
 			self.titlebar["height"] = height
 		else:
-			if height > 30 and height <= 50: # Limit for titlebar height
+			if height > 30 and height <= 50:
 				self.titlebar["height"] = height
 
 	# Titlename
 	def title(self, text):
 		""" Rebuild tkinter's title """
-		# TODO: find a good way to show ... if text is too long
+		# TODO: show "..." if title is too long
 		self._titletext["text"] = text
 		self.wm_title(text)
 
@@ -262,7 +269,7 @@ class CTT(Tk):
 
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
 		""" Show / Disable min / max button """
-		if not minshow: # packforget min button
+		if not minshow: # delete min button
 			self._titlemin.pack_forget()
 		elif not minsize: # disable min button
 			self.min_grey(None)
@@ -270,7 +277,7 @@ class CTT(Tk):
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
 
-		if not maxshow: # packforget max button
+		if not maxshow: # delete max button
 			self._titlemax.pack_forget()
 		elif not maxsize: # disable max button
 			self.max_grey(None)
@@ -278,7 +285,7 @@ class CTT(Tk):
 			self._titlemax.unbind("<Leave>")
 			self._titlemax.unbind("<Enter>")
 
-	# Window
+	# Window functions
 	def setup(self):
 		""" Window Setup """
 		
