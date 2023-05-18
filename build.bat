@@ -1,7 +1,7 @@
 echo off
 cls
 echo You can use this file to build the project
-echo Require VS 2022 (C/C++ Install) & Python 3.11.1 (Or lower(Not recommended))
+echo Require Visual Studio and Python
 
 echo Tip
 echo If you set the cl.exe in system path, you can use this file to build dll in normal console
