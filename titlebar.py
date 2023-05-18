@@ -62,6 +62,7 @@ class CTT(Tk):
 		
 		self.width, self.height = 265, 320
 		self.o_m = self.o_f = False
+		self.unlimit = unlimit
 		
 		self.popup = Menu(self, tearoff = 0)
 		self.popup.add_command(label = "Restore", command = self.resize)
@@ -127,9 +128,8 @@ class CTT(Tk):
 		self._titlemin.pack(fill = Y, side = RIGHT)
 		self.titlebar.pack(fill = X, side = TOP)
 		self.titlebar.pack_propagate(0)
-		
 		self.setup()
-		
+
 	# Titlebar
 	def titlebarconfig(self, color = {"color": None, "color_nf": None}, height = 30):
 		""" Config for titlebar """
@@ -138,7 +138,7 @@ class CTT(Tk):
 			self.nf = color["color_nf"]
 			self["background"] = color["color"]
 		
-		if unlimit:
+		if self.unlimit:
 			self.titlebar["height"] = height
 		else:
 			if height > 30 and height <= 50:
@@ -269,17 +269,17 @@ class CTT(Tk):
 
 	def usemaxmin(self, minsize = True, maxsize = True, minshow = True, maxshow = True):
 		""" Show / Disable min / max button """
-		if not minshow: # delete min button
+		if not minshow:
 			self._titlemin.pack_forget()
-		elif not minsize: # disable min button
+		elif not minsize:
 			self.min_grey(None)
 			self._titlemin["command"] = self.disabledo
 			self._titlemin.unbind("<Leave>")
 			self._titlemin.unbind("<Enter>")
 
-		if not maxshow: # delete max button
+		if not maxshow:
 			self._titlemax.pack_forget()
-		elif not maxsize: # disable max button
+		elif not maxsize:
 			self.max_grey(None)
 			self._titlemax["command"] = self.disabledo
 			self._titlemax.unbind("<Leave>")
@@ -292,12 +292,12 @@ class CTT(Tk):
 		self.title("CTT")
 		self.geometry("%sx%s" % (self.width, self.height))
 		self.iconbitmap(env / "asset" / "tk.ico")
+		#self.overrideredirect(1)
 		
 		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 		plugin.setwindow(self.hwnd)
 
 		self.update()
-		
 		self.focus_force()
 
 	def moving(self, event):
@@ -329,7 +329,7 @@ class CTT(Tk):
 			self._titlemax["image"] = self.max_hov_img
 			self._titlemax["command"] = self.resize
 			w, h = self.wm_maxsize()
-			self.geometry("%dx%d+0+0" % (w, h - 40))
+			self.geometry("%dx%d-1+0" % (w - 14, h - 40))
 
 	def resize(self):
 		""" Resize window """
