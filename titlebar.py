@@ -144,6 +144,10 @@ class CTT(Tk):
 			if height > 30 and height <= 50:
 				self.titlebar["height"] = height
 
+		self.focusout()
+		self.focusin()
+		self.update()
+
 	# Titlename
 	def title(self, text):
 		""" Rebuild tkinter's title """
@@ -164,8 +168,8 @@ class CTT(Tk):
 		if not flag:
 			self._titletext.pack_forget()
 
-	def titlenameconfig(self, pack = "left", font = None):
-		""" Config the titlename """
+	def titleconfig(self, pack = "left", font = None):
+		""" Config the title """
 		self.usetitle(False)
 		if pack == "left":
 			self._titletext.pack(side = LEFT)
@@ -174,7 +178,6 @@ class CTT(Tk):
 		else:
 			self._titletext.config(justify = "center")
 			self._titletext.pack(expand = True)
-			
 		if font:
 			self._titletext.config(font = font)
 
@@ -292,11 +295,12 @@ class CTT(Tk):
 		self.title("CTT")
 		self.geometry("%sx%s" % (self.width, self.height))
 		self.iconbitmap(env / "asset" / "tk.ico")
-		#self.overrideredirect(1)
+		
 		
 		self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 		plugin.setwindow(self.hwnd)
-
+		#self.overrideredirect(1)
+		
 		self.update()
 		self.focus_force()
 
@@ -375,11 +379,11 @@ class CTT(Tk):
 		self._titlemax["bg"] = color
 		self._titleexit["bg"] = color
 	
-	def focusout(self, event):
+	def focusout(self, event = None):
 		""" When focusout """
 		self.setcolor("out", self.nf)
 
-	def focusin(self, event):
+	def focusin(self, event = None):
 		""" When focusin """
 		self.setcolor("in", self.bg)
 		
@@ -423,7 +427,3 @@ class CTT(Tk):
 			self.nf = self.colors["light_nf"]
 			self.fg = "dark"
 			self.update()
-
-if __name__ == "__main__":
-	test = CTT()
-	test.mainloop()
