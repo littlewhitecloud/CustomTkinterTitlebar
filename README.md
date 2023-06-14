@@ -6,8 +6,6 @@
 
 ### 📃 *这是一个项目可以帮助你拥有一个自定义的标题栏！小组件可以被放到这个标题栏里面* *This is a project can help you to have a custom titlebar! Widgets can add into titlebar!*
 #### _关于更多这个项目，我写了一篇文章在Bilibili上，它很详细的说了这个项目_ _More about this project, I wrote an article on Bilibili, which talks about this project in more detail:_ https://www.bilibili.com/read/cv20558473
-
-<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=bGl0dGxld2hpdGVjbG91ZCA=#littlewhitecloud/CustomTkinterTitlebar&Date" frameBorder="0"></iframe>
 #### 如果你喜欢它，请给颗星！ leave a star if you like it!
 
 ### 预览 View: 
