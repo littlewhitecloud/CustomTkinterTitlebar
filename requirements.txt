@@ -1,0 +1,3 @@
+blurwindow
+darkdetect
+pillow
