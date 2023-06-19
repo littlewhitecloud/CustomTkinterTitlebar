@@ -9,8 +9,8 @@ __author__ = "littlewhitecloud"
 import sys
 
 if sys.platform != "win32":
-	raise OSError("Platform isn't win32(Windows)")
+    raise OSError("Platform isn't win32(Windows)")
 else:
-	from .titlebar import *
+    from .titlebar import *
 
 del sys

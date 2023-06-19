@@ -1,0 +1,10 @@
+[tool.black]
+line-length = 125
+
+[tool.isort]
+line_length = 125
+profile = "black"
+multi_line_output = 3 
+
+[tool.ruff]
+line-length = 125
