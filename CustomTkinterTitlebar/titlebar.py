@@ -88,7 +88,7 @@ class CTT(Tk):
             width=44,
             image=self.close_hov_img,
             relief=FLAT,
-            command=self.quit,
+            command=self.destroy, # quit sometimes doesn't work
         )
         self._titlemin.config(
             bd=0,
