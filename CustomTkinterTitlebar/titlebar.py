@@ -19,8 +19,8 @@ color = {
     "dark_bg": "#202020", # Dark background
     "dark_afg": "#1a1a1a", # Dark active foreground
     "light_afg": "#e5e5e5", # Light active foreground
-    "lighte_bg": "#f1707a",  # Light exit background
-    "darke_bg": "#8b0a14", # Dark exit foreground
+    "exitlight_bg": "#f1707a",  # Light exit background
+    "exitdark_bg": "#8b0a14", # Dark exit foreground
     "exit_fg": "#e81123", # Exit button foreground
 }
 
@@ -59,6 +59,57 @@ class CTT(Tk):
         self.menu.add_command(label="Close (Alt+F4)", command=self.destroy)
         self.menu.entryconfig("Restore", state="disabled")
 
+        self.titlebar = Frame(self, bg=self.bg, height = 30)
+        self.icon = Label(self.titlebar, bg=self.bg)
+        self.text = Label(self.titlebar, bg=self.bg, fg=colors[self.fg])
+        self.min = Button(self.titlebar, bg=self.bg)
+        self.max = Button(self.titlebar, bg=self.bg)
+        self.exit = Button(self.titlebar, bg=self.bg)
+
+        for button in (min, max, exit):
+            button.config(
+                bd=0,
+                width=44,
+                relief=FLAT,
+            )
+        exit.config(
+            activebackground=colors["exit%s_bg" % self.theme],
+            image=self.close_hov_img,
+            command=self.destroy,
+        )
+        min.config(
+            activebackground=colors["%s_afg" % theme],
+            image=self.min_hov_img,
+            command=self.minsize,
+        )
+        max.config(
+            activebackground=colors["%s_afg" % theme],
+            image=self.full_hov_img,
+            command=self.maxsize,
+        )
+
+        self.exit.bind("<Enter>", self.exit_enter)
+        self.exit.bind("<Leave>", self.exit_leave)
+        self.max.bind("<Enter>", self.max_enter)
+        self.max.bind("<Leave>", self.max_leave)
+        self.min.bind("<Enter>", self.min_enter)
+        self.min.bind("<Leave>", self.min_leave)
+        self.icon.bind("<Button-3>", self.showmenu)
+        self.icon.bind("<Double-Button-1>", self.destroy)
+        self.titlebar.bind("<B1-Motion>", self.moving)
+        self.titlebar.bind("<ButtonPress-1>", self.dragging)
+        self.titlebar.bind("<Double-Button-1>", self.maxsize)
+
+        self.icon.pack(fill=Y, side=LEFT, padx=5, pady=5)
+        self.title.pack(fill=Y, side=LEFT, pady=5)
+        for button in (exit, max, min):
+            button.pack(fill=Y, side=RIGHT)
+        self.titlebar.pack(fill=X, side=TOP)
+        self.titlebar.pack_propagate(False)
+
+        self.setup()
+
+        
 
     def settheme(self, theme: str) -> None:
         """Set the window's theme"""
