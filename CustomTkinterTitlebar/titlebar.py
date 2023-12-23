@@ -4,7 +4,7 @@ from pathlib import Path
 from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
 
 from darkdetect import isDark
-from .data import *
+from data import *
 from PIL import Image, ImageTk
 
 env = Path(__file__).parent
@@ -13,7 +13,7 @@ env = Path(__file__).parent
 class CTT(Tk):
     """Custom Tkinter Titlebar Window Class"""
 
-    def __init__(self, theme: str = "auto", unlimit: bool = False):
+    def __init__(self, theme: str = "auto"):
         """Class initialiser"""
         super().__init__()
 
@@ -46,7 +46,6 @@ class CTT(Tk):
 
         self.width, self.height = 265, 320
         self.fullscreen = self.focus = False
-        self.unlimit = unlimit
 
         self.popup = Menu(self, tearoff=0)
         self.popup.add_command(label="Restore", command=self.resize)
@@ -279,20 +278,11 @@ class CTT(Tk):
     # TODO: rewrite the maxsize function
     def maxsize(self, event: Event | None = None) -> None:
         """Maxsize Window"""
-        if self.fullscreen:
-            self.resize()
-        # else:
-        #     geometry = self.wm_geometry().split("+")[0].split("x")
-        #     self.width, self.height = geometry[0], geometry[1]
         self.popup.entryconfig("Restore", state="active")
         self.popup.entryconfig("Maxsize", state="disabled")
-        #     self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
         self.fullscreen = True
-        #     self.max["image"] = self.max_hov_img
-        #     self.max["command"] = self.resize
-        #     w, h = self.wm_maxsize()
-        #     self.wm_geometry("%dx%d+0+0" % (w, h - 40))
-        SW_MAXIMIZE = 3
+        self.max.config(image = self.max_hov_img, command = self.resize)
+
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
     def resize(self) -> None:
@@ -300,19 +290,17 @@ class CTT(Tk):
         self.fullscreen = False
         self.popup.entryconfig("Restore", state="disabled")
         self.popup.entryconfig("Maxsize", state="active")
-        #self.wm_geometry("%dx%d+%d+%d" % (int(self.width), int(self.height), int(self.w_x), int(self.w_y)))
-        #self.max.config(image=self.full_hov_img, command=self.maxsize)
-        SW_NORMAL = 1
+        self.max.config(image=self.full_hov_img, command=self.maxsize)
+
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
+        self.update()
 
     # TODO: minsize the window with win32 functions
     def minsize(self) -> None:
         """Minsize window"""
-        WM_SYSCOMMAND = 0x0112
-        SC_MINIMIZE = 0xF020
-        SW_MINIMIZE = 6
-        windll.user32.ShowWindow(self.hwnd, SW_MINIMIZE)
-        #windll.user32.SendMessageA(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+
+        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME | WS_CAPTION) # for the animation
+        windll.user32.SendMessageA(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
     # TODO: rewrite the setcolor function
     # FIXME don't do anything with disabled button
@@ -342,7 +330,8 @@ class CTT(Tk):
         """When focusin"""
         self.setcolor("in", self.bg)
         # TODO: unbind the three button's leave enter
-        self.geometry(f"{self.width}x{self.height}") # A magic to update the window
+        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME) # for the animation
+        self.geometry(f"{self.width}x{self.height}") # magic to get rid of the 6px white frame when focusin again
 
 
 
