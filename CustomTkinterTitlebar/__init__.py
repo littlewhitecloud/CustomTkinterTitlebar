@@ -8,6 +8,6 @@ __author__ = "littlewhitecloud"
 
 from sys import platform
 
-if sys.platform != "win32": raise OSError("Platform isn't win32(Windows)")
+if platform != "win32": raise OSError("Platform isn't win32(Windows)")
 
 from .titlebar import CTT

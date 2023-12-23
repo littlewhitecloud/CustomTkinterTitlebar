@@ -4,7 +4,7 @@ from pathlib import Path
 from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
 
 from darkdetect import isDark
-from data import *
+from .data import *
 from PIL import Image, ImageTk
 
 env = Path(__file__).parent
@@ -20,6 +20,7 @@ class CTT(Tk):
         self.colors = {
             "light": "#ffffff",
             "light_nf": "#f2efef",
+            "light_bg": "#ffffff",
             "dark": "#202020",
             "dark_nf": "#797979",
             "dark_bg": "#262626",
@@ -132,6 +133,9 @@ class CTT(Tk):
         globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
         windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
 
+        self.update()
+        self.focus_force()
+
     def settheme(self, theme: str) -> None:
         """Config the theme"""
         self.theme = theme
@@ -197,12 +201,12 @@ class CTT(Tk):
         if not usemax:
             self.max.pack_forget()
 
-        if not disablemin:
+        if disablemin:
             self.min.config(command=lambda: ..., image=self.min_img)
             self.min.unbind("<Leave>")
             self.min.unbind("<Enter>")
 
-        if not disablemax:
+        if disablemax:
             self.max.config(command=lambda: ..., image=self.full_img)
             self.max.unbind("<Leave>")
             self.max.unbind("<Enter>")
@@ -236,6 +240,7 @@ class CTT(Tk):
         self.icon.config(image=self.img)
         self.wm_iconbitmap(image)
 
+    # TODO: %sx%s+%s+%s
     def geometry(self, size: str) -> None:
         """Rebuild tkinter's geometry"""
         self.width, self.height = size.split("x")[0], size.split("x")[1]
@@ -274,42 +279,43 @@ class CTT(Tk):
     # TODO: rewrite the maxsize function
     def maxsize(self, event: Event | None = None) -> None:
         """Maxsize Window"""
-        if event and self.fullscreen:
+        if self.fullscreen:
             self.resize()
-        else:
-            geometry = self.wm_geometry().split("+")[0].split("x")
-            self.width, self.height = geometry[0], geometry[1]
-            self.popup.entryconfig("Restore", state="active")
-            self.popup.entryconfig("Maxsize", state="disabled")
-            self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
-            self.fullscreen = True
-            self.max["image"] = self.max_hov_img
-            self.max["command"] = self.resize
-            w, h = self.wm_maxsize()
-            self.geometry("%dx%d-1+0" % (w - 14, h - 40))
+        # else:
+        #     geometry = self.wm_geometry().split("+")[0].split("x")
+        #     self.width, self.height = geometry[0], geometry[1]
+        self.popup.entryconfig("Restore", state="active")
+        self.popup.entryconfig("Maxsize", state="disabled")
+        #     self.w_x, self.w_y = self.winfo_x(), self.winfo_y()
+        self.fullscreen = True
+        #     self.max["image"] = self.max_hov_img
+        #     self.max["command"] = self.resize
+        #     w, h = self.wm_maxsize()
+        #     self.wm_geometry("%dx%d+0+0" % (w, h - 40))
+        SW_MAXIMIZE = 3
+        windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
     def resize(self) -> None:
         """Resize window"""
         self.fullscreen = False
         self.popup.entryconfig("Restore", state="disabled")
         self.popup.entryconfig("Maxsize", state="active")
-        self.wm_geometry("%dx%d+%d+%d" % (int(self.width), int(self.height), int(self.w_x), int(self.w_y)))
-        self.max.config(image=self.full_hov_img, command=self.maxsize)
+        #self.wm_geometry("%dx%d+%d+%d" % (int(self.width), int(self.height), int(self.w_x), int(self.w_y)))
+        #self.max.config(image=self.full_hov_img, command=self.maxsize)
+        SW_NORMAL = 1
+        windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
 
     # TODO: minsize the window with win32 functions
     def minsize(self) -> None:
         """Minsize window"""
-        self.attributes("-alpha", 0)
-        self.bind("<FocusIn>", self.deminsize)
-
-    # TODO: see above
-    def deminsize(self, _: Event) -> None:
-        """Deminsize window"""
-        self.attributes("-alpha", 1)
-        self.focusin()
-        self.bind("<FocusIn>", self.focusin)
+        WM_SYSCOMMAND = 0x0112
+        SC_MINIMIZE = 0xF020
+        SW_MINIMIZE = 6
+        windll.user32.ShowWindow(self.hwnd, SW_MINIMIZE)
+        #windll.user32.SendMessageA(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
     # TODO: rewrite the setcolor function
+    # FIXME don't do anything with disabled button
     def setcolor(self, status: str, color: str) -> None:
         """Set the color"""
         if status == "out":
@@ -336,6 +342,8 @@ class CTT(Tk):
         """When focusin"""
         self.setcolor("in", self.bg)
         # TODO: unbind the three button's leave enter
+        self.geometry(f"{self.width}x{self.height}") # A magic to update the window
+
 
 
 if __name__ == "__main__":
