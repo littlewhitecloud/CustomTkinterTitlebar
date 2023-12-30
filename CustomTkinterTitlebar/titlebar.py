@@ -4,7 +4,7 @@ from pathlib import Path
 from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
 
 from darkdetect import isDark
-from data import *
+from .data import *
 from PIL import Image, ImageTk
 
 env = Path(__file__).parent
@@ -250,7 +250,6 @@ class CTT(Tk):
         self.width, self.height = size.split("x")[0], size.split("x")[1]
         self.wm_geometry(size)
 
-    # TODO: rewrite the maxsize function
     def maxsize(self, event: Event | None = None) -> None:
         """Maxsize Window"""
         self.popup.entryconfig("Restore", state="active")
@@ -259,6 +258,7 @@ class CTT(Tk):
         self.max.config(image=self.max_hov_img, command=self.resize)
 
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
+        # TODO: leave a place for the taskbar
 
     def resize(self, event: Event | None = None) -> None:
         """Resize window"""
@@ -286,7 +286,7 @@ class CTT(Tk):
             self.max.config(image=self.full_hov_img if self.focus else self.full_img)
         self.text.config(foreground="white" if self.focus else "grey")
 
-        # if self.theme == "followsystem" or self.theme == "light":
+        # if self.theme == "auto" or self.theme == "light":
         #     self.text["fg"] = self.colors[self.fg]
 
     def focusout(self, _: Event | None = None) -> None:
