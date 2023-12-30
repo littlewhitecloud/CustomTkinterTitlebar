@@ -31,9 +31,13 @@ class CTT(Tk):
             "exit_fg": "#e81123",
         }
 
+        self.width, self.height = 265, 320
+        self.fullscreen = self.focus = False
+        self.usemax = self.usemin = True
+
         self.theme = ("dark" if isDark() else "light") if theme == "auto" else theme
-        self.settheme(self.theme)
         self.path = env / "asset" / self.theme
+        self.settheme(self.theme)
 
         self.close_img = ImageTk.PhotoImage(Image.open(self.path / "close_50.png"))
         self.min_img = ImageTk.PhotoImage(Image.open(self.path / "minisize_50.png"))
@@ -43,9 +47,6 @@ class CTT(Tk):
         self.min_hov_img = ImageTk.PhotoImage(Image.open(self.path / "minisize_100.png"))
         self.full_hov_img = ImageTk.PhotoImage(Image.open(self.path / "fullwin_100.png"))
         self.max_hov_img = ImageTk.PhotoImage(Image.open(self.path / "togglefull_100.png"))
-
-        self.width, self.height = 265, 320
-        self.fullscreen = self.focus = False
 
         self.popup = Menu(self, tearoff=0)
         self.popup.add_command(label="Restore", command=self.resize)
@@ -85,7 +86,7 @@ class CTT(Tk):
         self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.nf if self.focus else self.bg))
 
         self.max.bind("<Enter>", lambda _: self.max.config(image=self.full_img if self.fullscreen else self.max_img))
-        self.max.bind("<Leave>", lambda _: self.max(image=self.full_hov_img if self.fullscreen else self.max_hov_img))
+        self.max.bind("<Leave>", lambda _: self.max.config(image=self.full_hov_img if self.fullscreen else self.max_hov_img))
         self.min.bind("<Enter>", lambda _: self.min.config(background=self.colors[f"button_{self.theme}_activefg"]))
         self.min.bind("<Leave>", lambda _: self.min.config(background=self.bg))
         self.max.bind("<Enter>", lambda _: self.max.config(background=self.colors[f"button_{self.theme}_activefg"]))
@@ -96,6 +97,7 @@ class CTT(Tk):
         self.titlebar.bind("<B1-Motion>", self.moving)
         self.titlebar.bind("<Double-Button-1>", self.maxsize)
         self.titlebar.bind("<Button-3>", lambda event: self.popup.post(event.x_root, event.y_root))
+
         self.setup()
 
         self.icon.pack(fill=Y, side=LEFT, padx=5, pady=5)
@@ -111,7 +113,7 @@ class CTT(Tk):
         """Window Setup"""
 
         def handle(hwnd: any, msg: any, wp: any, lp: any) -> any:
-            if msg == WM_NCCALCSIZE:
+            if msg == WM_NCCALCSIZE and wp:
                 sz = NCCALCSIZE_PARAMS.from_address(lp)
                 sz.rgrc[0].top -= 6
 
@@ -120,6 +122,7 @@ class CTT(Tk):
         self.title("CTT")
         self.geometry(f"{self.width}x{self.height}")
         self.iconbitmap(env / "asset" / "tk.ico")
+
         self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 
         windll.user32.SetWindowLongA(self.hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW)
@@ -129,8 +132,8 @@ class CTT(Tk):
         prototype = WINFUNCTYPE(c_uint64, c_uint64, c_uint64, c_uint64, c_uint64)
         globals()[old] = None
         globals()[new] = prototype(handle)
-        globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
-        windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
+        globals()[old] = windll.user32.GetWindowLongPtrW(self.hwnd, GWL_WNDPROC)
+        windll.user32.SetWindowLongPtrW(self.hwnd, GWL_WNDPROC, globals()[new])
 
         self.update()
         self.focus_force()
@@ -153,18 +156,17 @@ class CTT(Tk):
     def moving(self, event: Event) -> None:
         """Move the window"""
         global x, y
-        if not self.fullscreen:
-            windll.user32.SetWindowPos(
-                self.hwnd,
-                None,
-                event.x - x + self.winfo_x(),
-                event.y - y + self.winfo_y(),
-                0,
-                0,
-                SWP_NOREDRAW | SWP_NOSIZE | SWP_FRAMECHANGED,
-            )
-        else:
-            self.resize()
+        if self.fullscreen:
+            self.resize(event)
+        windll.user32.SetWindowPos(
+            self.hwnd,
+            None,
+            self.winfo_pointerx() - x,
+            self.winfo_pointery() - y,
+            0,
+            0,
+            SWP_NOREDRAW | SWP_NOSIZE | SWP_FRAMECHANGED,
+        )
 
     # Titlebar
     def titlebarconfig(
@@ -178,7 +180,7 @@ class CTT(Tk):
         usemax: bool = True,
         disablemin: bool = False,
         disablemax: bool = False,
-        color: dict[str] = {"color": None, "color_nf": None},
+        color: dict = {"color": None, "color_nf": None},
         height: int = 30,
     ) -> None:
         """Config he titlebar"""
@@ -194,6 +196,9 @@ class CTT(Tk):
             self.text.config(font=font)
         elif color:
             self.text.config(foreground=titlecolor)
+
+        self.usemax = usemax and not disablemax
+        self.usemin = usemin and not disablemin
 
         if not usemin:
             self.min.pack_forget()
@@ -239,41 +244,11 @@ class CTT(Tk):
         self.icon.config(image=self.img)
         self.wm_iconbitmap(image)
 
-    # TODO: %sx%s+%s+%s
+    # TODO: parse  %sx%s+%s+%s
     def geometry(self, size: str) -> None:
         """Rebuild tkinter's geometry"""
         self.width, self.height = size.split("x")[0], size.split("x")[1]
         self.wm_geometry(size)
-
-    # Titlebutton
-    # TODO: remove all of them
-    def title_grey(self) -> None:
-        """..."""
-        self.text["foreground"] = "grey"
-
-    def title_back(self) -> None:
-        """..."""
-        self.text["foreground"] = "white"
-
-    def exit_grey(self, event=None):
-        """..."""
-        self.exit["image"] = self.close_img
-
-    def exit_back(self, event=None):
-        """..."""
-        self.exit["image"] = self.close_hov_img
-
-    def min_grey(self, event=None):
-        """..."""
-        self.min["image"] = self.min_img
-
-    def min_back(self, event=None):
-        """..."""
-        self.min["image"] = self.min_hov_img
-
-    def max_on_leave(self, event=None):
-        """..."""
-        self.max["background"] = self.bg
 
     # TODO: rewrite the maxsize function
     def maxsize(self, event: Event | None = None) -> None:
@@ -281,11 +256,11 @@ class CTT(Tk):
         self.popup.entryconfig("Restore", state="active")
         self.popup.entryconfig("Maxsize", state="disabled")
         self.fullscreen = True
-        self.max.config(image = self.max_hov_img, command = self.resize)
+        self.max.config(image=self.max_hov_img, command=self.resize)
 
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
-    def resize(self) -> None:
+    def resize(self, event: Event | None = None) -> None:
         """Resize window"""
         self.fullscreen = False
         self.popup.entryconfig("Restore", state="disabled")
@@ -293,47 +268,41 @@ class CTT(Tk):
         self.max.config(image=self.full_hov_img, command=self.maxsize)
 
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
-        self.update()
+        self.titlebar.unbind("<B1-Motion>")
 
-    # TODO: minsize the window with win32 functions
     def minsize(self) -> None:
         """Minsize window"""
+        windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME | WS_CAPTION)  # for the animation
+        windll.user32.SendMessageW(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
-        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME | WS_CAPTION) # for the animation
-        windll.user32.SendMessageA(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-
-    # TODO: rewrite the setcolor function
     # FIXME don't do anything with disabled button
-    def setcolor(self, status: str, color: str) -> None:
+    def setcolor(self, color: str) -> None:
         """Set the color"""
-        if status == "out":
-            self.exit_grey()
-            self.min_grey()
-            self.max.config(image=self.full_img)
-            self.title_grey()
-            self.focus = True
-        else:
-            self.exit_back()
-            self.min_back()
-            self.max.config(image=self.full_hov_img)
-            self.title_back()
-            self.focus = False
 
-            if self.theme == "followsystem" or self.theme == "light":
-                self.text["fg"] = self.colors[self.fg]
+        self.exit.config(image=self.close_hov_img if self.focus else self.close_img)
+        if self.usemin:
+            self.min.config(image=self.min_hov_img if self.focus else self.min_img)
+        if self.usemax:
+            self.max.config(image=self.full_hov_img if self.focus else self.full_img)
+        self.text.config(foreground="white" if self.focus else "grey")
+
+        # if self.theme == "followsystem" or self.theme == "light":
+        #     self.text["fg"] = self.colors[self.fg]
 
     def focusout(self, _: Event | None = None) -> None:
         """When focusout"""
-        self.setcolor("out", self.nf)
+        self.focus = False
+        self.setcolor(self.nf)
 
     def focusin(self, _: Event | None = None) -> None:
         """When focusin"""
-        self.setcolor("in", self.bg)
+        self.focus = True
+        self.setcolor(self.bg)
         # TODO: unbind the three button's leave enter
-        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME) # for the animation
-        self.geometry(f"{self.width}x{self.height}") # magic to get rid of the 6px white frame when focusin again
-
+        windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME)  # for the animation
+        self.geometry(f"{self.width}x{self.height}")  # magic to get rid of the 6px white frame when focusin again
 
 
 if __name__ == "__main__":
-    CTT().mainloop()
+    test = CTT()
+    test.mainloop()
