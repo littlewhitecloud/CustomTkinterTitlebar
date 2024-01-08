@@ -3,14 +3,11 @@
 #   By Littlewhitecloud
 # ------------------------
 
-__version__ = "1.0.7.8"
+__version__ = "1.0.8.0"
 __author__ = "littlewhitecloud"
 
-import sys
+from sys import platform
 
-if sys.platform != "win32":
-    raise OSError("Platform isn't win32(Windows)")
-else:
-    from .titlebar import *
+if platform != "win32": raise OSError("Platform isn't win32(Windows)")
 
-del sys
+from .titlebar import CTT
