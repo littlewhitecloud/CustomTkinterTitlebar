@@ -19,12 +19,8 @@ example.mainloop()
 ```
 
 ### 预览 View:
-#### 插入组件 Insert component to titlebar:
-
-#### 亮主题 Light Theme:
-
-#### 聚焦和未聚焦 Focus in & out:
-
+![image](https://github.com/littlewhitecloud/CustomTkinterTitlebar/assets/71159641/88c8b58e-95a1-42de-951f-384c214eb2c9)
+![image](https://github.com/littlewhitecloud/CustomTkinterTitlebar/assets/71159641/77ab75fc-57bf-4ab6-8510-c94d87c4d4e7)
 
 ### 🎰 样例 Example:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
