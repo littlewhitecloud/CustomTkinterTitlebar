@@ -4,8 +4,9 @@ from pathlib import Path
 from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
 
 from darkdetect import isDark
-from .data import *
 from PIL import Image, ImageTk
+
+from .data import *
 
 env = Path(__file__).parent
 
@@ -83,7 +84,7 @@ class CTT(Tk):
         self.bind("<FocusIn>", self.focusin)
 
         self.exit.bind("<Enter>", lambda _: self.exit.config(background=self.colors["exit_fg"]))
-        self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.nf if self.focus else self.bg))
+        self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.bg if self.focus else self.nf))
 
         self.max.bind("<Enter>", lambda _: self.max.config(image=self.full_img if self.fullscreen else self.max_img))
         self.max.bind("<Leave>", lambda _: self.max.config(image=self.full_hov_img if self.fullscreen else self.max_hov_img))
@@ -132,8 +133,8 @@ class CTT(Tk):
         prototype = WINFUNCTYPE(c_uint64, c_uint64, c_uint64, c_uint64, c_uint64)
         globals()[old] = None
         globals()[new] = prototype(handle)
-        globals()[old] = windll.user32.GetWindowLongPtrW(self.hwnd, GWL_WNDPROC)
-        windll.user32.SetWindowLongPtrW(self.hwnd, GWL_WNDPROC, globals()[new])
+        globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
+        windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
 
         self.update()
         self.focus_force()
@@ -268,7 +269,6 @@ class CTT(Tk):
         self.max.config(image=self.full_hov_img, command=self.maxsize)
 
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
-        self.titlebar.unbind("<B1-Motion>")
 
     def minsize(self) -> None:
         """Minsize window"""
