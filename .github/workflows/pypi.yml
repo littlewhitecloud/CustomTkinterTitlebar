@@ -1,4 +1,4 @@
-name: Upload tkterm to Pypi
+name: Upload CustomTkinterTitlebar to Pypi
 
 on:
   release:
