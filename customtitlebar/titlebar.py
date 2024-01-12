@@ -33,8 +33,8 @@ class CTT(Tk):
         }
 
         self.width, self.height = 265, 320
-        self.fullscreen = self.focus = False
-        self.usemax = self.usemin = True
+        self.fullscreen = False
+        self.focus = self.usemax = self.usemin = True
 
         self.theme = ("dark" if isDark() else "light") if theme == "auto" else theme
         self.path = env / "asset" / self.theme
@@ -84,7 +84,7 @@ class CTT(Tk):
         self.bind("<FocusIn>", self.focusin)
 
         self.exit.bind("<Enter>", lambda _: self.exit.config(background=self.colors["exit_fg"]))
-        self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.bg if self.focus else self.nf))
+        self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.bg))
 
         self.max.bind("<Enter>", lambda _: self.max.config(image=self.full_img if self.fullscreen else self.max_img))
         self.max.bind("<Leave>", lambda _: self.max.config(image=self.full_hov_img if self.fullscreen else self.max_hov_img))
@@ -220,6 +220,9 @@ class CTT(Tk):
             self.bg = color["color"]
             self.nf = color["color_nf"]
 
+            for widget in (self.titlebar, self.text, self.icon, self.min, self.max, self.exit):
+                widget.config(background = self.bg)
+
         if height != 30:
             self.titlebar["height"] = height
 
@@ -253,9 +256,11 @@ class CTT(Tk):
 
     def maxsize(self, event: Event | None = None) -> None:
         """Maxsize Window"""
+        self.fullscreen = True
+
         self.popup.entryconfig("Restore", state="active")
         self.popup.entryconfig("Maxsize", state="disabled")
-        self.fullscreen = True
+
         self.max.config(image=self.max_hov_img, command=self.resize)
 
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
@@ -275,7 +280,6 @@ class CTT(Tk):
         windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME | WS_CAPTION)  # for the animation
         windll.user32.SendMessageW(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
-    # FIXME don't do anything with disabled button
     def setcolor(self, color: str) -> None:
         """Set the color"""
 
@@ -283,7 +287,8 @@ class CTT(Tk):
         if self.usemin:
             self.min.config(image=self.min_hov_img if self.focus else self.min_img)
         if self.usemax:
-            self.max.config(image=self.full_hov_img if self.focus else self.full_img)
+            self.max.config(image=self.max_hov_img if self.focus else self.max_img) if self.fullscreen \
+                else self.max.config(image=self.full_hov_img if self.focus else self.full_img)
         self.text.config(foreground="white" if self.focus else "grey")
 
         # if self.theme == "auto" or self.theme == "light":
@@ -300,7 +305,6 @@ class CTT(Tk):
         self.setcolor(self.bg)
         # TODO: unbind the three button's leave enter
         windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME)  # for the animation
-        self.geometry(f"{self.width}x{self.height}")  # magic to get rid of the 6px white frame when focusin again
 
 
 if __name__ == "__main__":
