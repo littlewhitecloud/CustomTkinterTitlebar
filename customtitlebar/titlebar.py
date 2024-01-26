@@ -94,8 +94,9 @@ class CTT(Tk):
         self.max.bind("<Leave>", lambda _: self.max.config(background=self.bg))
 
         self.icon.bind("<Button-1>", lambda event: self.popup.post(event.x_root, event.y_root))
-        self.titlebar.bind("<ButtonPress-1>", self.dragging)
-        self.titlebar.bind("<B1-Motion>", self.moving)
+        for widget in (self.titlebar, self.text):
+            widget.bind("<ButtonPress-1>", self.dragging)
+            widget.bind("<B1-Motion>", self.moving)
         self.titlebar.bind("<Double-Button-1>", self.maxsize)
         self.titlebar.bind("<Button-3>", lambda event: self.popup.post(event.x_root, event.y_root))
 
