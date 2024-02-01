@@ -2,11 +2,11 @@
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
 from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
+from typing import Any, Mapping
 
 from darkdetect import isDark
-from PIL import Image, ImageTk
-
 from .data import *
+from PIL import Image, ImageTk
 
 env = Path(__file__).parent
 
@@ -34,7 +34,7 @@ class CTT(Tk):
 
         self.width, self.height = 265, 320
         self.fullscreen = False
-        self.focus = self.usemax = self.usemin = True
+        self.onfocus = self.usemax = self.usemin = True
 
         self.theme = ("dark" if isDark() else "light") if theme == "auto" else theme
         self.path = env / "asset" / self.theme
@@ -97,6 +97,7 @@ class CTT(Tk):
         for widget in (self.titlebar, self.text):
             widget.bind("<ButtonPress-1>", self.dragging)
             widget.bind("<B1-Motion>", self.moving)
+
         self.titlebar.bind("<Double-Button-1>", self.maxsize)
         self.titlebar.bind("<Button-3>", lambda event: self.popup.post(event.x_root, event.y_root))
 
@@ -108,13 +109,13 @@ class CTT(Tk):
         self.max.pack(fill=Y, side=RIGHT)
         self.min.pack(fill=Y, side=RIGHT)
         self.titlebar.pack(fill=X, side=TOP)
-        self.titlebar.pack_propagate(0)
+        self.titlebar.pack_propagate(False)
 
     # Window
     def setup(self) -> None:
         """Window Setup"""
 
-        def handle(hwnd: any, msg: any, wp: any, lp: any) -> any:
+        def handle(hwnd: int, msg: int, wp: int, lp: int) -> int:
             if msg == WM_NCCALCSIZE and wp:
                 sz = NCCALCSIZE_PARAMS.from_address(lp)
                 sz.rgrc[0].top -= 6
@@ -123,7 +124,7 @@ class CTT(Tk):
 
         self.title("CTT")
         self.geometry(f"{self.width}x{self.height}")
-        self.iconbitmap(env / "asset" / "tk.ico")
+        self.iconbitmap(str(env / "asset" / "tk.ico"))
 
         self.hwnd = windll.user32.FindWindowW(c_char_p(None), "CTT")
 
@@ -138,6 +139,7 @@ class CTT(Tk):
         windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
 
         self.update()
+        self.update_idletasks()
         self.focus_force()
 
     def settheme(self, theme: str) -> None:
@@ -151,20 +153,18 @@ class CTT(Tk):
 
     def dragging(self, event: Event) -> None:
         """Drag the window"""
-        global x, y
-        x = event.x
-        y = event.y
+        self.x = event.x
+        self.y = event.y
 
     def moving(self, event: Event) -> None:
         """Move the window"""
-        global x, y
         if self.fullscreen:
             self.resize(event)
         windll.user32.SetWindowPos(
             self.hwnd,
             None,
-            self.winfo_pointerx() - x,
-            self.winfo_pointery() - y,
+            self.winfo_pointerx() - self.x,
+            self.winfo_pointery() - self.y,
             0,
             0,
             SWP_NOREDRAW | SWP_NOSIZE | SWP_FRAMECHANGED,
@@ -175,9 +175,9 @@ class CTT(Tk):
         self,
         useicon: bool = True,
         usetitle: bool = True,
-        titlepack: str | None = None,
+        titlepack: Mapping[str, Any] | None = None,
         font: tuple | None = None,
-        titlecolor: str | None = None,
+        titlecolor: str = "",
         usemin: bool = True,
         usemax: bool = True,
         disablemin: bool = False,
@@ -196,8 +196,8 @@ class CTT(Tk):
             self.text.pack(titlepack)
         elif font:
             self.text.config(font=font)
-        elif color:
-            self.text.config(foreground=titlecolor)
+        elif color:  # FIXME
+            self.text.config(background=color["color"], foreground=color["color_nf"])
 
         self.usemax = usemax and not disablemax
         self.usemin = usemin and not disablemin
@@ -222,11 +222,12 @@ class CTT(Tk):
             self.nf = color["color_nf"]
 
             for widget in (self.titlebar, self.text, self.icon, self.min, self.max, self.exit):
-                widget.config(background = self.bg)
+                widget.config(background=self.bg)
 
         if height != 30:
             self.titlebar["height"] = height
 
+        self.update_idletasks()
         self.withdraw()
         self.deiconify()
 
@@ -284,30 +285,31 @@ class CTT(Tk):
     def setcolor(self, color: str) -> None:
         """Set the color"""
 
-        self.exit.config(image=self.close_hov_img if self.focus else self.close_img)
+        self.exit.config(image=self.close_hov_img if self.onfocus else self.close_img)
         if self.usemin:
-            self.min.config(image=self.min_hov_img if self.focus else self.min_img)
+            self.min.config(image=self.min_hov_img if self.onfocus else self.min_img)
         if self.usemax:
-            self.max.config(image=self.max_hov_img if self.focus else self.max_img) if self.fullscreen \
-                else self.max.config(image=self.full_hov_img if self.focus else self.full_img)
-        self.text.config(foreground="white" if self.focus else "grey")
+            self.max.config(
+                image=self.max_hov_img if self.onfocus else self.max_img
+            ) if self.fullscreen else self.max.config(image=self.full_hov_img if self.onfocus else self.full_img)
+        self.text.config(foreground="white" if self.onfocus else "grey")
 
-        # if self.theme == "auto" or self.theme == "light":
-        #     self.text["fg"] = self.colors[self.fg]
+        if self.theme == "auto" or self.theme == "light" and self.onfocus:
+            self.text["fg"] = self.colors[self.fg]
 
     def focusout(self, _: Event | None = None) -> None:
         """When focusout"""
-        self.focus = False
+        self.onfocus = False
         self.setcolor(self.nf)
 
     def focusin(self, _: Event | None = None) -> None:
         """When focusin"""
-        self.focus = True
+        self.onfocus = True
         self.setcolor(self.bg)
         # TODO: unbind the three button's leave enter
         windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME)  # for the animation
 
 
 if __name__ == "__main__":
-    test = CTT()
+    test = CTT("light")
     test.mainloop()
