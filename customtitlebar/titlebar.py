@@ -1,11 +1,12 @@
 """A special window for custom titlebar"""
+
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
-from tkinter import FLAT, LEFT, RIGHT, TOP, Button, Event, Frame, Label, Menu, Tk, X, Y
+from tkinter import Button, Event, Frame, Label, Menu, Tk
 from typing import Any, Mapping
 
 from darkdetect import isDark
-from .data import *
+from data import *
 from PIL import Image, ImageTk
 
 env = Path(__file__).parent
@@ -14,17 +15,16 @@ env = Path(__file__).parent
 class CTT(Tk):
     """Custom Tkinter Titlebar Window Class"""
 
-    def __init__(self, theme: str = "auto"):
-        """Class initialiser"""
+    def __init__(self, theme: str = "auto") -> None:
         super().__init__()
 
         self.colors = {
-            "light": "#ffffff",
+            "light": "#eeeeee",
             "light_nf": "#f2efef",
-            "light_bg": "#ffffff",
+            "light_bg": "#eeeeee",
             "dark": "#202020",
             "dark_nf": "#797979",
-            "dark_bg": "#262626",
+            "dark_bg": "#202020",
             "button_dark_activefg": "#2D2D2D",
             "button_light_activefg": "#e5e5e5",
             "lightexit_bg": "#f1707a",
@@ -36,9 +36,8 @@ class CTT(Tk):
         self.fullscreen = False
         self.onfocus = self.usemax = self.usemin = True
 
-        self.theme = ("dark" if isDark() else "light") if theme == "auto" else theme
+        self.settheme(theme.lower())
         self.path = env / "asset" / self.theme
-        self.settheme(self.theme)
 
         self.close_img = ImageTk.PhotoImage(Image.open(self.path / "close_50.png"))
         self.min_img = ImageTk.PhotoImage(Image.open(self.path / "minisize_50.png"))
@@ -60,9 +59,9 @@ class CTT(Tk):
         self.titlebar = Frame(self, bg=self.bg, height=30)
         self.icon = Label(self.titlebar, bg=self.bg)
         self.text = Label(self.titlebar, bg=self.bg, fg=self.colors[self.fg])
-        self.min = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief=FLAT)
-        self.max = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief=FLAT)
-        self.exit = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief=FLAT)
+        self.min = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
+        self.max = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
+        self.exit = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
 
         self.exit.config(
             activebackground=self.colors[f"{self.theme}exit_bg"],
@@ -103,12 +102,12 @@ class CTT(Tk):
 
         self.setup()
 
-        self.icon.pack(fill=Y, side=LEFT, padx=5, pady=5)
-        self.text.pack(fill=Y, side=LEFT, pady=5)
-        self.exit.pack(fill=Y, side=RIGHT)
-        self.max.pack(fill=Y, side=RIGHT)
-        self.min.pack(fill=Y, side=RIGHT)
-        self.titlebar.pack(fill=X, side=TOP)
+        self.icon.pack(fill="y", side="left", padx=5, pady=5)
+        self.text.pack(fill="y", side="left", pady=5)
+        self.exit.pack(fill="y", side="right")
+        self.max.pack(fill="y", side="right")
+        self.min.pack(fill="y", side="right")
+        self.titlebar.pack(fill="x", side="top")
         self.titlebar.pack_propagate(False)
 
     # Window
@@ -139,16 +138,25 @@ class CTT(Tk):
         windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
 
         self.update()
-        self.update_idletasks()
         self.focus_force()
 
     def settheme(self, theme: str) -> None:
         """Config the theme"""
+
+        def autotheme() -> str:
+            return "dark" if isDark() else "light"
+
         self.theme = theme
-        self.bg = self.colors[theme]
-        self.nf = self.colors[f"{theme}_nf"]
-        self.fg = "light" if theme == "dark" else "dark"
-        self.config(background=self.colors[f"{theme}_bg"])
+        if theme not in ("dark", "light", "auto"):  # Check the theme
+            print(f"Warning: Now the theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead")
+            self.theme = autotheme()
+        elif theme == "auto":
+            self.theme = autotheme()
+
+        self.bg = self.colors[self.theme]
+        self.nf = self.colors[f"{self.theme}_nf"]
+        self.fg = "light" if self.theme == "dark" else "dark"
+        self.config(background=self.colors[f"{self.theme}_bg"])
         self.update()
 
     def dragging(self, event: Event) -> None:
@@ -191,12 +199,14 @@ class CTT(Tk):
 
         if not usetitle:
             self.text.pack_forget()
-        elif titlepack:
+        if titlepack:
             self.text.pack_forget()
             self.text.pack(titlepack)
-        elif font:
+        if titlecolor:
+            self.text.config(foreground=titlecolor)
+        if font:
             self.text.config(font=font)
-        elif color:  # FIXME
+        if color:  # FIXME
             self.text.config(background=color["color"], foreground=color["color_nf"])
 
         self.usemax = usemax and not disablemax
@@ -256,7 +266,7 @@ class CTT(Tk):
         self.width, self.height = size.split("x")[0], size.split("x")[1]
         self.wm_geometry(size)
 
-    def maxsize(self, event: Event | None = None) -> None:
+    def maxsize(self, _: None = None) -> None:
         """Maxsize Window"""
         self.fullscreen = True
 
@@ -268,7 +278,7 @@ class CTT(Tk):
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
         # TODO: leave a place for the taskbar
 
-    def resize(self, event: Event | None = None) -> None:
+    def resize(self, _: None = None) -> None:
         """Resize window"""
         self.fullscreen = False
         self.popup.entryconfig("Restore", state="disabled")
@@ -282,19 +292,21 @@ class CTT(Tk):
         windll.user32.SetWindowLongW(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME | WS_CAPTION)  # for the animation
         windll.user32.SendMessageW(self.hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
-    def setcolor(self, color: str) -> None:
+    def setcolor(self) -> None:
         """Set the color"""
 
         self.exit.config(image=self.close_hov_img if self.onfocus else self.close_img)
         if self.usemin:
             self.min.config(image=self.min_hov_img if self.onfocus else self.min_img)
         if self.usemax:
-            self.max.config(
-                image=self.max_hov_img if self.onfocus else self.max_img
-            ) if self.fullscreen else self.max.config(image=self.full_hov_img if self.onfocus else self.full_img)
+            (
+                self.max.config(image=self.max_hov_img if self.onfocus else self.max_img)
+                if self.fullscreen
+                else self.max.config(image=self.full_hov_img if self.onfocus else self.full_img)
+            )
         self.text.config(foreground="white" if self.onfocus else "grey")
 
-        if self.theme == "auto" or self.theme == "light" and self.onfocus:
+        if self.theme == "light" and self.onfocus:  # TODO: ???
             self.text["fg"] = self.colors[self.fg]
 
     def focusout(self, _: Event | None = None) -> None:
@@ -311,5 +323,5 @@ class CTT(Tk):
 
 
 if __name__ == "__main__":
-    test = CTT("light")
+    test = CTT()
     test.mainloop()
