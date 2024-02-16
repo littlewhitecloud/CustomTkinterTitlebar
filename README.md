@@ -18,12 +18,18 @@ en.pack(fill = "y", expand = True, pady = 1)
 example.mainloop()
 ```
 
+### 安装 Install
+```console
+pip install CustomTkinterTitlebar --user
+```
+
 ### 预览 View:
 ![image](https://github.com/littlewhitecloud/CustomTkinterTitlebar/assets/71159641/88c8b58e-95a1-42de-951f-384c214eb2c9)
 ![image](https://github.com/littlewhitecloud/CustomTkinterTitlebar/assets/71159641/77ab75fc-57bf-4ab6-8510-c94d87c4d4e7)
 
 ### 🎰 样例 Example:
 https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
+
 
 感谢 @HuyHung1408花时间来在Windows11上测试它!
 Thanks @HuyHung1408 for testing it on windows 11!
