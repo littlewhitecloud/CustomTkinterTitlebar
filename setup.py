@@ -7,7 +7,7 @@ requires = ["Pillow>=9.0.0", "darkdetect>=0.8.0"]
 
 setup(
     name="CustomTkinterTitlebar",
-    version="1.0.8.1",
+    version="1.0.8.2",
     author="littlewhitecloud",
     author_email="q1141926647@163.com",
     description="This is a 📚project can help you to have a custom titlebar! 这是一个可以创建自定义标题栏的📚项目",
