@@ -297,11 +297,3 @@ class CTT(Tk):
 
     def focusin(self, _: Event | None = None) -> None:
         self.setcolor(True)
-
-
-if __name__ == "__main__":
-    from win32mica import ApplyMica, MicaStyle
-
-    test = CTT()
-    # ApplyMica(test.hwnd, True)
-    test.mainloop()
