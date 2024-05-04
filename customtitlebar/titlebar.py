@@ -2,14 +2,13 @@
 
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
-from tkinter import Button, Event, Frame, Label, Tk
+from tkinter import Button, Event, Frame, Label, Tk, Toplevel
 from typing import Any, Mapping
 
 from darkdetect import isDark
 from PIL import Image, ImageTk
 
 from .data import *
-
 env = Path(__file__).parent
 
 
@@ -49,11 +48,17 @@ class CTT(Tk):
         self.max_hov_img = ImageTk.PhotoImage(Image.open(self.path / "togglefull_100.png"))
 
         self.titlebar = Frame(self, bg=self.bg, height=30)
-        self.icon = Label(self.titlebar, bg=self.bg)
-        self.text = Label(self.titlebar, bg=self.bg, fg=self.colors[self.fg])
-        self.min = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
-        self.max = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
-        self.exit = Button(self.titlebar, bg=self.bg, bd=0, width=44, relief="flat")
+        self.buttongroup = Frame(self.titlebar, bg=self.bg)
+        self.infogroup = Frame(self.titlebar, bg=self.bg)
+        self.icon = Label(self.infogroup, bg=self.bg)
+        self.text = Label(self.infogroup, bg=self.bg, fg=self.colors[self.fg])
+
+        self.min = Button(self.buttongroup)
+        self.max = Button(self.buttongroup)
+        self.exit = Button(self.buttongroup)
+
+        for widget in (self.min, self.max, self.exit):
+            widget.config(bg=self.bg, bd=0, width=44, height=30, relief="flat")
 
         self.exit.config(
             activebackground=self.colors[f"{self.theme}exit_bg"],
@@ -92,12 +97,14 @@ class CTT(Tk):
 
         self.setup()
 
-        self.icon.pack(fill="y", side="left", padx=5, pady=5)
-        self.text.pack(fill="y", side="left", pady=5, padx=5)
+        self.icon.pack(fill="x", side="left")
+        self.text.pack(fill="x", side="left")
         self.exit.pack(fill="y", side="right")
         self.max.pack(fill="y", side="right")
         self.min.pack(fill="y", side="right")
-        self.titlebar.pack(fill="x", side="top")
+        self.infogroup.pack(fill = "x", side = "left", padx=5, pady=5)
+        self.buttongroup.pack(fill = "y", side="right")
+        self.titlebar.pack(fill="x", side="top", expand=False)
         self.titlebar.pack_propagate(False)
 
     # Window
@@ -119,13 +126,13 @@ class CTT(Tk):
 
         old, new = "old", "new"
         prototype = WINFUNCTYPE(c_uint64, c_uint64, c_uint64, c_uint64, c_uint64)
+
         globals()[old] = None
         globals()[new] = prototype(handle)
         globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
         windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
 
         self.update()
-        self.focus_force()
 
     def dragging(self, event: Event) -> None:
         """Drag the window"""
@@ -155,7 +162,6 @@ class CTT(Tk):
         self.titlebar.bind("<Double-Button-1>", self.resize)
 
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
-        # TODO: leave a place for the taskbar
 
     def resize(self, _: Event | None = None) -> None:
         """Resize window"""
@@ -230,6 +236,7 @@ class CTT(Tk):
     def title(self, text: str) -> None:
         """Rebuild tkinter's title"""
         # TODO: show "..." if title is too long
+
         self.text.config(text=text)
         self.wm_title(text)
 
@@ -251,7 +258,9 @@ class CTT(Tk):
     # TODO: parse  %sx%s+%s+%s
     def geometry(self, size: str) -> None:
         """Rebuild tkinter's geometry"""
-        self.width, self.height = size.split("x")[0], size.split("x")[1]
+        tmp = size.split('+')[0].split('x')
+        self.width, self.height = tmp[0], tmp[1]
+
         self.wm_geometry(size)
 
     def settheme(self, theme: str) -> None:
@@ -260,14 +269,16 @@ class CTT(Tk):
         def autotheme() -> str:
             return "dark" if isDark() else "light"
 
-        self.theme = theme
         if theme not in ("dark", "light", "auto"):  # Check the theme
             print(
                 f"Warning: Now the theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
             )
             self.theme = autotheme()
-        elif theme == "auto":
+
+        if theme == "auto":
             self.theme = autotheme()
+        else:
+            self.theme = theme
 
         self.bg = self.colors[self.theme]
         self.nf = self.colors[f"{self.theme}_nf"]
@@ -292,8 +303,40 @@ class CTT(Tk):
         if self.theme == "light" and self.onfocus:
             self.text.config(foreground=self.colors[self.fg])
 
-    def focusout(self, _: Event | None = None) -> None:
-        self.setcolor(False)
+    def focusout(self, _: Event | None = None) -> None: self.setcolor(False)
+    def focusin(self, _: Event | None = None) -> None: self.setcolor(True)
 
-    def focusin(self, _: Event | None = None) -> None:
-        self.setcolor(True)
+class Dialog(Toplevel):
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.overrideredirect(True)
+        self.setup()
+
+    def setup(self) -> None:
+
+        def handle(hwnd: int, msg: int, wp: int, lp: int) -> int:
+            if msg == WM_NCCALCSIZE and wp:
+                lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
+                lpncsp.rgrc[0].top -= 6
+
+            return windll.user32.CallWindowProcW(*map(c_uint64, (globals()[old], hwnd, msg, wp, lp)))
+
+        self.title("Tk")
+        self.geometry("300x400")
+        self.iconbitmap("")
+
+        self.hwnd = windll.user32.FindWindowW(c_char_p(None), "Tk")
+
+        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME)
+
+        old, new = "old", "new"
+        prototype = WINFUNCTYPE(c_uint64, c_uint64, c_uint64, c_uint64, c_uint64)
+        globals()[old] = None
+        globals()[new] = prototype(handle)
+        globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
+        windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
+
+        self.update()
+        self.focus_force()
