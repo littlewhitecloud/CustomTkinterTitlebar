@@ -2,7 +2,7 @@
 
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
-from tkinter import Button, Event, Frame, Label, Tk, Toplevel
+from tkinter import Button, Event, Frame, Label, Tk
 from typing import Any, Mapping
 
 from darkdetect import isDark
@@ -233,9 +233,11 @@ class CTT(Tk):
         self.deiconify()
 
     # Functions
-    def title(self, text: str) -> None:
+    def title(self, text: str = "") -> None:
         """Rebuild tkinter's title"""
         # TODO: show "..." if title is too long
+
+        if not text: return self.text["text"]
 
         self.text.config(text=text)
         self.wm_title(text)
@@ -305,38 +307,3 @@ class CTT(Tk):
 
     def focusout(self, _: Event | None = None) -> None: self.setcolor(False)
     def focusin(self, _: Event | None = None) -> None: self.setcolor(True)
-
-class Dialog(Toplevel):
-
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.overrideredirect(True)
-        self.setup()
-
-    def setup(self) -> None:
-
-        def handle(hwnd: int, msg: int, wp: int, lp: int) -> int:
-            if msg == WM_NCCALCSIZE and wp:
-                lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
-                lpncsp.rgrc[0].top -= 6
-
-            return windll.user32.CallWindowProcW(*map(c_uint64, (globals()[old], hwnd, msg, wp, lp)))
-
-        self.title("Tk")
-        self.geometry("300x400")
-        self.iconbitmap("")
-
-        self.hwnd = windll.user32.FindWindowW(c_char_p(None), "Tk")
-
-        windll.user32.SetWindowLongA(self.hwnd, GWL_STYLE, WS_VISIBLE | WS_THICKFRAME)
-
-        old, new = "old", "new"
-        prototype = WINFUNCTYPE(c_uint64, c_uint64, c_uint64, c_uint64, c_uint64)
-        globals()[old] = None
-        globals()[new] = prototype(handle)
-        globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
-        windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
-
-        self.update()
-        self.focus_force()
