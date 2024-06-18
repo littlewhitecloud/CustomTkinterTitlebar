@@ -3,7 +3,7 @@
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
 from tkinter import Button, Event, Frame, Label, Tk
-from typing import Any, Mapping
+from typing import Any, Dict, Mapping, Tuple, Optional, Literal
 
 from darkdetect import isDark
 from PIL import Image, ImageTk
@@ -11,12 +11,15 @@ from PIL import Image, ImageTk
 from .data import *
 env = Path(__file__).parent
 
-
 class CTT(Tk):
-    """Custom Tkinter Titlebar Window Class"""
+    """Basic window for customize titlebar"""
 
-    def __init__(self, theme: str = "auto") -> None:
+    def __init__(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
+        """
+        * `theme`: the theme of the window ("light", "dark", "auto")
+        """
         super().__init__()
+
         self.colors = {
             "light": "#eeeeee",
             "light_nf": "#f2efef",
@@ -111,7 +114,8 @@ class CTT(Tk):
     def setup(self) -> None:
         """Window Setup"""
 
-        def handle(hwnd: int, msg: int, wp: int, lp: int) -> int:
+        def handle(hwnd: Any, msg: Any, wp: Any, lp: Any) -> Any:
+
             if msg == WM_NCCALCSIZE and wp:
                 lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
                 lpncsp.rgrc[0].top -= 30
@@ -154,7 +158,7 @@ class CTT(Tk):
             SWP_NOREDRAW | SWP_NOSIZE | SWP_FRAMECHANGED,
         )
 
-    def maximize(self, _: Event | None = None) -> None:
+    def maximize(self, _: Optional[Event] = None) -> None:
         """Maximize Window"""
         self.fullscreen = True
 
@@ -163,9 +167,10 @@ class CTT(Tk):
 
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
-    def resize(self, _: Event | None = None) -> None:
+    def resize(self, _: Optional[Event] = None) -> None:
         """Resize window"""
         self.fullscreen = False
+
         self.max.config(image=self.full_hov_img, command=self.maximize)
         self.titlebar.bind("<Double-Button-1>", self.maximize)
 
@@ -176,14 +181,14 @@ class CTT(Tk):
         self,
         useicon: bool = True,
         usetitle: bool = True,
-        titlepack: Mapping[str, Any] | None = None,
-        font: tuple | None = None,
-        titlecolor: str = "",
+        titlepack: Optional[Mapping[str, Any]] = None,
+        font: Optional[Tuple] = None,
+        titlecolor: Optional[str] = None,
         usemin: bool = True,
         usemax: bool = True,
         disablemin: bool = False,
         disablemax: bool = False,
-        color: dict = {"color": None, "color_nf": None},
+        color: Dict[str, Any] = {"color": None, "color_nf": None},
         height: int = 30,
     ) -> None:
         """Config he titlebar"""
@@ -233,7 +238,7 @@ class CTT(Tk):
         self.deiconify()
 
     # Functions
-    def title(self, text: str = "") -> None:
+    def title(self, text: Optional[str] = None) -> None:
         """Rebuild tkinter's title"""
         # TODO: show "..." if title is too long
 
@@ -244,31 +249,38 @@ class CTT(Tk):
 
     def iconphoto(self, image: str) -> None:
         """Rebuild tkinter's iconphoto"""
+        if not image:
+            return
+
         self.img = ImageTk.PhotoImage(Image.open(image).resize((16, 16)))
         self.icon.config(image=self.img)
         self.wm_iconphoto(self.img)
 
-    def iconbitmap(self, image: str) -> None:
+    def iconbitmap(self, image: Optional[str] = None) -> None:
         """Rebuild tkinter's iconbitmap"""
-        self.wm_iconbitmap(image)
-
         if not image:
             return
+
+        self.wm_iconbitmap(image)
+
         self.img = ImageTk.PhotoImage(Image.open(image).resize((16, 16)))
         self.icon.config(image=self.img)
 
-    # TODO: parse  %sx%s+%s+%s
-    def geometry(self, size: str) -> None:
+    def geometry(self, size: Optional[str] = None) -> None:
         """Rebuild tkinter's geometry"""
-        tmp = size.split('+')[0].split('x')
-        self.width, self.height = tmp[0], tmp[1]
+        if not size:
+            return f"{self.width}x{self.height}"
+
+        _ = size.split('+')[0].split('x')
+        self.width, self.height = _[0], _[1]
 
         self.wm_geometry(size)
 
-    def settheme(self, theme: str) -> None:
+    def settheme(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
         """Config the theme"""
 
         def autotheme() -> str:
+            """Get the theme by checking system theme setting"""
             return "dark" if isDark() else "light"
 
         if theme not in ("dark", "light", "auto"):  # Check the theme
@@ -276,8 +288,7 @@ class CTT(Tk):
                 f"Warning: Now the theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
             )
             self.theme = autotheme()
-
-        if theme == "auto":
+        elif theme == "auto":
             self.theme = autotheme()
         else:
             self.theme = theme
@@ -305,5 +316,5 @@ class CTT(Tk):
         if self.theme == "light" and self.onfocus:
             self.text.config(foreground=self.colors[self.fg])
 
-    def focusout(self, _: Event | None = None) -> None: self.setcolor(False)
-    def focusin(self, _: Event | None = None) -> None: self.setcolor(True)
+    def focusout(self, _: Optional[Event] = None) -> None: self.setcolor(False)
+    def focusin(self, _: Optional[Event] = None) -> None: self.setcolor(True)
