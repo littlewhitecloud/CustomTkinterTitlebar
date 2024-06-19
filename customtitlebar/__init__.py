@@ -9,6 +9,8 @@ __author__ = "littlewhitecloud"
 from sys import platform
 
 if platform != "win32":
-    raise OSError("Platform isn't win32 (Windows)")
+    raise OSError("Use win32 platform to import this package")
 
 from .titlebar import CTT
+
+del platform
