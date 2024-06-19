@@ -115,7 +115,7 @@ class CTT(Tk):
         """Window Setup"""
 
         def handle(hwnd: Any, msg: Any, wp: Any, lp: Any) -> Any:
-
+            """Handle the messages"""
             if msg == WM_NCCALCSIZE and wp:
                 lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
                 lpncsp.rgrc[0].top -= 30
@@ -179,19 +179,32 @@ class CTT(Tk):
     # Titlebar
     def titlebarconfig(
         self,
-        useicon: bool = True,
-        usetitle: bool = True,
-        titlepack: Optional[Mapping[str, Any]] = None,
-        font: Optional[Tuple] = None,
-        titlecolor: Optional[str] = None,
+        height: int = 30,
         usemin: bool = True,
         usemax: bool = True,
         disablemin: bool = False,
         disablemax: bool = False,
+        useicon: bool = True,
+        usetitle: bool = True,
+        font: Optional[Tuple] = None,
+        titlecolor: Optional[str] = None,
+        titlepack: Optional[Mapping[str, Any]] = None,
         color: Dict[str, Any] = {"color": None, "color_nf": None},
-        height: int = 30,
     ) -> None:
-        """Config he titlebar"""
+        """
+        Config he titlebar
+        * `height`: Config the height of the titlebar
+        * `usemin`: Flag to enable to use the minimize button
+        * `usemax`: Flag to enable to usethe maximize button
+        * `disablemin`: Flag to enable the minimize button
+        * `disablemax`: Flag to enable the maximize button
+        * `useicon`: Flag to enable to show the icon in the titlebar
+        * `usetitle`: Flag to enable to show the text in the titlebar
+        * `font`: Set the font of the text
+        * `titlepack`: Config the pack of the text
+        * `titlecolor`: Config the color of the text
+        * `color`: Config the color of the titlebar
+        """
         if not useicon:
             self.icon.pack_forget()
 
