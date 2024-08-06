@@ -1,5 +1,7 @@
 """A special window for custom titlebar"""
 
+from __future__ import annotations
+
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
 from tkinter import Button, Event, Frame, Label, Tk
