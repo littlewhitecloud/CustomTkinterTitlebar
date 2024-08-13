@@ -5,13 +5,14 @@ from __future__ import annotations
 from ctypes import WINFUNCTYPE, c_char_p, c_uint64, windll
 from pathlib import Path
 from tkinter import Button, Event, Frame, Label, Tk
-from typing import Any, Dict, Mapping, Tuple, Optional, Literal
+from typing import Any, Dict, Literal, Mapping, Optional, Tuple
 
 from darkdetect import isDark
+from .data import *
 from PIL import Image, ImageTk
 
-from .data import *
 env = Path(__file__).parent
+
 
 class CTT(Tk):
     """Basic window for customize titlebar"""
@@ -92,25 +93,30 @@ class CTT(Tk):
         self.min.bind("<Enter>", lambda _: self.min.config(background=self.colors[f"button_{self.theme}_activefg"]))
         self.min.bind("<Leave>", lambda _: self.min.config(background=self.bg))
         self.max.bind("<Enter>", lambda _: self.max.config(background=self.colors[f"button_{self.theme}_activefg"]))
+        self.max.bind("<Enter>", lambda _: self.after(1000, self.snaplayout))
         self.max.bind("<Leave>", lambda _: self.max.config(background=self.bg))
 
-        for widget in (self.titlebar, self.text):
-            widget.bind("<ButtonPress-1>", self.dragging)
-            widget.bind("<B1-Motion>", self.moving)
+        for _ in (self.titlebar, self.text):
+            _.bind("<ButtonPress-1>", self.dragging)
+            _.bind("<B1-Motion>", self.moving)
 
         self.titlebar.bind("<Double-Button-1>", self.maximize)
 
-        self.setup()
-
         self.icon.pack(fill="x", side="left")
         self.text.pack(fill="x", side="left")
-        self.exit.pack(fill="y", side="right")
-        self.max.pack(fill="y", side="right")
-        self.min.pack(fill="y", side="right")
-        self.infogroup.pack(fill = "x", side = "left", padx=5, pady=5)
-        self.buttongroup.pack(fill = "y", side="right")
+        for _ in (self.exit, self.max, self.min):
+            _.pack(fill="y", side="right")
+        self.infogroup.pack(fill="x", side="left", padx=5, pady=5)
+        self.buttongroup.pack(fill="y", side="right")
+
         self.titlebar.pack(fill="x", side="top", expand=False)
         self.titlebar.pack_propagate(False)
+
+        self.title("Tk")
+        self.geometry(f"{self.width}x{self.height}")
+        self.iconbitmap(str(env / "asset" / "tk.ico"))
+
+        self.setup()
 
     # Window
     def setup(self) -> None:
@@ -124,10 +130,6 @@ class CTT(Tk):
 
             return windll.user32.CallWindowProcW(*map(c_uint64, (globals()[old], hwnd, msg, wp, lp)))
 
-        self.title("Tk")
-        self.geometry(f"{self.width}x{self.height}")
-        self.iconbitmap(str(env / "asset" / "tk.ico"))
-
         self.hwnd = windll.user32.FindWindowW(c_char_p(None), "Tk")
 
         old, new = "old", "new"
@@ -136,9 +138,8 @@ class CTT(Tk):
         globals()[old] = None
         globals()[new] = prototype(handle)
         globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
-        windll.user32.SetWindowLongPtrA(self.hwnd, GWL_WNDPROC, globals()[new])
+        windll.user32.SetWindowLongPtrW(self.hwnd, GWL_WNDPROC, globals()[new])
 
-        self.update()
 
     def dragging(self, event: Event) -> None:
         """Drag the window"""
@@ -172,11 +173,16 @@ class CTT(Tk):
     def resize(self, _: Optional[Event] = None) -> None:
         """Resize window"""
         self.fullscreen = False
-
         self.max.config(image=self.full_hov_img, command=self.maximize)
         self.titlebar.bind("<Double-Button-1>", self.maximize)
 
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
+
+    def snaplayout(self) -> None:
+        windll.user32.keybd_event(91, 0, 0, 0)
+        windll.user32.keybd_event(90, 0, 0, 0)
+        windll.user32.keybd_event(91, 0, 2, 0)
+        windll.user32.keybd_event(90, 0, 2, 0)
 
     # Titlebar
     def titlebarconfig(
@@ -257,7 +263,8 @@ class CTT(Tk):
         """Rebuild tkinter's title"""
         # TODO: show "..." if title is too long
 
-        if not text: return self.text["text"]
+        if not text:
+            return self.text["text"]
 
         self.text.config(text=text)
         self.wm_title(text)
@@ -276,17 +283,16 @@ class CTT(Tk):
         if not image:
             return
 
-        self.wm_iconbitmap(image)
-
         self.img = ImageTk.PhotoImage(Image.open(image).resize((16, 16)))
         self.icon.config(image=self.img)
+        self.wm_iconbitmap(image)
 
     def geometry(self, size: Optional[str] = None) -> None:
         """Rebuild tkinter's geometry"""
         if not size:
             return f"{self.width}x{self.height}"
 
-        _ = size.split('+')[0].split('x')
+        _ = size.split("+")[0].split("x")
         self.width, self.height = _[0], _[1]
 
         self.wm_geometry(size)
@@ -331,5 +337,8 @@ class CTT(Tk):
         if self.theme == "light" and self.onfocus:
             self.text.config(foreground=self.colors[self.fg])
 
-    def focusout(self, _: Optional[Event] = None) -> None: self.setcolor(False)
-    def focusin(self, _: Optional[Event] = None) -> None: self.setcolor(True)
+    def focusout(self, _: Optional[Event] = None) -> None:
+        self.setcolor(False)
+
+    def focusin(self, _: Optional[Event] = None) -> None:
+        self.setcolor(True)
