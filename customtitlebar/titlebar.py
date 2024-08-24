@@ -8,14 +8,15 @@ from tkinter import Button, Event, Frame, Label, Tk
 from typing import Any, Dict, Literal, Mapping, Optional, Tuple
 
 from darkdetect import isDark
-from .data import *
 from PIL import Image, ImageTk
+
+from .data import *
 
 env = Path(__file__).parent
 
 
 class CTT(Tk):
-    """Basic window for customize titlebar"""
+    """Customize window for customize titlebar"""
 
     def __init__(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
         """
@@ -38,7 +39,7 @@ class CTT(Tk):
         }
 
         self.width, self.height = 1080, 607
-        self.fullscreen = False
+        self.snaplayout = self.fullscreen = False
         self.onfocus = self.usemax = self.usemin = True
 
         self.settheme(theme.lower())
@@ -93,8 +94,8 @@ class CTT(Tk):
         self.min.bind("<Enter>", lambda _: self.min.config(background=self.colors[f"button_{self.theme}_activefg"]))
         self.min.bind("<Leave>", lambda _: self.min.config(background=self.bg))
         self.max.bind("<Enter>", lambda _: self.max.config(background=self.colors[f"button_{self.theme}_activefg"]))
-        self.max.bind("<Enter>", lambda _: self.after(1000, self.snaplayout))
-        self.max.bind("<Leave>", lambda _: self.max.config(background=self.bg))
+        self.max.bind("<Enter>", lambda _: self._enablesnaplayout())
+        self.max.bind("<Leave>", lambda _: self._disablesnaplayout())
 
         for _ in (self.titlebar, self.text):
             _.bind("<ButtonPress-1>", self.dragging)
@@ -117,7 +118,6 @@ class CTT(Tk):
         self.iconbitmap(str(env / "asset" / "tk.ico"))
 
         self.setup()
-
     # Window
     def setup(self) -> None:
         """Window Setup"""
@@ -139,7 +139,6 @@ class CTT(Tk):
         globals()[new] = prototype(handle)
         globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
         windll.user32.SetWindowLongPtrW(self.hwnd, GWL_WNDPROC, globals()[new])
-
 
     def dragging(self, event: Event) -> None:
         """Drag the window"""
@@ -178,11 +177,24 @@ class CTT(Tk):
 
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
 
-    def snaplayout(self) -> None:
+    def _snaplayout(self) -> None:
+        if not self.snaplayout:
+            return
         windll.user32.keybd_event(91, 0, 0, 0)
         windll.user32.keybd_event(90, 0, 0, 0)
         windll.user32.keybd_event(91, 0, 2, 0)
         windll.user32.keybd_event(90, 0, 2, 0)
+        self.snaplayout = False
+
+    def _enablesnaplayout(self) -> None:
+        if self.snaplayout:
+            return
+        self.snaplayout = True
+        self.after(1000, self._snaplayout)
+
+    def _disablesnaplayout(self) -> None:
+        self.max.config(background=self.bg)
+        self.snaplayout = False
 
     # Titlebar
     def titlebarconfig(
@@ -306,7 +318,8 @@ class CTT(Tk):
 
         if theme not in ("dark", "light", "auto"):  # Check the theme
             print(
-                f"Warning: Now the theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
+                f"Warning: Now the theme is `{
+                    theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
             )
             self.theme = autotheme()
         elif theme == "auto":
