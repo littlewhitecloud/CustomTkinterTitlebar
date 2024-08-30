@@ -312,7 +312,7 @@ class CTT(Tk):
             self.theme = theme
 
         self.assetpath = self.path / self.theme
-        print(self.assetpath)
+
         self.close_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_50.png"))
         self.min_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_50.png"))
         self.full_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_50.png"))
