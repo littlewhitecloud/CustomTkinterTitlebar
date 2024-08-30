@@ -25,12 +25,10 @@ class CTT(Tk):
         self.colors = {
             "light": "#fafafa",
             "light_nf": "#f3f3f3",
-            "light_bg": "#fafafa",
             "dark": "#202020",
             "dark_nf": "#797979",
-            "dark_bg": "#202020",
-            "button_dark_activefg": "#2d2d2d",
-            "button_light_activefg": "#e5e5e5",
+            "dark_activefg": "#2d2d2d",
+            "light_activefg": "#e5e5e5",
             "lightexit_bg": "#f1707a",
             "darkexit_bg": "#c42b1c",
             "exit_fg": "#e81123",
@@ -39,50 +37,32 @@ class CTT(Tk):
         self.width, self.height = 200, 230
         self.snaplayout = self.fullscreen = False
         self.onfocus = self.usemax = self.usemin = True
+        self.path = pathlib.Path(__file__).parent / "asset"
 
         self.gettheme(theme.lower())
-
-        self.path = pathlib.Path(__file__).parent / "asset"
         self.assetpath = self.path / self.theme
-
         self.settheme(self.theme)
 
-        self.titlebar = Frame(self, bg=self.bg, height=30)
-        self.buttongroup = Frame(self.titlebar, bg=self.bg)
-        self.infogroup = Frame(self.titlebar, bg=self.bg)
-        self.icon = Label(self.infogroup, bg=self.bg)
-        self.text = Label(self.infogroup, bg=self.bg, fg=self.colors[self.fg])
+        self.titlebar = Frame(self, height=30)
+        self.buttongroup = Frame(self.titlebar)
+        self.infogroup = Frame(self.titlebar)
+        self.icon = Label(self.infogroup)
+        self.text = Label(self.infogroup, fg=self.colors[self.fg])
 
-        self.min = Button(self.buttongroup)
-        self.max = Button(self.buttongroup)
-        self.exit = Button(self.buttongroup)
+        self.min = Button(self.buttongroup, command=self.iconify)
+        self.max = Button(self.buttongroup, command=self.maximize)
+        self.exit = Button(self.buttongroup, command=self.quit)
 
         for _ in (self.min, self.max, self.exit):
-            _.config(bg=self.bg, bd=0, width=44, height=30, relief="flat")
+            _.config(bd=0, width=44, height=30, relief="flat")
 
-        self.exit.config(
-            activebackground=self.colors[f"{self.theme}exit_bg"],
-            image=self.close_hov_img,
-            command=self.quit,
-        )
-        self.min.config(
-            activebackground=self.colors[f"button_{self.theme}_activefg"],
-            image=self.min_hov_img,
-            command=self.iconify,
-        )
-        self.max.config(
-            activebackground=self.colors[f"button_{self.theme}_activefg"],
-            image=self.full_hov_img,
-            command=self.maximize,
-        )
-
-        self.bind("<FocusOut>", lambda _: self.setcolor(False))
-        self.bind("<FocusIn>", lambda _: self.setcolor(True))
+        self.bind("<FocusOut>", lambda _: self.setimage(False))
+        self.bind("<FocusIn>", lambda _: self.setimage(True))
 
         self.exit.bind("<Enter>", lambda _: self.exit.config(background=self.colors["exit_fg"]))
         self.exit.bind("<Leave>", lambda _: self.exit.config(background=self.bg))
 
-        self.min.bind("<Enter>", lambda _: self.min.config(background=self.colors[f"button_{self.theme}_activefg"]))
+        self.min.bind("<Enter>", lambda _: self.min.config(background=self.ag))
         self.min.bind("<Leave>", lambda _: self.min.config(background=self.bg))
 
         self.max.bind("<Enter>", lambda _: self.maximize_enter())
@@ -107,6 +87,8 @@ class CTT(Tk):
         self.title("Tk")
         self.minsize(self.width, self.height)
         self.iconbitmap(str(self.path / "tk.ico"))
+        self.setcolor()
+        self.setimage(True)
 
         self.handle()
 
@@ -164,7 +146,7 @@ class CTT(Tk):
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
     def maximize_enter(self) -> None:
-        self.max.config(background=self.colors[f"button_{self.theme}_activefg"])
+        self.max.config(background=self.ag)
 
         if self.snaplayout:
             return
@@ -326,8 +308,11 @@ class CTT(Tk):
         """Config the theme"""
         if not theme:
             self.gettheme()
+        else:
+            self.theme = theme
 
         self.assetpath = self.path / self.theme
+        print(self.assetpath)
         self.close_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_50.png"))
         self.min_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_50.png"))
         self.full_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_50.png"))
@@ -337,15 +322,41 @@ class CTT(Tk):
         self.full_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_100.png"))
         self.max_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "togglefull_100.png"))
 
-        self.bg = self.colors[f"{self.theme}_bg"]
+        self.bg = self.colors[f"{self.theme}"]
         self.nf = self.colors[f"{self.theme}_nf"]
+        self.ag = self.colors[f"{self.theme}_activefg"]
         self.fg = "light" if self.theme == "dark" else "dark"
-        self.config(background=self.colors[f"{self.theme}_bg"])
+
+        try:
+            self.setcolor()
+        except:
+            pass
 
         self.update_idletasks()
 
-    def setcolor(self, focus: bool) -> None:
-        """Set the color"""
+    def setcolor(self) -> None:
+        """Set the color of the widgets"""
+        for _ in (
+            self,
+            self.titlebar,
+            self.buttongroup,
+            self.infogroup,
+            self.icon,
+            self.text,
+            self.min,
+            self.max,
+            self.exit,
+        ):
+            _.config(background=self.bg)
+        for _ in (self.min, self.max):
+            _.config(activebackground=self.ag)
+
+        self.exit.config(activebackground=self.colors[f"{self.theme}exit_bg"])
+
+        self.update_idletasks()
+
+    def setimage(self, focus: bool) -> None:
+        """Set the image of the widgets"""
         self.onfocus = focus
         self.exit.config(image=self.close_hov_img if self.onfocus else self.close_img)
         if self.usemin:
@@ -356,6 +367,8 @@ class CTT(Tk):
                 if self.fullscreen
                 else self.max.config(image=self.full_hov_img if self.onfocus else self.full_img)
             )
+
+        # Also set the foreground of the title
         self.text.config(
             foreground=(
                 "grey" if not self.onfocus else (self.colors[self.fg] if self.theme == "light" else self.colors[self.fg])
