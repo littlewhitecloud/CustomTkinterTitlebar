@@ -84,13 +84,16 @@ class CTT(Tk):
         self.titlebar.pack(fill="x", side="top", expand=False)
         self.titlebar.pack_propagate(False)
 
+        self.handle()
+
         self.title("Tk")
         self.minsize(self.width, self.height)
         self.iconbitmap(str(self.path / "tk.ico"))
         self.setcolor()
         self.setimage(True)
 
-        self.handle()
+        self.update()
+        self.update_idletasks()
 
     # Window
     def handle(self) -> None:
