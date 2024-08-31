@@ -3,7 +3,7 @@
 #   By Littlewhitecloud
 # ------------------------
 
-__version__ = "1.0.8.5"
+__version__ = "1.0.8.6"
 __author__ = "littlewhitecloud"
 
 from sys import platform
