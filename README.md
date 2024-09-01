@@ -9,6 +9,11 @@
 pip install CustomTkinterTitlebar --user
 ```
 
+### Gallery
+![image](https://github.com/user-attachments/assets/018c1315-fc94-4ee5-a2a5-396dfb48a471)
+
+repo: https://github.com/littlewhitecloud/Terminal
+
 ### 快速开始 Quick Start
 ```python
 from customtitlebar import CTT
@@ -25,11 +30,5 @@ en.pack(fill = "y", expand = True, pady = 1)
 example.mainloop()
 ```
 
-### 预览 View
 ![image](https://github.com/user-attachments/assets/c04deef7-a2d2-4fb1-be19-3632e4149f6c)
 ![image](https://github.com/user-attachments/assets/181b8bcf-85ec-4dbc-81b2-086c36bbed11)
-
-
-### 🎰 样例 Example
-https://github.com/littlewhitecloud/CustomTkinterTitlebar-Examples
-
