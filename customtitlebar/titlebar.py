@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pathlib
 from ctypes import WINFUNCTYPE, c_uint64, windll
+from platform import win32_ver
 from tkinter import Button, Event, Frame, Label, Tk
 from typing import Any, Dict, Literal, Mapping, Optional, Tuple
 
@@ -38,6 +39,7 @@ class CTT(Tk):
         self.snaplayout = self.fullscreen = False
         self.onfocus = self.usemax = self.usemin = True
         self.path = pathlib.Path(__file__).parent / "asset"
+        self.titlebarheight = 0
 
         self.gettheme(theme.lower())
         self.assetpath = self.path / self.theme
@@ -84,13 +86,15 @@ class CTT(Tk):
         self.titlebar.pack(fill="x", side="top", expand=False)
         self.titlebar.pack_propagate(False)
 
-        self.handle()
-
         self.title("Tk")
         self.minsize(self.width, self.height)
         self.iconbitmap(str(self.path / "tk.ico"))
         self.setcolor()
         self.setimage(True)
+
+        self.get_window_titlebar_height()
+
+        self.handle()
 
         self.update()
         self.update_idletasks()
@@ -104,7 +108,7 @@ class CTT(Tk):
             """Handle the messages"""
             if msg == WM_NCCALCSIZE and wp:
                 lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
-                lpncsp.rgrc[0].top -= 30
+                lpncsp.rgrc[0].top -= self.titlebarheight
 
             return windll.user32.CallWindowProcW(*map(c_uint64, (globals()[old], hwnd, msg, wp, lp)))
 
@@ -298,7 +302,8 @@ class CTT(Tk):
     def gettheme(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
         if theme not in ("dark", "light", "auto"):  # Check the theme
             print(
-                f"Warning: The giving theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
+                f"Warning: The giving theme is `{
+                    theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
             )
             self.theme = darkdetect.theme().lower()
         elif theme == "auto":
@@ -376,3 +381,6 @@ class CTT(Tk):
                 "grey" if not self.onfocus else (self.colors[self.fg] if self.theme == "light" else self.colors[self.fg])
             )
         )
+
+    def get_window_titlebar_height(self) -> None:
+        self.titlebarheight = self.winfo_rooty() - self.winfo_y() - (1 if "11" == win32_ver()[0] else 0)
