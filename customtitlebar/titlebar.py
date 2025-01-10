@@ -302,8 +302,8 @@ class CTT(Tk):
     def gettheme(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
         if theme not in ("dark", "light", "auto"):  # Check the theme
             print(
-                f"Warning: The giving theme is `{
-                    theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
+                f"Warning: The giving theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
+
             )
             self.theme = darkdetect.theme().lower()
         elif theme == "auto":
