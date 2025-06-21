@@ -45,6 +45,15 @@ class CTT(Tk):
         self.assetpath = self.path / self.theme
         self.settheme(self.theme)
 
+        self.close_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_50.png"))
+        self.min_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_50.png"))
+        self.full_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_50.png"))
+        self.max_img = ImageTk.PhotoImage(Image.open(self.assetpath / "togglefull_50.png"))
+        self.close_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_100.png"))
+        self.min_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_100.png"))
+        self.full_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_100.png"))
+        self.max_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "togglefull_100.png"))
+
         self.titlebar = Frame(self, height=30)
         self.buttongroup = Frame(self.titlebar)
         self.infogroup = Frame(self.titlebar)
@@ -71,7 +80,6 @@ class CTT(Tk):
         self.max.bind("<Leave>", lambda _: self.maximize_leave())
 
         for _ in (self.titlebar, self.text):
-            _.bind("<ButtonPress-1>", self.dragging)
             _.bind("<B1-Motion>", self.moving)
 
         self.titlebar.bind("<Double-Button-1>", self.maximize)
@@ -94,16 +102,12 @@ class CTT(Tk):
 
         self.get_window_titlebar_height()
 
-        self.handle()
-
-        self.update()
-        self.update_idletasks()
+        self.setup()
 
     # Window
-    def handle(self) -> None:
-        """Window Handle"""
+    def setup(self) -> None:
+        """Setup the window"""
 
-        # TODO: replace Any with correct types
         def WndProc(hwnd: Any, msg: Any, wp: Any, lp: Any) -> Any:
             """Handle the messages"""
             if msg == WM_NCCALCSIZE and wp:
@@ -122,25 +126,15 @@ class CTT(Tk):
         globals()[old] = windll.user32.GetWindowLongPtrA(self.hwnd, GWL_WNDPROC)
         windll.user32.SetWindowLongPtrW(self.hwnd, GWL_WNDPROC, globals()[new])
 
-    def dragging(self, event: Event) -> None:
-        """Drag the window"""
-        self.x = event.x
-        self.y = event.y
+        windll.user32.SetWindowPos(self.hwnd, None, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED)
 
     def moving(self, event: Event) -> None:
         """Move the window"""
         if self.fullscreen:
             self.resize(event)
 
-        windll.user32.SetWindowPos(
-            self.hwnd,
-            None,
-            self.winfo_pointerx() - self.x,
-            self.winfo_pointery() - self.y,
-            0,
-            0,
-            SWP_NOREDRAW | SWP_NOSIZE | SWP_FRAMECHANGED,
-        )
+        windll.user32.ReleaseCapture()
+        windll.user32.SendMessageA(self.hwnd, WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0)
 
     # Maximize
     def maximize(self, _: Optional[Event] = None) -> None:
@@ -171,16 +165,15 @@ class CTT(Tk):
 
         self.max.config(image=self.full_hov_img, command=self.maximize)
         self.titlebar.bind("<Double-Button-1>", self.maximize)
-        self.titlebar.unbind("<B1-Motion>")
 
         windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
 
-        self.titlebar.after(100, self.titlebar.bind("<B1-Motion>", self.moving))
 
     def _snaplayout(self) -> None:
         if not self.snaplayout:
             return
 
+        # TODO: improve the way to call snap layout
         windll.user32.keybd_event(91, 0, 0, 0)
         windll.user32.keybd_event(90, 0, 0, 0)
         windll.user32.keybd_event(91, 0, 2, 0)
@@ -190,7 +183,6 @@ class CTT(Tk):
     # Titlebar
     def titlebarconfig(
         self,
-        height: int = 30,
         usemin: bool = True,
         usemax: bool = True,
         disablemin: bool = False,
@@ -198,6 +190,7 @@ class CTT(Tk):
         useicon: bool = True,
         usetitle: bool = True,
         font: Optional[Tuple] = None,
+        height: Optional[int] = None,
         titlecolor: Optional[str] = None,
         titlepack: Optional[Mapping[str, Any]] = None,
         color: Dict[str, Any] = {"color": None, "color_nf": None},
@@ -254,12 +247,12 @@ class CTT(Tk):
             for _ in (self.titlebar, self.text, self.icon, self.min, self.max, self.exit):
                 _.config(background=self.bg)
 
-        if height != 30:
+        if height:
             self.titlebar.config(height=height)
 
         self.update_idletasks()
 
-    # Tkinter
+    # Original Tkinter functions
     def title(self, text: Optional[str] = None) -> None:
         """Rebuild tkinter's title"""
         # TODO: show "..." if title is too long
@@ -270,7 +263,7 @@ class CTT(Tk):
         self.text.config(text=text)
         self.wm_title(text)
 
-    def iconphoto(self, image: str) -> None:
+    def iconphoto(self, text: Optional[str] = None) -> None:
         """Rebuild tkinter's iconphoto"""
         if not image:
             return
@@ -300,16 +293,12 @@ class CTT(Tk):
 
     # Theme
     def gettheme(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
-        if theme not in ("dark", "light", "auto"):  # Check the theme
-            print(
-                f"Warning: The giving theme is `{theme}`, not matching `D(d)ark` `L(l)ight` `A(a)uto`, using auto mode instead"
-
-            )
-            self.theme = darkdetect.theme().lower()
-        elif theme == "auto":
-            self.theme = darkdetect.theme().lower()
-        else:
+        "Get the theme"
+        if theme.lower() in ("light", "dark"):
             self.theme = theme
+        else:
+            self.theme = darkdetect.theme() # ignore typo and other situation ...
+        self.theme = self.theme.lower()
 
     def settheme(self, theme: Optional[Literal["light", "dark", "auto"]] = None) -> None:
         """Config the theme"""
@@ -318,22 +307,14 @@ class CTT(Tk):
         else:
             self.theme = theme
 
-        self.assetpath = self.path / self.theme
-
-        self.close_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_50.png"))
-        self.min_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_50.png"))
-        self.full_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_50.png"))
-        self.max_img = ImageTk.PhotoImage(Image.open(self.assetpath / "togglefull_50.png"))
-        self.close_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "close_100.png"))
-        self.min_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "minisize_100.png"))
-        self.full_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "fullwin_100.png"))
-        self.max_hov_img = ImageTk.PhotoImage(Image.open(self.assetpath / "togglefull_100.png"))
+        self.assetpath = self.path / self.theme # type: ignore
 
         self.bg = self.colors[f"{self.theme}"]
         self.nf = self.colors[f"{self.theme}_nf"]
         self.ag = self.colors[f"{self.theme}_activefg"]
         self.fg = "light" if self.theme == "dark" else "dark"
 
+        # TODO: figure out why
         try:
             self.setcolor()
         except:
@@ -364,6 +345,7 @@ class CTT(Tk):
 
     def setimage(self, focus: bool) -> None:
         """Set the image of the widgets"""
+        
         self.onfocus = focus
         self.exit.config(image=self.close_hov_img if self.onfocus else self.close_img)
         if self.usemin:
@@ -383,4 +365,5 @@ class CTT(Tk):
         )
 
     def get_window_titlebar_height(self) -> None:
+        """Get the correct titlebar hegiht via system version"""
         self.titlebarheight = self.winfo_rooty() - self.winfo_y() - (1 if "11" == win32_ver()[0] else 0)
