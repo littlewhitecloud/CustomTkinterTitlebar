@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 
 from .data import *
 
+__all__ = ["CTT"]
 
 class CTT(Tk):
     """Customize window for customize titlebar"""
@@ -109,7 +110,7 @@ class CTT(Tk):
         """Setup the window"""
 
         def WndProc(hwnd: Any, msg: Any, wp: Any, lp: Any) -> Any:
-            """Handle the messages"""
+            """Handle message"""
             if msg == WM_NCCALCSIZE and wp:
                 lpncsp = NCCALCSIZE_PARAMS.from_address(lp)
                 lpncsp.rgrc[0].top -= self.titlebarheight
@@ -129,7 +130,7 @@ class CTT(Tk):
         windll.user32.SetWindowPos(self.hwnd, None, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED)
 
     def moving(self, event: Event) -> None:
-        """Move the window"""
+        """Move window"""
         if self.fullscreen:
             self.resize(event)
 
@@ -147,15 +148,17 @@ class CTT(Tk):
         windll.user32.ShowWindow(self.hwnd, SW_MAXIMIZE)
 
     def maximize_enter(self) -> None:
+        """..."""
         self.max.config(background=self.ag)
 
         if self.snaplayout:
             return
 
         self.snaplayout = True
-        self.after(1000, self._snaplayout)
+        self.after(1000, self.call_snaplayout)
 
     def maximize_leave(self) -> None:
+        """..."""
         self.max.config(background=self.bg)
         self.snaplayout = False
 
@@ -166,10 +169,10 @@ class CTT(Tk):
         self.max.config(image=self.full_hov_img, command=self.maximize)
         self.titlebar.bind("<Double-Button-1>", self.maximize)
 
-        windll.user32.ShowWindow(self.hwnd, SW_NORMAL)
+        windll.user32.ShowWindow(self.hwnd, SW_NORMAL, 0, 0)
 
-
-    def _snaplayout(self) -> None:
+    def call_snaplayout(self) -> None:
+        """..."""
         if not self.snaplayout:
             return
 
@@ -196,7 +199,7 @@ class CTT(Tk):
         color: Dict[str, Any] = {"color": None, "color_nf": None},
     ) -> None:
         """
-        Config he titlebar
+        Config titlebar
         * `height`: Config the height of the titlebar
         * `usemin`: Flag to enable to use the minimize button
         * `usemax`: Flag to enable to usethe maximize button
@@ -250,11 +253,14 @@ class CTT(Tk):
         if height:
             self.titlebar.config(height=height)
 
+        if not (useicon and usetitle):
+            self.infogroup.pack_forget()
+
         self.update_idletasks()
 
     # Original Tkinter functions
     def title(self, text: Optional[str] = None) -> None:
-        """Rebuild tkinter's title"""
+        """tkinter's title"""
         # TODO: show "..." if title is too long
 
         if not text:
@@ -263,8 +269,8 @@ class CTT(Tk):
         self.text.config(text=text)
         self.wm_title(text)
 
-    def iconphoto(self, text: Optional[str] = None) -> None:
-        """Rebuild tkinter's iconphoto"""
+    def iconphoto(self, image: Optional[str] = None) -> None:
+        """tkinter's iconphoto"""
         if not image:
             return
 
@@ -273,7 +279,7 @@ class CTT(Tk):
         self.wm_iconphoto(self.img)
 
     def iconbitmap(self, image: Optional[str] = None) -> None:
-        """Rebuild tkinter's iconbitmap"""
+        """tkinter's iconbitmap"""
         if not image:
             return
 
@@ -282,7 +288,7 @@ class CTT(Tk):
         self.wm_iconbitmap(image)
 
     def geometry(self, size: Optional[str] = None) -> None:
-        """Rebuild tkinter's geometry"""
+        """tkinter's geometry"""
         if not size:
             return self.wm_geometry()
 
@@ -293,21 +299,21 @@ class CTT(Tk):
 
     # Theme
     def gettheme(self, theme: Literal["light", "dark", "auto"] = "auto") -> None:
-        "Get the theme"
+        "Get theme"
         if theme.lower() in ("light", "dark"):
             self.theme = theme
         else:
-            self.theme = darkdetect.theme() # ignore typo and other situation ...
+            self.theme = darkdetect.theme()  # ignore typo and other situation ...
         self.theme = self.theme.lower()
 
     def settheme(self, theme: Optional[Literal["light", "dark", "auto"]] = None) -> None:
-        """Config the theme"""
+        """Config theme"""
         if not theme:
             self.gettheme()
         else:
             self.theme = theme
 
-        self.assetpath = self.path / self.theme # type: ignore
+        self.assetpath = self.path / self.theme  # type: ignore
 
         self.bg = self.colors[f"{self.theme}"]
         self.nf = self.colors[f"{self.theme}_nf"]
@@ -345,7 +351,7 @@ class CTT(Tk):
 
     def setimage(self, focus: bool) -> None:
         """Set the image of the widgets"""
-        
+
         self.onfocus = focus
         self.exit.config(image=self.close_hov_img if self.onfocus else self.close_img)
         if self.usemin:
